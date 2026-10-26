@@ -172,7 +172,6 @@ document.addEventListener("DOMContentLoaded", () => {
     resetDefaultsBtn: document.getElementById("resetDefaultsBtn"),
     clearAllPromptsBtn: document.getElementById("clearAllPromptsBtn"),
     loadStarterPackBtn: document.getElementById("loadStarterPackBtn"),
-    loadFullCatalogBtn: document.getElementById("loadFullCatalogBtn"),
     ingestTitle: document.getElementById("ingestTitle"),
     ingestAuthor: document.getElementById("ingestAuthor"),
     ingestRawText: document.getElementById("ingestRawText"),
@@ -2381,23 +2380,6 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
 
-    // Canvas Presets: Load Full Master Catalog (333 prompts)
-    if (elements.loadFullCatalogBtn) {
-      elements.loadFullCatalogBtn.addEventListener("click", async () => {
-        try {
-          const res = await fetch("catalog/full_curated_335_prompts.json");
-          if (!res.ok) throw new Error("Catalog file not found");
-          const data = await res.json();
-          const prompts = data.prompts || [];
-          const count = window.PromptStorage.loadFullCatalog(prompts);
-          elements.dataModal.close();
-          refreshData();
-          showToast(`Successfully loaded complete Master Catalog (${count} prompts)!`, "success");
-        } catch (err) {
-          showToast("Could not load catalog/full_curated_335_prompts.json", "error");
-        }
-      });
-    }
 
     // Smart Ingest: Single Text Prompt Converter
     if (elements.ingestConvertBtn) {

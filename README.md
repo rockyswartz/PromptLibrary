@@ -47,13 +47,13 @@ Built with modern semantic HTML5, Vanilla CSS, and lightweight Vanilla JavaScrip
 - **Card Footer Display**: Originator credits appear prominently on the bottom-left of each prompt card with a dedicated author badge (e.g. `👤 Randy Austin - ExcelForFreelancers`, `👤 HubSpot`, `👤 Anthropic`, `👤 TypeUI`).
 - **Editable in Form**: Set bespoke author credits and links directly in the Create / Edit Prompt modal.
 
-### 📦 7. Dual-Distribution Architecture (Clean Starter Pack vs Full Master Catalog)
-- **Flagship Starter Pack (`js/data.js`)**: Ships with 7 exemplar blueprints representing all 7 Domain Pillars (Automation, Engineering, Business, Marketing, Images, UI/UX, and Education). Keeps the initial install lightweight, fast, and easy to understand.
-- **Complete Master Catalog (`catalog/full_curated_335_prompts.json`)**: Pre-packaged 333-prompt master collection including full production blueprints, HubSpot pack, Claude tools, and more.
-- **1-Click Canvas Presets**: In the Backup modal, switch anytime between:
-  - 🗑️ **Start from Scratch (Blank Canvas)**: Clears all prompts so you can build your own bespoke library. Preserves all 44 categories and 7 domain pillars.
-  - ⚡ **Load Starter Pack**: Restores the clean 7-blueprint showcase.
-  - 📚 **Load Full Master Catalog**: Populates the entire 333-prompt master database in 1 click.
+### 📦 7. Production-Ready Architecture & Starter Pack
+- **Flagship Starter Pack (`js/data.js`)**: Ships with 7 exemplar blueprints representing all 7 Domain Pillars (Automation, Engineering, Business, Marketing, Images, UI/UX, and Education). Keeps the initial install lightweight, fast, and immediately understandable.
+- **Personal Vault Independence**: Users can import their own personal JSON backups or ingest text prompts without modifying the core codebase.
+- **1-Click Canvas Presets**: In the Backup modal:
+  - 🗑️ **Start from Scratch (Blank Canvas)**: Clears all prompts so you can build your own bespoke library. All 44 categories and 7 domain pillars remain ready for your new prompts.
+  - ⚡ **Load Starter Pack (7 Flagships)**: Restores the clean 7-blueprint showcase.
+  - 📥 **Import JSON Backup**: Load any custom prompt collection or private vault.
 
 ### 📥 8. Smart Ingest & Raw Text-to-Prompt Converter
 - **In-App Smart Text Ingester**: Paste any raw text or markdown prompt.
