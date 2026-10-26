@@ -1,0 +1,22 @@
+{
+  "name": "promptlibrary-pro",
+  "version": "3.3.0",
+  "description": "Interactive AI Prompt Library, Blueprint System & Taxonomy Engine",
+  "main": "index.html",
+  "scripts": {
+    "dev": "python3 -m http.server 3456",
+    "server": "python3 server/server.py",
+    "sync": "./scripts/auto-sync.sh",
+    "watch-sync": "./scripts/watch-and-sync.sh"
+  },
+  "keywords": [
+    "ai",
+    "prompt-engineering",
+    "blueprints",
+    "chatgpt",
+    "claude",
+    "gemini"
+  ],
+  "author": "Rocky Swartz",
+  "license": "GPL-3.0"
+}
