@@ -6,6 +6,9 @@
 
 set -e
 
+# Prevent post-commit hook race condition
+export PROMPTVAULT_AUTO_SYNC=1
+
 # Change to repository root directory
 cd "$(dirname "$0")/.."
 
