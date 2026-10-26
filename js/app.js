@@ -178,6 +178,33 @@ document.addEventListener("DOMContentLoaded", () => {
     ingestAutoVars: document.getElementById("ingestAutoVars"),
     ingestConvertBtn: document.getElementById("ingestConvertBtn"),
     ingestBulkFiles: document.getElementById("ingestBulkFiles"),
+    // Help Center & Interactive Tour
+    openHelpModalBtn: document.getElementById("openHelpModalBtn"),
+    helpModal: document.getElementById("helpModal"),
+    closeHelpModalBtn: document.getElementById("closeHelpModalBtn"),
+    closeHelpModalDoneBtn: document.getElementById("closeHelpModalDoneBtn"),
+    startSpotlightTourBtn: document.getElementById("startSpotlightTourBtn"),
+    helpStartTourHeroBtn: document.getElementById("helpStartTourHeroBtn"),
+    helpModalStartTourSecondaryBtn: document.getElementById("helpModalStartTourSecondaryBtn"),
+    helpOpenCatManagerBtn: document.getElementById("helpOpenCatManagerBtn"),
+    helpCreatePromptBtn: document.getElementById("helpCreatePromptBtn"),
+    helpOpenDataModalBtn: document.getElementById("helpOpenDataModalBtn"),
+    helpSandboxTemplate: document.getElementById("helpSandboxTemplate"),
+    helpDemoProduct: document.getElementById("helpDemoProduct"),
+    helpDemoAudience: document.getElementById("helpDemoAudience"),
+    helpSandboxResult: document.getElementById("helpSandboxResult"),
+
+    tourOverlay: document.getElementById("tourOverlay"),
+    tourHighlightBox: document.getElementById("tourHighlightBox"),
+    tourCard: document.getElementById("tourCard"),
+    tourStepBadge: document.getElementById("tourStepBadge"),
+    tourCloseBtn: document.getElementById("tourCloseBtn"),
+    tourCardTitle: document.getElementById("tourCardTitle"),
+    tourCardDesc: document.getElementById("tourCardDesc"),
+    tourPrevBtn: document.getElementById("tourPrevBtn"),
+    tourProgressDots: document.getElementById("tourProgressDots"),
+    tourSkipBtn: document.getElementById("tourSkipBtn"),
+    tourNextBtn: document.getElementById("tourNextBtn"),
 
     // Toast
     toastContainer: document.getElementById("toastContainer"),
@@ -2486,6 +2513,26 @@ document.addEventListener("DOMContentLoaded", () => {
         openAddEditModal();
       }
 
+      // '?' : Open Help Center & Interactive Tour
+      if (e.key === "?" && !["INPUT", "TEXTAREA", "SELECT"].includes(document.activeElement.tagName)) {
+        e.preventDefault();
+        openHelpModal();
+      }
+
+      // Tour navigation keyboard shortcuts
+      if (isTourActive) {
+        if (e.key === "Escape") {
+          e.preventDefault();
+          exitTour();
+        } else if (e.key === "ArrowRight" || e.key === "Enter") {
+          e.preventDefault();
+          renderTourStep(currentTourStep + 1);
+        } else if (e.key === "ArrowLeft") {
+          e.preventDefault();
+          renderTourStep(currentTourStep - 1);
+        }
+      }
+
       // Cmd/Ctrl + Enter in runner modal: Copy prompt
       if ((e.metaKey || e.ctrlKey) && e.key === "Enter" && elements.runnerModal.open) {
         e.preventDefault();
@@ -2494,7 +2541,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // Close modals on clicking backdrop
-    [elements.runnerModal, elements.promptFormModal, elements.dataModal, elements.moreCategoriesModal, elements.categoryManagerModal].forEach(modal => {
+    [elements.runnerModal, elements.promptFormModal, elements.dataModal, elements.moreCategoriesModal, elements.categoryManagerModal, elements.helpModal].forEach(modal => {
       if (modal) {
         modal.addEventListener("click", (e) => {
           if (e.target !== modal) return;
@@ -2512,6 +2559,10 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
+    // Initialize Help Center & Tour Controllers
+    setupHelpCenter();
+    setupTourListeners();
+
     // Back to Top Button
     if (elements.backToTopBtn) {
       window.addEventListener("scroll", () => {
@@ -2528,6 +2579,323 @@ document.addEventListener("DOMContentLoaded", () => {
           behavior: "smooth"
         });
         document.documentElement.scrollTo({ top: 0, behavior: "smooth" });
+      });
+    }
+  }
+
+  // ----------------------------------------------------
+  // Interactive Help Center Controller
+  // ----------------------------------------------------
+  function openHelpModal(tabId = "interface") {
+    if (!elements.helpModal) return;
+    switchHelpTab(tabId);
+    elements.helpModal.showModal();
+  }
+
+  function closeHelpModal() {
+    if (elements.helpModal && elements.helpModal.open) {
+      elements.helpModal.close();
+    }
+  }
+
+  function switchHelpTab(tabId) {
+    const tabBtns = document.querySelectorAll(".help-tab-btn");
+    const tabPanes = document.querySelectorAll(".help-tab-pane");
+
+    tabBtns.forEach(btn => {
+      const isMatch = btn.dataset.helpTab === tabId;
+      btn.classList.toggle("active", isMatch);
+      btn.setAttribute("aria-selected", isMatch ? "true" : "false");
+    });
+
+    tabPanes.forEach(pane => {
+      pane.classList.remove("active");
+    });
+
+    const targetPaneId = "paneHelp" + tabId.charAt(0).toUpperCase() + tabId.slice(1);
+    const targetPane = document.getElementById(targetPaneId);
+    if (targetPane) {
+      targetPane.classList.add("active");
+    }
+  }
+
+  function setupHelpCenter() {
+    if (elements.openHelpModalBtn) {
+      elements.openHelpModalBtn.addEventListener("click", () => openHelpModal("interface"));
+    }
+    if (elements.closeHelpModalBtn) {
+      elements.closeHelpModalBtn.addEventListener("click", closeHelpModal);
+    }
+    if (elements.closeHelpModalDoneBtn) {
+      elements.closeHelpModalDoneBtn.addEventListener("click", closeHelpModal);
+    }
+
+    // Help navigation tab clicks
+    document.querySelectorAll(".help-tab-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        switchHelpTab(btn.dataset.helpTab);
+      });
+    });
+
+    // Copy code snippet buttons in Help tabs
+    document.querySelectorAll(".help-btn-copy-code").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const text = btn.dataset.copyText;
+        if (text) {
+          copyToClipboard(text);
+          const originalText = btn.innerHTML;
+          btn.innerHTML = `✓ Copied!`;
+          btn.style.borderColor = "var(--accent-emerald)";
+          btn.style.color = "var(--accent-emerald)";
+          showToast(`Copied snippet: ${text}`, "success");
+          setTimeout(() => {
+            btn.innerHTML = originalText;
+            btn.style.borderColor = "";
+            btn.style.color = "";
+          }, 1800);
+        }
+      });
+    });
+
+    // Interactive Sandbox in Tab 4
+    function updateHelpSandbox() {
+      if (!elements.helpSandboxResult || !elements.helpSandboxTemplate) return;
+      let text = elements.helpSandboxTemplate.value || "";
+      const prod = elements.helpDemoProduct ? elements.helpDemoProduct.value : "PromptVault Pro";
+      const aud = elements.helpDemoAudience ? elements.helpDemoAudience.value : "AI Engineers";
+
+      text = text.replace(/\{\{\s*product_name\s*\}\}/gi, prod);
+      text = text.replace(/\{\{\s*audience\s*\}\}/gi, aud);
+      text = text.replace(/\{\{\s*tone:\s*([^}|]+)[^}]*\}\}/gi, "$1".trim());
+      elements.helpSandboxResult.textContent = text;
+    }
+
+    if (elements.helpSandboxTemplate) elements.helpSandboxTemplate.addEventListener("input", updateHelpSandbox);
+    if (elements.helpDemoProduct) elements.helpDemoProduct.addEventListener("input", updateHelpSandbox);
+    if (elements.helpDemoAudience) elements.helpDemoAudience.addEventListener("input", updateHelpSandbox);
+
+    // Deep links inside Help Modal
+    if (elements.helpOpenCatManagerBtn) {
+      elements.helpOpenCatManagerBtn.addEventListener("click", () => {
+        closeHelpModal();
+        openCategoryManagerModal();
+      });
+    }
+    if (elements.helpCreatePromptBtn) {
+      elements.helpCreatePromptBtn.addEventListener("click", () => {
+        closeHelpModal();
+        openAddEditModal();
+      });
+    }
+    if (elements.helpOpenDataModalBtn) {
+      elements.helpOpenDataModalBtn.addEventListener("click", () => {
+        closeHelpModal();
+        openDataModal();
+      });
+    }
+
+    // Tour launch buttons
+    if (elements.startSpotlightTourBtn) {
+      elements.startSpotlightTourBtn.addEventListener("click", () => startTour(0));
+    }
+    if (elements.helpStartTourHeroBtn) {
+      elements.helpStartTourHeroBtn.addEventListener("click", () => startTour(0));
+    }
+    if (elements.helpModalStartTourSecondaryBtn) {
+      elements.helpModalStartTourSecondaryBtn.addEventListener("click", () => startTour(0));
+    }
+  }
+
+  // ----------------------------------------------------
+  // Spotlight Interactive Guided Tour Engine
+  // ----------------------------------------------------
+  const TOUR_STEPS = [
+    {
+      targetSelector: ".nav-mode-bar",
+      title: "7 Domain Pillars & Modes",
+      topic: "Architecture",
+      desc: "Top-level domain pillars organize your library: Automation, Software Engineering, Business, Marketing, Generative AI, UX/UI, and Education. Toggle between Functional Domains and Collection Packs."
+    },
+    {
+      targetSelector: "#categoryNav",
+      title: "Category & Subcategory Pills",
+      topic: "Taxonomy",
+      desc: "Click categories under each domain pillar to instantly filter. Click 'More...' to browse all 44 categories and filter by granular subcategories."
+    },
+    {
+      targetSelector: ".search-container",
+      title: "Instant Fuzzy Search (⌘K)",
+      topic: "Navigation",
+      desc: "Press ⌘K or type here to search across titles, descriptions, blueprint sections, parameter tags, authors, and hashtags in real-time."
+    },
+    {
+      targetSelector: ".prompt-card",
+      title: "Smart Blueprint Cards",
+      topic: "Execution",
+      desc: "Each card displays its domain, author attribution, and variable count. Click 'Use Blueprint' to run the interactive parameter form, or 'Copy' for instant clipboard use."
+    },
+    {
+      targetSelector: "#openCategoryManagerBtn",
+      title: "Taxonomy & Deduplication Manager",
+      topic: "Organization",
+      desc: "Create custom categories, assign subcategories from the 100+ master pool, and eliminate duplicate tags with the built-in deduplication shield."
+    },
+    {
+      targetSelector: "#openDataModalBtn",
+      title: "Backup, Ingest & Restore",
+      topic: "Data Portability",
+      desc: "Export your library to JSON, SQLite, or Markdown. Use Smart Ingest to auto-convert [brackets] into {{variables}}, or reset to the clean 7-pillar Starter Pack."
+    },
+    {
+      targetSelector: "#openAddPromptBtn",
+      title: "Create New Blueprint (N)",
+      topic: "Authoring",
+      desc: "Press 'N' or click here to craft either a Simple Text Template or a full 5-Section Modular AI Blueprint with dynamic {{variable}} parameter slots."
+    }
+  ];
+
+  let currentTourStep = 0;
+  let isTourActive = false;
+
+  function startTour(stepIndex = 0) {
+    closeHelpModal();
+    currentTourStep = stepIndex;
+    isTourActive = true;
+
+    if (!elements.tourOverlay) return;
+    elements.tourOverlay.classList.remove("hidden");
+    elements.tourOverlay.setAttribute("aria-hidden", "false");
+
+    renderTourStep(currentTourStep);
+    window.addEventListener("resize", repositionTourOverlay);
+    window.addEventListener("scroll", repositionTourOverlay, { passive: true });
+  }
+
+  function exitTour() {
+    isTourActive = false;
+    if (elements.tourOverlay) {
+      elements.tourOverlay.classList.add("hidden");
+      elements.tourOverlay.setAttribute("aria-hidden", "true");
+    }
+    window.removeEventListener("resize", repositionTourOverlay);
+    window.removeEventListener("scroll", repositionTourOverlay);
+  }
+
+  function renderTourStep(index) {
+    if (index < 0) index = 0;
+    if (index >= TOUR_STEPS.length) {
+      exitTour();
+      showToast("Tour completed! You are ready to build.", "success");
+      return;
+    }
+
+    currentTourStep = index;
+    const step = TOUR_STEPS[index];
+    let targetEl = document.querySelector(step.targetSelector);
+
+    // Fallback if target element isn't currently visible
+    if (!targetEl) {
+      targetEl = document.querySelector(".header") || document.body;
+    }
+
+    // Scroll element smoothly into center view
+    targetEl.scrollIntoView({ behavior: "smooth", block: "center", inline: "center" });
+
+    // Update text
+    if (elements.tourStepBadge) {
+      elements.tourStepBadge.textContent = `Step ${index + 1} of ${TOUR_STEPS.length}`;
+    }
+    const topicBadge = elements.tourCard ? elements.tourCard.querySelector(".tour-topic-badge") : null;
+    if (topicBadge) topicBadge.textContent = step.topic;
+    if (elements.tourCardTitle) elements.tourCardTitle.textContent = step.title;
+    if (elements.tourCardDesc) elements.tourCardDesc.textContent = step.desc;
+
+    // Prev / Next buttons
+    if (elements.tourPrevBtn) {
+      elements.tourPrevBtn.disabled = index === 0;
+    }
+    if (elements.tourNextBtn) {
+      elements.tourNextBtn.textContent = index === TOUR_STEPS.length - 1 ? "Finish ✓" : "Next →";
+    }
+
+    // Progress dots
+    if (elements.tourProgressDots) {
+      elements.tourProgressDots.innerHTML = "";
+      TOUR_STEPS.forEach((_, i) => {
+        const dot = document.createElement("span");
+        dot.className = `tour-dot ${i === index ? "active" : ""}`;
+        dot.style.cursor = "pointer";
+        dot.addEventListener("click", () => renderTourStep(i));
+        elements.tourProgressDots.appendChild(dot);
+      });
+    }
+
+    // Reposition highlight box & tooltip card after a slight delay for smooth scroll
+    setTimeout(() => {
+      repositionTourOverlay();
+    }, 180);
+  }
+
+  function repositionTourOverlay() {
+    if (!isTourActive) return;
+    const step = TOUR_STEPS[currentTourStep];
+    if (!step) return;
+
+    let targetEl = document.querySelector(step.targetSelector);
+    if (!targetEl) targetEl = document.querySelector(".header") || document.body;
+
+    const rect = targetEl.getBoundingClientRect();
+    const pad = 8;
+
+    // Highlight box
+    if (elements.tourHighlightBox) {
+      elements.tourHighlightBox.style.top = Math.max(0, rect.top - pad) + "px";
+      elements.tourHighlightBox.style.left = Math.max(0, rect.left - pad) + "px";
+      elements.tourHighlightBox.style.width = (rect.width + pad * 2) + "px";
+      elements.tourHighlightBox.style.height = (rect.height + pad * 2) + "px";
+    }
+
+    // Tooltip card positioning
+    if (elements.tourCard) {
+      const cardRect = elements.tourCard.getBoundingClientRect();
+      const cardWidth = cardRect.width || 340;
+      const cardHeight = cardRect.height || 180;
+      const viewportWidth = window.innerWidth;
+      const viewportHeight = window.innerHeight;
+
+      // Prefer placing below target, fallback above
+      let top = rect.bottom + 16;
+      if (top + cardHeight > viewportHeight - 20) {
+        top = Math.max(20, rect.top - cardHeight - 16);
+      }
+
+      // Horizontal center alignment relative to target
+      let left = rect.left + (rect.width / 2) - (cardWidth / 2);
+      if (left < 16) left = 16;
+      if (left + cardWidth > viewportWidth - 16) {
+        left = viewportWidth - cardWidth - 16;
+      }
+
+      elements.tourCard.style.top = top + "px";
+      elements.tourCard.style.left = left + "px";
+    }
+  }
+
+  function setupTourListeners() {
+    if (elements.tourCloseBtn) {
+      elements.tourCloseBtn.addEventListener("click", exitTour);
+    }
+    if (elements.tourSkipBtn) {
+      elements.tourSkipBtn.addEventListener("click", exitTour);
+    }
+    if (elements.tourNextBtn) {
+      elements.tourNextBtn.addEventListener("click", () => {
+        renderTourStep(currentTourStep + 1);
+      });
+    }
+    if (elements.tourPrevBtn) {
+      elements.tourPrevBtn.addEventListener("click", () => {
+        renderTourStep(currentTourStep - 1);
       });
     }
   }

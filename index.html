@@ -57,6 +57,15 @@
           <span>Backup</span>
         </button>
 
+        <button id="openHelpModalBtn" class="btn btn-secondary" style="border-color: rgba(16, 185, 129, 0.4); color: var(--accent-emerald); font-weight: 600;" title="Help & Interactive System Guide (Shortcut: ?)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+          </svg>
+          <span>Help & Tour</span>
+        </button>
+
         <button id="openAddPromptBtn" class="btn btn-primary" title="Create New Custom Prompt (Shortcut: N)">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <line x1="12" y1="5" x2="12" y2="19"></line>
@@ -1039,6 +1048,420 @@
     </div>
   </dialog>
 
+  <!-- ==========================================================================
+       Help Center & Interactive Guided Tour Modal
+       ========================================================================== -->
+  <dialog id="helpModal" class="modal" closedby="any" aria-labelledby="helpModalTitle" style="max-width: 960px;">
+    <div class="modal-header">
+      <div class="modal-header-info">
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem; width: 100%;">
+          <div style="display: flex; align-items: center; gap: 0.65rem;">
+            <div style="width: 34px; height: 34px; border-radius: 9px; background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.35); display: flex; align-items: center; justify-content: center; color: var(--accent-emerald);">
+              <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            </div>
+            <h2 id="helpModalTitle" class="modal-title">PromptVault Pro Interactive Guide</h2>
+          </div>
+          <button type="button" id="startSpotlightTourBtn" class="btn btn-primary" style="background: linear-gradient(135deg, #10b981 0%, #06b6d4 100%); border: none; font-size: 0.825rem; font-weight: 700; padding: 0.4rem 0.95rem; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.35); display: inline-flex; align-items: center; gap: 0.4rem;">
+            <span>🎯 Start Live Screen Tour</span>
+          </button>
+        </div>
+        <span class="modal-subtitle">Master PromptVault Pro's UI, 3-tier taxonomy, modular blueprints, variable syntax, and backup tools</span>
+      </div>
+      <button id="closeHelpModalBtn" class="btn-close-modal" title="Close (Esc)">✕</button>
+    </div>
+
+    <!-- Help Navigation Tab Bar -->
+    <div class="help-tabs-nav" role="tablist">
+      <button type="button" class="help-tab-btn active" data-help-tab="interface" role="tab" aria-selected="true">
+        <span>🖥️ Interface & Overview</span>
+      </button>
+      <button type="button" class="help-tab-btn" data-help-tab="taxonomy" role="tab" aria-selected="false">
+        <span>🗂️ Categories & Subcategories</span>
+      </button>
+      <button type="button" class="help-tab-btn" data-help-tab="prompts" role="tab" aria-selected="false">
+        <span>📐 Modular vs Simple Prompts</span>
+      </button>
+      <button type="button" class="help-tab-btn" data-help-tab="variables" role="tab" aria-selected="false">
+        <span>⚡ Variable Syntax</span>
+      </button>
+      <button type="button" class="help-tab-btn" data-help-tab="backup" role="tab" aria-selected="false">
+        <span>📥 Ingestion & Backups</span>
+      </button>
+    </div>
+
+    <div class="modal-body help-modal-body">
+      <!-- ====================================================================
+           TAB 1: INTERFACE & OVERVIEW
+           ==================================================================== -->
+      <div id="paneHelpInterface" class="help-tab-pane active" role="tabpanel">
+        <img src="assets/help_interface_overview.jpg" alt="PromptVault Pro Interface & Architecture" class="help-feature-banner" />
+
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; background: rgba(99, 102, 241, 0.08); padding: 1rem 1.25rem; border-radius: var(--radius-md); border: 1px solid rgba(99, 102, 241, 0.25);">
+          <div>
+            <h4 style="font-size: 0.95rem; font-weight: 700; color: var(--text-primary); margin: 0 0 0.25rem 0;">Ready for a hands-on walkthrough?</h4>
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin: 0;">Launch the live interactive tour to highlight and explain every control directly on your active workspace.</p>
+          </div>
+          <button type="button" id="helpStartTourHeroBtn" class="btn btn-primary" style="font-size: 0.85rem; font-weight: 700; padding: 0.5rem 1rem;">
+            🎯 Launch Screen Spotlight Tour
+          </button>
+        </div>
+
+        <div class="help-compare-grid">
+          <div class="help-compare-card">
+            <h5 style="font-size: 0.875rem; font-weight: 700; color: var(--accent-cyan); margin: 0; display: flex; align-items: center; gap: 0.4rem;">
+              <span>🌐 7 Architectural Domain Pillars</span>
+            </h5>
+            <p style="font-size: 0.8rem; color: var(--text-secondary); line-height: 1.5; margin: 0;">
+              At the top of the interface, 7 color-coded domain pills organize your prompt library into professional engineering domains: Automation, Software Engineering, Business, Marketing, Generative AI, UX/UI Design, and Education.
+            </p>
+          </div>
+
+          <div class="help-compare-card">
+            <h5 style="font-size: 0.875rem; font-weight: 700; color: var(--accent-emerald); margin: 0; display: flex; align-items: center; gap: 0.4rem;">
+              <span>⚡ Instant Fuzzy Search (⌘K)</span>
+            </h5>
+            <p style="font-size: 0.8rem; color: var(--text-secondary); line-height: 1.5; margin: 0;">
+              Press <kbd class="kbd-badge">⌘K</kbd> anywhere to jump into search. The engine filters across titles, descriptions, modular sections, parameter tags, authors, and hashtags with zero latency.
+            </p>
+          </div>
+
+          <div class="help-compare-card">
+            <h5 style="font-size: 0.875rem; font-weight: 700; color: var(--accent-violet); margin: 0; display: flex; align-items: center; gap: 0.4rem;">
+              <span>🗂️ Adaptive Category & Subcategory Filter</span>
+            </h5>
+            <p style="font-size: 0.8rem; color: var(--text-secondary); line-height: 1.5; margin: 0;">
+              Filter prompts with 1 click. Click <strong>"More..."</strong> to view all 44 categories organized under their domain pillars and select granular subcategories.
+            </p>
+          </div>
+
+          <div class="help-compare-card">
+            <h5 style="font-size: 0.875rem; font-weight: 700; color: var(--accent-amber); margin: 0; display: flex; align-items: center; gap: 0.4rem;">
+              <span>👤 Author Attribution & 1-Click Runner</span>
+            </h5>
+            <p style="font-size: 0.8rem; color: var(--text-secondary); line-height: 1.5; margin: 0;">
+              Every card credits its original creator (e.g. Randy Austin, HubSpot, Anthropic). Click <strong>"Use Blueprint"</strong> to open the interactive runner and fill in dynamic variables.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ====================================================================
+           TAB 2: TAXONOMY & DEDUPLICATION
+           ==================================================================== -->
+      <div id="paneHelpTaxonomy" class="help-tab-pane" role="tabpanel">
+        <img src="assets/help_taxonomy_hierarchy.jpg" alt="3-Tier Taxonomy Tree & Deduplication Shield" class="help-feature-banner" />
+
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; background: rgba(6, 182, 212, 0.08); padding: 1rem 1.25rem; border-radius: var(--radius-md); border: 1px solid rgba(6, 182, 212, 0.25);">
+          <div>
+            <h4 style="font-size: 0.95rem; font-weight: 700; color: var(--accent-cyan); margin: 0 0 0.25rem 0;">Want to manage or create categories right now?</h4>
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin: 0;">Open the full Taxonomy & Deduplication Manager to add categories, assign subcategories, or resolve duplicates.</p>
+          </div>
+          <button type="button" id="helpOpenCatManagerBtn" class="btn btn-secondary" style="border-color: rgba(6, 182, 212, 0.4); color: var(--accent-cyan); font-weight: 600;">
+            ⚙️ Open Category Manager
+          </button>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 0.85rem;">
+          <!-- Step 1 -->
+          <div class="help-step-item">
+            <div class="help-step-num">1</div>
+            <div class="help-step-content">
+              <h5 class="help-step-title">The 3-Tier Hierarchy Architecture</h5>
+              <p class="help-step-desc">
+                PromptVault Pro organizes knowledge cleanly across 3 structural levels:
+                <br />• <strong>Tier 1: Domain Pillars</strong> (7 fixed domains: Automation, Engineering, Business, etc.)
+                <br />• <strong>Tier 2: Categories</strong> (44 standard categories like <em>Excel VBA & Macros</em>, <em>Web Development</em>, <em>Digital Marketing</em>)
+                <br />• <strong>Tier 3: Subcategories & Tasks</strong> (Specific operations like <em>Data Cleaning</em>, <em>API Integration</em>, <em>SEO Audits</em>)
+              </p>
+            </div>
+          </div>
+
+          <!-- Step 2 -->
+          <div class="help-step-item">
+            <div class="help-step-num">2</div>
+            <div class="help-step-content">
+              <h5 class="help-step-title">Creating a New Category</h5>
+              <p class="help-step-desc">
+                Click <strong>"⚙️ Manage Categories"</strong> in the header. Enter a category name, select a custom emoji icon, and select the Domain Pillar it belongs to. Click <strong>"Create Category"</strong>. It immediately appears in filters and prompt forms.
+              </p>
+            </div>
+          </div>
+
+          <!-- Step 3 -->
+          <div class="help-step-item">
+            <div class="help-step-num">3</div>
+            <div class="help-step-content">
+              <h5 class="help-step-title">Linking Subcategories from the 100+ Master Pool</h5>
+              <p class="help-step-desc">
+                Click on any category in the Active Hierarchy. Click <strong>"+ Add Subcategory"</strong>. You can choose from the built-in <strong>Master Subcategory Pool</strong> (pre-curated across engineering, business, and creative workflows) or enter a custom subcategory.
+              </p>
+            </div>
+          </div>
+
+          <!-- Step 4 -->
+          <div class="help-step-item">
+            <div class="help-step-num">4</div>
+            <div class="help-step-content">
+              <h5 class="help-step-title">Deduplication & Conflict Shield</h5>
+              <p class="help-step-desc">
+                To prevent messy duplicate tags, the built-in deduplication engine warns you in real-time if a category or subcategory with a similar name already exists (e.g. typing "Data Analytics" when "Data Analysis" already exists). You can reuse the existing item with 1 click.
+              </p>
+            </div>
+          </div>
+
+          <!-- Step 5 -->
+          <div class="help-step-item">
+            <div class="help-step-num">5</div>
+            <div class="help-step-content">
+              <h5 class="help-step-title">Safe Category Deletion & Merging</h5>
+              <p class="help-step-desc">
+                Deleting a category will never lose your prompts—prompts are automatically moved safely to <em>General</em>. You can also merge redundant categories together while preserving all prompt associations.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ====================================================================
+           TAB 3: MODULAR VS SIMPLE PROMPTS
+           ==================================================================== -->
+      <div id="paneHelpPrompts" class="help-tab-pane" role="tabpanel">
+        <img src="assets/help_prompt_blueprint.jpg" alt="Simple Prompt vs 5-Section Modular Blueprint" class="help-feature-banner" />
+
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; background: rgba(139, 92, 246, 0.08); padding: 1rem 1.25rem; border-radius: var(--radius-md); border: 1px solid rgba(139, 92, 246, 0.25);">
+          <div>
+            <h4 style="font-size: 0.95rem; font-weight: 700; color: var(--accent-violet); margin: 0 0 0.25rem 0;">Ready to design your first prompt or blueprint?</h4>
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin: 0;">Open the prompt creator to build a quick template or an enterprise-grade 5-section AI blueprint.</p>
+          </div>
+          <button type="button" id="helpCreatePromptBtn" class="btn btn-primary" style="font-size: 0.85rem; font-weight: 700; padding: 0.5rem 1rem;">
+            ⚡ Create New Prompt (N)
+          </button>
+        </div>
+
+        <div class="help-compare-grid">
+          <!-- Simple Prompt Card -->
+          <div class="help-compare-card">
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+              <h5 style="font-size: 0.95rem; font-weight: 700; color: var(--text-primary); margin: 0;">Option A: Simple Prompt</h5>
+              <span class="help-section-chip" style="background: rgba(255, 255, 255, 0.06); color: var(--text-secondary); border-color: var(--border-subtle);">Fast & Flexible</span>
+            </div>
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin: 0;">Best for routine tasks, quick email drafts, social posts, or simple Q&A.</p>
+            <div class="help-code-box" style="margin-top: 0.25rem;">
+              <span class="help-code-text" style="font-size: 0.775rem;">Write a polite follow-up email to {{client_name}} regarding the proposal sent on {{date}}. Highlight {{key_benefit}} and offer a call next week.</span>
+            </div>
+            <ul style="font-size: 0.775rem; color: var(--text-secondary); margin: 0; padding-left: 1.2rem; display: flex; flex-direction: column; gap: 0.35rem;">
+              <li>Single text box with embedded <code>{{variables}}</code>.</li>
+              <li>Minimal setup time.</li>
+              <li>Good for conversational, everyday LLM use cases.</li>
+            </ul>
+          </div>
+
+          <!-- 5-Section Modular Blueprint Card -->
+          <div class="help-compare-card blueprint-card">
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+              <h5 style="font-size: 0.95rem; font-weight: 700; color: var(--accent-primary); margin: 0;">Option B: 5-Section Modular Blueprint</h5>
+              <span class="help-section-chip">Industry Standard</span>
+            </div>
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin: 0;">Recommended for production code, executive decision memos, and complex workflows.</p>
+            <div style="display: flex; flex-direction: column; gap: 0.45rem; font-size: 0.775rem; color: var(--text-secondary);">
+              <div><strong style="color: var(--accent-cyan);">1. Role & Persona:</strong> Defines exact expertise and tone (e.g. Principal Systems Architect).</div>
+              <div><strong style="color: var(--accent-emerald);">2. Primary Objective:</strong> Precise mission statement and scope.</div>
+              <div><strong style="color: var(--accent-amber);">3. Dynamic Context & Inputs:</strong> Parameterized placeholders <code>{{inputs}}</code>.</div>
+              <div><strong style="color: var(--accent-rose);">4. Negative Guardrails:</strong> Explicit anti-patterns (what NOT to do, no fluff, no hallucinations).</div>
+              <div><strong style="color: var(--accent-violet);">5. Output Format & Rubric:</strong> Required structure (Markdown table, JSON schema, scoring criteria).</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ====================================================================
+           TAB 4: VARIABLE SYNTAX CHEATSHEET & LIVE SANDBOX
+           ==================================================================== -->
+      <div id="paneHelpVariables" class="help-tab-pane" role="tabpanel">
+        <div>
+          <h4 style="font-size: 1rem; font-weight: 700; color: var(--text-primary); margin: 0 0 0.25rem 0;">Parameter Token Syntax Reference</h4>
+          <p style="font-size: 0.825rem; color: var(--text-muted); margin: 0;">Use curly double braces <code>{{variable_name}}</code> inside any prompt. The Prompt Runner automatically converts them into interactive input fields!</p>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+          <!-- Free text variable -->
+          <div class="help-code-box">
+            <div>
+              <div style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.2rem;">Single-line Text Field</div>
+              <span class="help-code-text">{{target_audience}}</span>
+            </div>
+            <button type="button" class="help-btn-copy-code" data-copy-text="{{target_audience}}">
+              📋 Copy
+            </button>
+          </div>
+
+          <!-- Multi-choice variable -->
+          <div class="help-code-box">
+            <div>
+              <div style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.2rem;">Multi-Choice Dropdown / Pill Selector</div>
+              <span class="help-code-text">{{tone: Professional | Conversational | Technical | Direct}}</span>
+            </div>
+            <button type="button" class="help-btn-copy-code" data-copy-text="{{tone: Professional | Conversational | Technical | Direct}}">
+              📋 Copy
+            </button>
+          </div>
+
+          <!-- Format Choice -->
+          <div class="help-code-box">
+            <div>
+              <div style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.2rem;">Format Selector</div>
+              <span class="help-code-text">{{format: Markdown Table | Bulleted Hierarchy | Executive Memo | JSON}}</span>
+            </div>
+            <button type="button" class="help-btn-copy-code" data-copy-text="{{format: Markdown Table | Bulleted Hierarchy | Executive Memo | JSON}}">
+              📋 Copy
+            </button>
+          </div>
+        </div>
+
+        <!-- Interactive Sandbox -->
+        <div class="help-sandbox-container">
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <h5 style="font-size: 0.875rem; font-weight: 700; color: var(--accent-emerald); margin: 0;">
+              🧪 Live Variable Playground
+            </h5>
+            <span style="font-size: 0.75rem; color: var(--text-muted);">Try typing below to see live token replacement</span>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+            <label style="font-size: 0.75rem; color: var(--text-secondary); font-weight: 600;">Template with Variables:</label>
+            <input type="text" id="helpSandboxTemplate" class="input-field" value="Create a {{tone: Professional | Enthusiastic}} launch announcement for {{product_name}} targeting {{audience}}." />
+          </div>
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.5rem;" id="helpSandboxFields">
+            <div>
+              <label style="font-size: 0.725rem; color: var(--text-muted);">product_name</label>
+              <input type="text" id="helpDemoProduct" class="input-field" value="PromptVault Pro" />
+            </div>
+            <div>
+              <label style="font-size: 0.725rem; color: var(--text-muted);">audience</label>
+              <input type="text" id="helpDemoAudience" class="input-field" value="AI Engineers & Solopreneurs" />
+            </div>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 0.35rem;">
+            <label style="font-size: 0.75rem; color: var(--text-secondary); font-weight: 600;">Live Rendered Output:</label>
+            <div id="helpSandboxResult" class="help-sandbox-preview">
+              Create a Professional launch announcement for PromptVault Pro targeting AI Engineers & Solopreneurs.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ====================================================================
+           TAB 5: INGESTION & BACKUPS
+           ==================================================================== -->
+      <div id="paneHelpBackup" class="help-tab-pane" role="tabpanel">
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; background: rgba(16, 185, 129, 0.08); padding: 1rem 1.25rem; border-radius: var(--radius-md); border: 1px solid rgba(16, 185, 129, 0.25);">
+          <div>
+            <h4 style="font-size: 0.95rem; font-weight: 700; color: var(--accent-emerald); margin: 0 0 0.25rem 0;">Access Backup, Export & Smart Ingestion</h4>
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin: 0;">Open the Backup & Data modal to export JSON, SQLite, or convert raw text prompts automatically.</p>
+          </div>
+          <button type="button" id="helpOpenDataModalBtn" class="btn btn-secondary" style="border-color: rgba(16, 185, 129, 0.4); color: var(--accent-emerald); font-weight: 600;">
+            💾 Open Backup Modal
+          </button>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 0.85rem;">
+          <div class="help-step-item">
+            <div class="help-step-num">1</div>
+            <div class="help-step-content">
+              <h5 class="help-step-title">In-App Smart Text Ingestion</h5>
+              <p class="help-step-desc">
+                Have raw unformatted prompts with brackets like <code>[Insert Company]</code>, <code>&lt;Target Audience&gt;</code>, or <code>{Budget}</code>? Open <strong>Backup & Restore</strong> -> <strong>Smart Ingestion</strong>. Paste your text, and PromptVault Pro automatically converts placeholders into <code>{{variables}}</code>, infers titles, sets author credits, and saves them to your vault in 1 click!
+              </p>
+            </div>
+          </div>
+
+          <div class="help-step-item">
+            <div class="help-step-num">2</div>
+            <div class="help-step-content">
+              <h5 class="help-step-title">Batch Python CLI Converter</h5>
+              <p class="help-step-desc">
+                For bulk conversions of entire folders of text or markdown files, run the included standalone CLI converter:
+                <br /><code style="background: rgba(0,0,0,0.5); padding: 0.2rem 0.5rem; border-radius: 4px; color: var(--accent-cyan); display: inline-block; margin-top: 0.35rem;">python3 scripts/text_to_prompt_json.py raw_prompts.txt -o my_catalog.json</code>
+              </p>
+            </div>
+          </div>
+
+          <div class="help-step-item">
+            <div class="help-step-num">3</div>
+            <div class="help-step-content">
+              <h5 class="help-step-title">Exporting Full Backups (JSON & SQLite)</h5>
+              <p class="help-step-desc">
+                • <strong>JSON Export:</strong> Downloads a complete portable snapshot of your library, custom categories, subcategories, and originator credits.
+                <br />• <strong>SQLite Database:</strong> Direct export of the local <code>server/promptlibrary.db</code> database.
+                <br />• <strong>Markdown Export:</strong> Human-readable reference file with all blueprints formatted for documentation.
+              </p>
+            </div>
+          </div>
+
+          <div class="help-step-item">
+            <div class="help-step-num">4</div>
+            <div class="help-step-content">
+              <h5 class="help-step-title">Importing & Merging Backups</h5>
+              <p class="help-step-desc">
+                Click <strong>"Import JSON Backup"</strong> in the Backup modal. PromptVault Pro parses the JSON file, merges new prompts, and automatically registers any new custom categories without overwriting your existing library.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-footer" style="justify-content: space-between; flex-wrap: wrap; gap: 0.75rem;">
+      <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; color: var(--text-muted);">
+        <span>Quick Shortcut: Press <kbd class="kbd-badge">?</kbd> anywhere to open Help &bull; <kbd class="kbd-badge">Esc</kbd> to close</span>
+      </div>
+      <div style="display: flex; gap: 0.5rem;">
+        <button type="button" id="helpModalStartTourSecondaryBtn" class="btn btn-secondary" style="border-color: rgba(16, 185, 129, 0.4); color: var(--accent-emerald);">
+          🎯 Launch Screen Walkthrough
+        </button>
+        <button type="button" id="closeHelpModalDoneBtn" class="btn btn-primary">Got it, Let's Build!</button>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- ==========================================================================
+       Interactive Spotlight Screen Tour Overlay
+       ========================================================================== -->
+  <div id="tourOverlay" class="tour-overlay hidden" aria-hidden="true">
+    <div id="tourHighlightBox" class="tour-highlight-box"></div>
+    <div id="tourCard" class="tour-card" role="dialog" aria-labelledby="tourCardTitle">
+      <div class="tour-card-header">
+        <div class="tour-badge-row">
+          <span id="tourStepBadge" class="tour-step-badge">Step 1 of 7</span>
+          <span class="tour-topic-badge">Interactive Walkthrough</span>
+        </div>
+        <button type="button" id="tourCloseBtn" class="tour-close-btn" title="Exit Tour (Esc)">✕</button>
+      </div>
+      <div class="tour-card-body">
+        <h4 id="tourCardTitle" class="tour-card-title">Welcome to PromptVault Pro</h4>
+        <p id="tourCardDesc" class="tour-card-desc">Follow this interactive tour to learn how to navigate, organize, and execute AI blueprints.</p>
+      </div>
+      <div class="tour-card-footer">
+        <button type="button" id="tourPrevBtn" class="btn btn-secondary tour-btn-sm" disabled>
+          ← Prev
+        </button>
+        <div class="tour-progress-dots" id="tourProgressDots">
+          <!-- Dots dynamically rendered in JS -->
+        </div>
+        <div style="display: flex; gap: 0.4rem;">
+          <button type="button" id="tourSkipBtn" class="btn btn-ghost tour-btn-sm" style="color: var(--text-muted);">
+            Exit
+          </button>
+          <button type="button" id="tourNextBtn" class="btn btn-primary tour-btn-sm">
+            Next →
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Toast Notification Stack -->
   <div id="toastContainer" class="toast-container" aria-live="polite"></div>
 
@@ -1049,7 +1472,7 @@
         <strong>PromptVault Pro</strong> • Offline-Ready AI Prompt Engine & System Blueprint Designer
       </div>
       <div class="footer-links">
-        <span>Shortcuts: <span class="kbd-badge">⌘K</span> Search &bull; <span class="kbd-badge">N</span> New Prompt &bull; <span class="kbd-badge">Esc</span> Close</span>
+        <span>Shortcuts: <span class="kbd-badge">⌘K</span> Search &bull; <span class="kbd-badge">N</span> New Prompt &bull; <span class="kbd-badge">?</span> Help &bull; <span class="kbd-badge">Esc</span> Close</span>
       </div>
     </div>
   </footer>
@@ -1063,8 +1486,8 @@
   </button>
 
   <!-- Scripts -->
-  <script src="js/data.js?v=3.5"></script>
-  <script src="js/storage.js?v=3.5"></script>
-  <script src="js/app.js?v=3.5"></script>
+  <script src="js/data.js?v=3.7"></script>
+  <script src="js/storage.js?v=3.7"></script>
+  <script src="js/app.js?v=3.7"></script>
 </body>
 </html>

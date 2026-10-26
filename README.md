@@ -99,6 +99,18 @@ Built with modern semantic HTML5, Vanilla CSS, and lightweight Vanilla JavaScrip
 - **Brand Asset Integration**: Powered by `assets/PromptLibrary_pro_Favicon.png` in the header and browser tab favicon.
 - **Quick "To the Top" Button**: Floating pill button with smooth scrolling and passive scroll-threshold detection (>300px).
 
+### ❓ 9. Interactive Help Center & Guided Spotlight Tour
+- **Dedicated Help & Tour Modal**: Accessible via the header (**"Help & Tour"**) or shortcut <kbd>?</kbd>.
+- **5 Comprehensive Visual Learning Tabs**:
+  1. 🖥️ **Interface & Architecture Tour**: Visual blueprint breakdown of the 7 Domain Pillars, search bar, and card anatomy.
+  2. 🗂️ **Categories & Subcategories Walkthrough**: Step-by-step guide explaining how to create categories, link subcategories from the 100+ master pool, and eliminate tag duplicates.
+  3. 📐 **Modular Blueprints vs. Simple Prompts**: Direct comparison of lightweight templates vs. 5-section enterprise prompts (Role, Objective, Inputs, Guardrails, Output Rubric).
+  4. ⚡ **Variable Syntax Cheatsheet & Live Sandbox**: Interactive playground with instant token replacement testing and copyable syntax chips.
+  5. 📥 **Ingestion & Vault Backups**: Complete instructions for in-app Smart Ingestion, Python CLI batch processing, and JSON/SQLite restore.
+- **🎯 Live Spotlight Screen Tour**:
+  - Non-modal interactive walkthrough with dark spotlight backdrop and tethered floating cards.
+  - Step-by-step navigation highlighting 7 live screen elements with progress dots and keyboard shortcuts (<kbd>→</kbd>, <kbd>←</kbd>, <kbd>Enter</kbd>, <kbd>Esc</kbd>).
+
 ---
 
 ## 🚀 How to Run
