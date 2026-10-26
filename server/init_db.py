@@ -66,11 +66,19 @@ def init_db(db_path=DB_PATH):
     )
     """)
 
-    # Load prompts from data.js
-    if os.path.exists(DATA_JS_PATH):
+    CATALOG_JSON_PATH = os.path.join(PROJECT_ROOT, "catalog", "full_curated_335_prompts.json")
+    prompts = []
+
+    # Priority 1: Load from master catalog JSON
+    if os.path.exists(CATALOG_JSON_PATH):
+        with open(CATALOG_JSON_PATH, "r", encoding="utf-8") as f:
+            data = json.load(f)
+            prompts = data.get("prompts", [])
+            print(f"Loaded {len(prompts)} prompts from master catalog: {CATALOG_JSON_PATH}")
+    # Priority 2: Fall back to data.js
+    elif os.path.exists(DATA_JS_PATH):
         with open(DATA_JS_PATH, "r", encoding="utf-8") as f:
             content = f.read()
-            # Extract JSON from window.DEFAULT_PROMPTS = [...];
             start = content.find("window.DEFAULT_PROMPTS = ")
             if start != -1:
                 json_str = content[start + len("window.DEFAULT_PROMPTS = "):].strip()
@@ -78,40 +86,40 @@ def init_db(db_path=DB_PATH):
                     json_str = json_str[:-1].strip()
                 prompts = json.loads(json_str)
 
-                # Clear and insert prompts
-                cursor.execute("DELETE FROM prompts")
-                for p in prompts:
-                    cursor.execute("""
-                    INSERT OR REPLACE INTO prompts (
-                        id, title, category, categories, subcategory, subcategories,
-                        author, authorUrl, model, difficulty, featured, tags,
-                        description, template, variables, notes, isFavorite, isCustom,
-                        createdAt, updatedAt
-                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                    """, (
-                        p.get("id"),
-                        p.get("title", "Untitled Prompt"),
-                        p.get("category", "General"),
-                        json.dumps(p.get("categories", [p.get("category", "General")])),
-                        p.get("subcategory", "General"),
-                        json.dumps(p.get("subcategories", [])),
-                        p.get("author", ""),
-                        p.get("authorUrl", ""),
-                        p.get("model", "Universal"),
-                        p.get("difficulty", "All Levels"),
-                        1 if p.get("featured") else 0,
-                        json.dumps(p.get("tags", [])),
-                        p.get("description", ""),
-                        p.get("template", ""),
-                        json.dumps(p.get("variables", [])),
-                        p.get("notes", ""),
-                        1 if p.get("isFavorite") else 0,
-                        1 if p.get("isCustom") else 0,
-                        p.get("createdAt", ""),
-                        p.get("updatedAt", "")
-                    ))
+    if prompts:
+        cursor.execute("DELETE FROM prompts")
+        for p in prompts:
+            cursor.execute("""
+            INSERT OR REPLACE INTO prompts (
+                id, title, category, categories, subcategory, subcategories,
+                author, authorUrl, model, difficulty, featured, tags,
+                description, template, variables, notes, isFavorite, isCustom,
+                createdAt, updatedAt
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                p.get("id"),
+                p.get("title", "Untitled Prompt"),
+                p.get("category", "General"),
+                json.dumps(p.get("categories", [p.get("category", "General")])),
+                p.get("subcategory", "General"),
+                json.dumps(p.get("subcategories", [])),
+                p.get("author", ""),
+                p.get("authorUrl", ""),
+                p.get("model", "Universal"),
+                p.get("difficulty", "All Levels"),
+                1 if p.get("featured") else 0,
+                json.dumps(p.get("tags", [])),
+                p.get("description", ""),
+                p.get("template", ""),
+                json.dumps(p.get("variables", [])),
+                p.get("notes", ""),
+                1 if p.get("isFavorite") else 0,
+                1 if p.get("isCustom") else 0,
+                p.get("createdAt", ""),
+                p.get("updatedAt", "")
+            ))
 
-                print(f"Successfully inserted {len(prompts)} prompts into SQLite prompts table.")
+        print(f"Successfully inserted {len(prompts)} prompts into SQLite prompts table.")
 
     conn.commit()
     conn.close()

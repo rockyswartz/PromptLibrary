@@ -1729,19 +1729,29 @@ body {
 /* Card Footer */
 .card-footer {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.75rem;
-  padding-top: 0.85rem;
+  flex-direction: column;
+  gap: 0.65rem;
+  align-items: stretch;
+  margin-top: auto;
+  padding-top: 0.75rem;
   border-top: 1px solid var(--border-subtle);
 }
 
-.card-author {
-  font-size: 0.75rem;
-  color: var(--text-muted);
+.card-footer-meta {
   display: flex;
   align-items: center;
-  gap: 0.35rem;
+  justify-content: space-between;
+  width: 100%;
+  font-size: 0.78rem;
+}
+
+.card-author {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-weight: 500;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -1750,6 +1760,7 @@ body {
 .card-author-link {
   color: var(--text-secondary);
   text-decoration: none;
+  transition: color var(--transition-fast);
 }
 
 .card-author-link:hover {
@@ -1761,6 +1772,17 @@ body {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  width: 100%;
+}
+
+.card-cta-group .btn-copy-card:first-child {
+  flex: 0 0 auto;
+  padding: 0.45rem 0.85rem;
+}
+
+.card-cta-group .btn-primary {
+  flex: 1;
+  justify-content: center;
 }
 
 .btn-copy-card {

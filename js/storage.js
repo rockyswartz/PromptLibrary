@@ -153,6 +153,14 @@
       const defIds = new Set(defaultList.map(dp => dp.id));
       const needsMigration = Array.isArray(initialList) && initialList.length > 0 && (!initialList.some(p => p.domain) || initialList.length > 400);
 
+      const isBlankMode = localStorage.getItem("prompt_library_blank_mode") === "true";
+      if (isBlankMode && Array.isArray(initialList) && initialList.length === 0) {
+        this.cachedPrompts = [];
+        this._initIndexedDB();
+        this._checkSQLiteBackend();
+        return;
+      }
+
       if (!Array.isArray(initialList) || initialList.length === 0 || needsMigration) {
         // Recover genuine custom prompts created by user (excluding duplicated imported copies of default prompts)
         const customPrompts = (Array.isArray(initialList) ? initialList : []).filter(p => {
@@ -267,6 +275,8 @@
 
       const promptToSave = {
         ...promptData,
+        author: promptData.author || "Curated",
+        authorUrl: promptData.authorUrl || "",
         categories: categories,
         category: categories[0] || "General",
         subcategories: subcategories,
@@ -419,28 +429,63 @@
       localStorage.setItem(ACCENT_KEY, accent);
     }
 
-    // Reset to Factory Defaults (Restores all 333 master prompts)
+    // Reset to Factory Defaults (Restores starter prompts)
     resetToDefaults() {
-      const initialList = (window.DEFAULT_PROMPTS || []).map(p => ({
+      return this.loadStarterPack();
+    }
+
+    // Clear all prompts to start with a blank canvas
+    clearAllPrompts() {
+      this.cachedPrompts = [];
+      idb.saveAllPrompts([]).catch(() => {});
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify([]));
+        localStorage.setItem("prompt_library_blank_mode", "true");
+        localStorage.removeItem(FAVORITES_KEY);
+        localStorage.removeItem(STATS_KEY);
+      } catch (e) {}
+      if (this.isSqliteConnected) {
+        fetch("/api/prompts/clear-all", { method: "POST" }).catch(() => {});
+      }
+      return true;
+    }
+
+    // Load clean Starter Pack
+    loadStarterPack() {
+      localStorage.removeItem("prompt_library_blank_mode");
+      const starter = (window.DEFAULT_PROMPTS || []).map(p => ({
         ...p,
         categories: p.categories || [p.category || "General"],
         isCustom: false,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString()
       }));
-      this.savePrompts(initialList);
-      localStorage.removeItem(FAVORITES_KEY);
-      localStorage.removeItem(STATS_KEY);
-      localStorage.removeItem(TAXONOMY_KEY);
+      this.savePrompts(starter);
+      return starter.length;
+    }
+
+    // Load complete master catalog (e.g. 333+ prompts)
+    loadFullCatalog(catalogPrompts) {
+      localStorage.removeItem("prompt_library_blank_mode");
+      const list = (Array.isArray(catalogPrompts) ? catalogPrompts : []).map(p => ({
+        ...p,
+        categories: p.categories || [p.category || "General"],
+        isCustom: false,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      }));
+      this.savePrompts(list);
+      return list.length;
     }
 
     // Export to JSON
     exportToJSON() {
       const data = {
-        version: "2.0",
+        version: "3.3.0",
         exportedAt: new Date().toISOString(),
         favorites: this.getFavorites(),
         stats: this.getStats(),
+        taxonomyTree: this.getTaxonomyTree(),
         taxonomy: this.getTaxonomy(),
         prompts: this.getPrompts()
       };
@@ -450,8 +495,12 @@
       const dateStr = new Date().toISOString().split("T")[0];
       a.href = url;
       a.download = `prompt-library-backup-${dateStr}.json`;
+      document.body.appendChild(a);
       a.click();
-      URL.revokeObjectURL(url);
+      setTimeout(() => {
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }, 200);
     }
 
     // Export to Markdown
@@ -466,9 +515,10 @@
         md += `- **Categories:** ${cats} ${p.subcategory ? `> ${p.subcategory}` : ""}\n`;
         md += `- **Difficulty:** ${p.difficulty || "All Levels"}\n`;
         md += `- **Recommended Model:** ${p.model || "Any"}\n`;
-        if (p.author) md += `- **Author:** ${p.author}\n`;
+        if (p.author) md += `- **Author / Originator:** ${p.author}\n`;
+        if (p.authorUrl) md += `- **Author Link:** ${p.authorUrl}\n`;
         if (p.tags && p.tags.length) md += `- **Tags:** \`${p.tags.join("`, `")}\`\n`;
-        md += `\n> ${p.description}\n\n`;
+        md += `\n> ${p.description || ""}\n\n`;
         md += `### Prompt Template\n\`\`\`\n${p.template}\n\`\`\`\n\n`;
         if (p.notes) md += `**Notes:** ${p.notes}\n\n`;
         md += `---\n\n`;
@@ -480,8 +530,12 @@
       const dateStr = new Date().toISOString().split("T")[0];
       a.href = url;
       a.download = `prompt-library-${dateStr}.md`;
+      document.body.appendChild(a);
       a.click();
-      URL.revokeObjectURL(url);
+      setTimeout(() => {
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }, 200);
     }
 
     // Convert Prompcat legacy export to Prompt Library Pro schema
@@ -691,6 +745,40 @@
           }
         }
       };
+    }
+
+    getTaxonomy() {
+      const tree = this.getTaxonomyTree();
+      const flat = {};
+      Object.values(tree).forEach(domainData => {
+        if (domainData && domainData.categories) {
+          Object.entries(domainData.categories).forEach(([cat, subs]) => {
+            flat[cat] = Array.isArray(subs) ? [...subs] : [];
+          });
+        }
+      });
+      return flat;
+    }
+
+    saveTaxonomy(tax) {
+      if (!tax || typeof tax !== "object") return;
+      const tree = this.getTaxonomyTree();
+      Object.entries(tax).forEach(([cat, subs]) => {
+        let found = false;
+        for (const domain of Object.values(tree)) {
+          if (domain.categories && domain.categories[cat]) {
+            domain.categories[cat] = Array.isArray(subs) ? subs : [];
+            found = true;
+            break;
+          }
+        }
+        if (!found) {
+          const targetDomain = "Business & Product Strategy";
+          if (!tree[targetDomain].categories) tree[targetDomain].categories = {};
+          tree[targetDomain].categories[cat] = Array.isArray(subs) ? subs : [];
+        }
+      });
+      this.saveTaxonomyTree(tree);
     }
 
     getTaxonomyTree() {

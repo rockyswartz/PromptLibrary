@@ -108,6 +108,8 @@ document.addEventListener("DOMContentLoaded", () => {
     promptFormManageCatsBtn: document.getElementById("promptFormManageCatsBtn"),
     formModel: document.getElementById("formModel"),
     formDifficulty: document.getElementById("formDifficulty"),
+    formAuthor: document.getElementById("formAuthor"),
+    formAuthorUrl: document.getElementById("formAuthorUrl"),
     formTags: document.getElementById("formTags"),
     formDescription: document.getElementById("formDescription"),
     formTemplate: document.getElementById("formTemplate"),
@@ -168,6 +170,15 @@ document.addEventListener("DOMContentLoaded", () => {
     importFile: document.getElementById("importFile"),
     importModeSelect: document.getElementById("importModeSelect"),
     resetDefaultsBtn: document.getElementById("resetDefaultsBtn"),
+    clearAllPromptsBtn: document.getElementById("clearAllPromptsBtn"),
+    loadStarterPackBtn: document.getElementById("loadStarterPackBtn"),
+    loadFullCatalogBtn: document.getElementById("loadFullCatalogBtn"),
+    ingestTitle: document.getElementById("ingestTitle"),
+    ingestAuthor: document.getElementById("ingestAuthor"),
+    ingestRawText: document.getElementById("ingestRawText"),
+    ingestAutoVars: document.getElementById("ingestAutoVars"),
+    ingestConvertBtn: document.getElementById("ingestConvertBtn"),
+    ingestBulkFiles: document.getElementById("ingestBulkFiles"),
 
     // Toast
     toastContainer: document.getElementById("toastContainer"),
@@ -1017,14 +1028,17 @@ document.addEventListener("DOMContentLoaded", () => {
           </div>
 
           <div class="card-footer">
-            <div class="card-author">
-              ${prompt.author ? `
-                ${prompt.authorUrl ? `
-                  <a href="${escapeHTML(prompt.authorUrl)}" target="_blank" rel="noopener noreferrer" class="card-author-link">
-                    ${escapeHTML(prompt.author)}
-                  </a>
-                ` : `<span>${escapeHTML(prompt.author)}</span>`}
-              ` : `<span>${escapeHTML(prompt.model || "Universal")}</span>`}
+            <div class="card-footer-meta">
+              <div class="card-author" title="Originator: ${escapeHTML(prompt.author || 'Curated')}">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0; opacity: 0.7;"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                ${prompt.author ? `
+                  ${prompt.authorUrl ? `
+                    <a href="${escapeHTML(prompt.authorUrl)}" target="_blank" rel="noopener noreferrer" class="card-author-link">
+                      ${escapeHTML(prompt.author)}
+                    </a>
+                  ` : `<span>${escapeHTML(prompt.author)}</span>`}
+                ` : `<span>Curated</span>`}
+              </div>
             </div>
 
             <div class="card-cta-group">
@@ -1513,6 +1527,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
       elements.formModel.value = prompt.model || "ChatGPT / Claude / Gemini";
       elements.formDifficulty.value = prompt.difficulty || "Intermediate";
+      if (elements.formAuthor) elements.formAuthor.value = prompt.author || "";
+      if (elements.formAuthorUrl) elements.formAuthorUrl.value = prompt.authorUrl || "";
       elements.formTags.value = (prompt.tags || []).join(", ");
       elements.formDescription.value = prompt.description || "";
       elements.formTemplate.value = prompt.template || "";
@@ -1739,6 +1755,8 @@ document.addEventListener("DOMContentLoaded", () => {
       subcategory: subcategory,
       model: elements.formModel.value.trim(),
       difficulty: elements.formDifficulty.value,
+      author: elements.formAuthor ? elements.formAuthor.value.trim() : "",
+      authorUrl: elements.formAuthorUrl ? elements.formAuthorUrl.value.trim() : "",
       tags: tagsArray,
       description: elements.formDescription.value.trim(),
       template: template,
@@ -2298,25 +2316,16 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     if (elements.exportSqliteBtn) {
       elements.exportSqliteBtn.addEventListener("click", () => {
-        fetch("/api/export/sqlite")
-          .then(res => {
-            if (res.ok) {
-              return res.blob().then(blob => {
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement("a");
-                a.href = url;
-                a.download = "promptlibrary.db";
-                a.click();
-                URL.revokeObjectURL(url);
-                showToast("Downloaded promptlibrary.db SQLite file!", "success");
-              });
-            } else {
-              showToast("SQLite file available at: server/promptlibrary.db", "info");
-            }
-          })
-          .catch(() => {
-            showToast("SQLite file available at: server/promptlibrary.db", "info");
-          });
+        // Direct download of SQLite file from server directory
+        const a = document.createElement("a");
+        a.href = "server/promptlibrary.db";
+        a.download = "promptlibrary.db";
+        document.body.appendChild(a);
+        a.click();
+        setTimeout(() => {
+          document.body.removeChild(a);
+        }, 200);
+        showToast("Downloaded promptlibrary.db SQLite database!", "success");
       });
     }
     if (elements.importFile) {
@@ -2347,6 +2356,134 @@ document.addEventListener("DOMContentLoaded", () => {
           refreshData();
           showToast("Reset to default prompt library", "info");
         }
+      });
+    }
+
+    // Canvas Presets: Start from Scratch (Blank Canvas)
+    if (elements.clearAllPromptsBtn) {
+      elements.clearAllPromptsBtn.addEventListener("click", () => {
+        if (confirm("Start from scratch with a blank canvas? All prompts will be cleared, but all 44 categories and 7 domain pillars remain ready for your new prompts.")) {
+          window.PromptStorage.clearAllPrompts();
+          elements.dataModal.close();
+          refreshData();
+          showToast("Library cleared! Ready for your custom prompts.", "info");
+        }
+      });
+    }
+
+    // Canvas Presets: Load Starter Pack
+    if (elements.loadStarterPackBtn) {
+      elements.loadStarterPackBtn.addEventListener("click", () => {
+        const count = window.PromptStorage.loadStarterPack();
+        elements.dataModal.close();
+        refreshData();
+        showToast(`Loaded clean Starter Pack (${count} flagship blueprints)!`, "success");
+      });
+    }
+
+    // Canvas Presets: Load Full Master Catalog (333 prompts)
+    if (elements.loadFullCatalogBtn) {
+      elements.loadFullCatalogBtn.addEventListener("click", async () => {
+        try {
+          const res = await fetch("catalog/full_curated_335_prompts.json");
+          if (!res.ok) throw new Error("Catalog file not found");
+          const data = await res.json();
+          const prompts = data.prompts || [];
+          const count = window.PromptStorage.loadFullCatalog(prompts);
+          elements.dataModal.close();
+          refreshData();
+          showToast(`Successfully loaded complete Master Catalog (${count} prompts)!`, "success");
+        } catch (err) {
+          showToast("Could not load catalog/full_curated_335_prompts.json", "error");
+        }
+      });
+    }
+
+    // Smart Ingest: Single Text Prompt Converter
+    if (elements.ingestConvertBtn) {
+      elements.ingestConvertBtn.addEventListener("click", () => {
+        const raw = elements.ingestRawText ? elements.ingestRawText.value.trim() : "";
+        if (!raw) {
+          showToast("Please paste a text prompt to ingest", "error");
+          return;
+        }
+
+        let processed = raw;
+        if (elements.ingestAutoVars && elements.ingestAutoVars.checked) {
+          // Convert [variable], <variable> to {{variable}}
+          processed = processed.replace(/\[([A-Za-z0-9_\-\s]{2,40})\]/g, (m, g) => `{{${g.toLowerCase().trim().replace(/\s+/g, '_')}}}`);
+          processed = processed.replace(/<([A-Za-z0-9_\-\s]{2,40})>/g, (m, g) => `{{${g.toLowerCase().trim().replace(/\s+/g, '_')}}}`);
+        }
+
+        let title = elements.ingestTitle ? elements.ingestTitle.value.trim() : "";
+        if (!title) {
+          const firstLine = raw.split("\n")[0].replace(/^#+\s*/, "").trim();
+          title = firstLine.length > 60 ? firstLine.slice(0, 57) + "..." : (firstLine || "Ingested Prompt");
+        }
+
+        const author = elements.ingestAuthor ? elements.ingestAuthor.value.trim() : "Custom";
+
+        const newPrompt = {
+          id: "ingest-" + Date.now(),
+          title: title,
+          author: author || "Custom",
+          authorUrl: "",
+          category: "General",
+          categories: ["General"],
+          difficulty: "Intermediate",
+          model: "ChatGPT / Claude / Gemini",
+          tags: ["ingested"],
+          description: "Ingested via smart text converter",
+          template: processed,
+          isCustom: true
+        };
+
+        window.PromptStorage.savePrompt(newPrompt);
+        elements.ingestRawText.value = "";
+        if (elements.ingestTitle) elements.ingestTitle.value = "";
+        elements.dataModal.close();
+        refreshData();
+        showToast(`Ingested prompt: "${title}"!`, "success");
+      });
+    }
+
+    // Smart Ingest: Bulk Folder / Multi-File Ingest (.txt / .md)
+    if (elements.ingestBulkFiles) {
+      elements.ingestBulkFiles.addEventListener("change", async (e) => {
+        const files = Array.from(e.target.files || []);
+        if (files.length === 0) return;
+        let count = 0;
+        for (const file of files) {
+          try {
+            const text = await file.text();
+            if (!text.trim()) continue;
+            let processed = text.trim();
+            if (elements.ingestAutoVars && elements.ingestAutoVars.checked) {
+              processed = processed.replace(/\[([A-Za-z0-9_\-\s]{2,40})\]/g, (m, g) => `{{${g.toLowerCase().trim().replace(/\s+/g, '_')}}}`);
+              processed = processed.replace(/<([A-Za-z0-9_\-\s]{2,40})>/g, (m, g) => `{{${g.toLowerCase().trim().replace(/\s+/g, '_')}}}`);
+            }
+            const title = file.name.replace(/\.(txt|md)$/i, "").replace(/[-_]/g, " ");
+            const newPrompt = {
+              id: "bulk-" + Date.now() + "-" + Math.random().toString(36).substr(2, 4),
+              title: title,
+              author: "Imported File",
+              authorUrl: "",
+              category: "General",
+              categories: ["General"],
+              difficulty: "Intermediate",
+              model: "ChatGPT / Claude / Gemini",
+              tags: ["bulk-imported"],
+              description: `Bulk imported from ${file.name}`,
+              template: processed,
+              isCustom: true
+            };
+            window.PromptStorage.savePrompt(newPrompt);
+            count++;
+          } catch (err) {}
+        }
+        elements.dataModal.close();
+        refreshData();
+        showToast(`Bulk ingested ${count} prompt files!`, "success");
       });
     }
 

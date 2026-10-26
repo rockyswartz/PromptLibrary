@@ -42,19 +42,26 @@ Built with modern semantic HTML5, Vanilla CSS, and lightweight Vanilla JavaScrip
 - The prompt creation/editing modal features multi-select category checkboxes with real-time selection counts and contextual subcategory chips.
 - Syntax generation helpers (`+ Add Choice Variable` and `+ Add Text Variable`) automatically insert valid syntax at the cursor position.
 
-### ⭐ 6. Complete Curated Catalog (333+ Prompts, 45+ Categories)
-Bakes in the entire collection from **Prompcat** along with production blueprints:
-- **Automation & Systems**: Excel & VBA formula automation, Make/Zapier workflow blueprints, AI Prompt Library Designer (by *Randy Austin - ExcelForFreelancers*).
-- **Coding & Architecture**: Full-stack code reviews, System design RFCs, SQL query optimization, RESTful OpenAPI specs, unit test suites.
-- **Prompt Engineering**: Meta-prompt optimizers, few-shot demonstration generators, AI persona & system guardrails.
-- **Claude Tools & Gemini CLI**: System prompts, bash tools, glob tools, edit tools.
-- **TypeUI**: UI component blueprints, hero sections, navbar designs.
-- **ChatPRD**: Competitive analysis, PRDs, user stories, product roadmaps.
-- **CreativeActTech**: Content strategy, blog post expansion, technical writing.
-- **Nano Banana & Images**: High-fidelity visual prompts, composition rules, aspect ratio resizers.
-- **HubSpot, Business & Strategy, Marketing, Education, Data Analysis, and more**.
+### 👤 6. Standardized Originator Attribution & Author Credits
+- **Dedicated Originator Field**: Every prompt includes a standardized `author` and optional `authorUrl` field.
+- **Card Footer Display**: Originator credits appear prominently on the bottom-left of each prompt card with a dedicated author badge (e.g. `👤 Randy Austin - ExcelForFreelancers`, `👤 HubSpot`, `👤 Anthropic`, `👤 TypeUI`).
+- **Editable in Form**: Set bespoke author credits and links directly in the Create / Edit Prompt modal.
 
-### 📐 6. Modular Blueprint Engine & Tri-Mode Runner (Phase 3)
+### 📦 7. Dual-Distribution Architecture (Clean Starter Pack vs Full Master Catalog)
+- **Flagship Starter Pack (`js/data.js`)**: Ships with 7 exemplar blueprints representing all 7 Domain Pillars (Automation, Engineering, Business, Marketing, Images, UI/UX, and Education). Keeps the initial install lightweight, fast, and easy to understand.
+- **Complete Master Catalog (`catalog/full_curated_335_prompts.json`)**: Pre-packaged 333-prompt master collection including full production blueprints, HubSpot pack, Claude tools, and more.
+- **1-Click Canvas Presets**: In the Backup modal, switch anytime between:
+  - 🗑️ **Start from Scratch (Blank Canvas)**: Clears all prompts so you can build your own bespoke library. Preserves all 44 categories and 7 domain pillars.
+  - ⚡ **Load Starter Pack**: Restores the clean 7-blueprint showcase.
+  - 📚 **Load Full Master Catalog**: Populates the entire 333-prompt master database in 1 click.
+
+### 📥 8. Smart Ingest & Raw Text-to-Prompt Converter
+- **In-App Smart Text Ingester**: Paste any raw text or markdown prompt.
+- **Auto-Placeholder Conversion**: Converts legacy placeholders like `[Topic]`, `<Audience>`, or `{Tone}` into interactive PromptVault variables: `{{topic}}`, `{{audience}}`, `{{tone}}`.
+- **Bulk Folder Ingestion**: Select multiple `.txt` or `.md` files at once to convert and import whole directories into your library.
+- **Python CLI Converter (`scripts/text_to_prompt_json.py`)**: Standalone tool for power users to convert folders of notes into valid PromptVault JSON.
+
+### 📐 9. Modular Blueprint Engine & Tri-Mode Runner (Phase 3)
 - **5-Section Enterprise Prompt Anatomy**:
   - 👤 **Role / Persona**: Expert alignment and cognitive frame.
   - 🎯 **Core Task / Objective**: Clear, unambiguous primary deliverable.
