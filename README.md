@@ -174,6 +174,5 @@ PromtLibrary/
 │   └── README.md               # Backend guide & REST documentation
 ├── templates/                  # Blueprint templates
 ├── SKILL.md                    # AI Prompt Library Designer skill specification & JSON schema
-├── prompcat_backup_converted.json # Standalone JSON backup of migrated Prompcat prompts
 └── README.md                   # Complete documentation & user guide
 ```
