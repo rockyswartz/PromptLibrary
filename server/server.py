@@ -237,20 +237,34 @@ class PromptLibraryHandler(http.server.SimpleHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(body)
 
-def run(port=8000):
-    handler = PromptLibraryHandler
-    with socketserver.TCPServer(("", port), handler) as httpd:
-        print(f"🚀 Prompt Library Pro SQLite Server running at: http://localhost:{port}")
-        print(f"📦 Connected to SQLite database: {DB_PATH}")
-        print(f"✨ Direct web app available at: http://localhost:{port}/index.html")
-        print("Press Ctrl+C to stop.")
+class ReusableTCPServer(socketserver.TCPServer):
+    allow_reuse_address = True
+
+def run(port=3456):
+    current_port = port
+    max_attempts = 15
+    for attempt in range(max_attempts):
         try:
-            httpd.serve_forever()
-        except KeyboardInterrupt:
-            print("\nShutting down server.")
+            with ReusableTCPServer(("", current_port), PromptLibraryHandler) as httpd:
+                print(f"🚀 Prompt Library Pro SQLite Server running at: http://localhost:{current_port}")
+                print(f"📦 Connected to SQLite database: {DB_PATH}")
+                print(f"✨ Direct web app available at: http://localhost:{current_port}/index.html")
+                print("Press Ctrl+C to stop.")
+                try:
+                    httpd.serve_forever()
+                except KeyboardInterrupt:
+                    print("\nShutting down server.")
+                return
+        except OSError as e:
+            if e.errno in (48, 98): # Errno 48 on macOS / BSD, 98 on Linux (Address already in use)
+                print(f"⚠️ Port {current_port} is already in use by another instance. Trying port {current_port + 1}...")
+                current_port += 1
+            else:
+                raise e
+    print(f"❌ Could not find an open port between {port} and {current_port}.")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Prompt Library Pro Local SQLite Server")
-    parser.add_argument("--port", type=int, default=8000, help="Port to run on (default: 8000)")
+    parser.add_argument("--port", type=int, default=3456, help="Port to run on (default: 3456)")
     args = parser.parse_args()
     run(args.port)
