@@ -178,7 +178,10 @@ document.addEventListener("DOMContentLoaded", () => {
     ingestAutoVars: document.getElementById("ingestAutoVars"),
     ingestConvertBtn: document.getElementById("ingestConvertBtn"),
     ingestBulkFiles: document.getElementById("ingestBulkFiles"),
-    // Help Center & Interactive Tour
+    // Help Center, Interactive Tour & Wiki
+    openWikiBtn: document.getElementById("openWikiBtn"),
+    statsWikiBtn: document.getElementById("statsWikiBtn"),
+    jumpToWikiFromHelpBtn: document.getElementById("jumpToWikiFromHelpBtn"),
     openHelpModalBtn: document.getElementById("openHelpModalBtn"),
     helpModal: document.getElementById("helpModal"),
     closeHelpModalBtn: document.getElementById("closeHelpModalBtn"),
@@ -2634,6 +2637,15 @@ document.addEventListener("DOMContentLoaded", () => {
     if (elements.openHelpModalBtn) {
       elements.openHelpModalBtn.addEventListener("click", () => openHelpModal("interface"));
     }
+    if (elements.openWikiBtn) {
+      elements.openWikiBtn.addEventListener("click", () => openHelpModal("wiki"));
+    }
+    if (elements.statsWikiBtn) {
+      elements.statsWikiBtn.addEventListener("click", () => openHelpModal("wiki"));
+    }
+    if (elements.jumpToWikiFromHelpBtn) {
+      elements.jumpToWikiFromHelpBtn.addEventListener("click", () => switchHelpTab("wiki"));
+    }
     if (elements.closeHelpModalBtn) {
       elements.closeHelpModalBtn.addEventListener("click", closeHelpModal);
     }
@@ -2756,6 +2768,10 @@ document.addEventListener("DOMContentLoaded", () => {
       pins.forEach(pin => {
         pin.classList.toggle("active", pin.dataset.hotspot === String(hotspotId));
       });
+      const buttons = document.querySelectorAll(".hotspot-btn");
+      buttons.forEach(btn => {
+        btn.classList.toggle("active", btn.dataset.hotspot === String(hotspotId));
+      });
       const data = HOTSPOT_DATA[hotspotId];
       if (!data) return;
       const b = document.getElementById("inspectorDetailBadge");
@@ -2773,6 +2789,11 @@ document.addEventListener("DOMContentLoaded", () => {
     document.querySelectorAll(".inspector-hotspot-pin").forEach(pin => {
       pin.addEventListener("mouseenter", () => selectHotspot(pin.dataset.hotspot));
       pin.addEventListener("click", () => selectHotspot(pin.dataset.hotspot));
+    });
+
+    document.querySelectorAll(".hotspot-btn").forEach(btn => {
+      btn.addEventListener("mouseenter", () => selectHotspot(btn.dataset.hotspot));
+      btn.addEventListener("click", () => selectHotspot(btn.dataset.hotspot));
     });
 
     // Wiki Chapter Navigation

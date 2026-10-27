@@ -57,6 +57,14 @@
           <span>Backup</span>
         </button>
 
+        <button id="openWikiBtn" class="btn btn-secondary" style="border-color: rgba(6, 182, 212, 0.45); color: var(--accent-cyan); font-weight: 600;" title="Prompting Wiki & Handbook (Fatih Kadir Akın Reference)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+          </svg>
+          <span>Prompting Wiki</span>
+        </button>
+
         <button id="openHelpModalBtn" class="btn btn-secondary" style="border-color: rgba(16, 185, 129, 0.4); color: var(--accent-emerald); font-weight: 600;" title="Help & Interactive System Guide (Shortcut: ?)">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="12" cy="12" r="10"></circle>
@@ -146,6 +154,10 @@
       <div class="stat-item" id="statsCategoriesBtn" style="cursor: pointer;" title="Click to manage categories & subcategories">
         <span class="stat-number" id="totalCategoriesCount">0</span>
         <span>Categories ⚙️</span>
+      </div>
+      <div class="stat-item" id="statsWikiBtn" style="cursor: pointer; border-color: rgba(6, 182, 212, 0.35);" title="Open Prompting Wiki & Handbook (Fatih Kadir Akın)">
+        <span class="stat-number" style="color: var(--accent-cyan);">📚 Wiki</span>
+        <span>Prompting Handbook</span>
       </div>
       <div class="stat-item">
         <span class="stat-number" id="totalFavoritesCount">0</span>
@@ -1087,8 +1099,9 @@
       <button type="button" class="help-tab-btn" data-help-tab="backup" role="tab" aria-selected="false">
         <span>📥 Ingestion & Backups</span>
       </button>
-      <button type="button" class="help-tab-btn" data-help-tab="wiki" role="tab" aria-selected="false">
-        <span>📚 Prompting Wiki & Handbook</span>
+      <button type="button" class="help-tab-btn help-tab-wiki-highlight" data-help-tab="wiki" role="tab" aria-selected="false">
+        <span>📚 Prompting Wiki &amp; Handbook</span>
+        <span class="help-tab-pill-badge">Guide</span>
       </button>
     </div>
 
@@ -1147,26 +1160,74 @@
           </div>
         </div>
 
+        <!-- Direct Prompting Wiki Callout Banner -->
+        <div class="wiki-callout-banner">
+          <div style="display: flex; align-items: center; gap: 0.85rem;">
+            <div style="width: 44px; height: 44px; border-radius: 10px; background: rgba(6, 182, 212, 0.15); border: 1px solid rgba(6, 182, 212, 0.35); display: flex; align-items: center; justify-content: center; font-size: 1.4rem;">
+              📚
+            </div>
+            <div>
+              <h4 style="margin: 0; font-size: 0.95rem; font-weight: 800; color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+                <span>The Prompting Wiki &amp; Handbook</span>
+                <span class="badge" style="background: rgba(6, 182, 212, 0.2); color: var(--accent-cyan); font-size: 0.7rem; padding: 0.15rem 0.5rem; border-radius: var(--radius-full);">Fatih Kadir Akın Reference</span>
+              </h4>
+              <p style="margin: 0.2rem 0 0; font-size: 0.8rem; color: var(--text-secondary); line-height: 1.45;">Deep-dive into production blueprint architecture, dynamic variables, and Akın's core principles.</p>
+            </div>
+          </div>
+          <button type="button" id="jumpToWikiFromHelpBtn" class="btn btn-primary" style="background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%); border: none; font-size: 0.825rem; font-weight: 700; padding: 0.45rem 1.1rem; box-shadow: 0 4px 15px rgba(6, 182, 212, 0.35); white-space: nowrap;">
+            Open Wiki &rarr;
+          </button>
+        </div>
+
         <!-- Interactive Card Anatomy Inspector -->
-        <div style="margin-top: 1rem; border-top: 1px solid var(--border-subtle); padding-top: 1.25rem;">
-          <h4 style="font-size: 1rem; font-weight: 800; color: #ffffff; margin: 0 0 0.35rem 0; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem;">
-            <span>🔬 Interactive Anatomy of a Prompt Card</span>
-            <span style="font-size: 0.725rem; font-weight: 700; color: var(--accent-cyan); background: rgba(6, 182, 212, 0.15); border: 1px solid rgba(6, 182, 212, 0.3); padding: 0.2rem 0.6rem; border-radius: var(--radius-full);">Click / Hover Pins (1–6) Below</span>
-          </h4>
-          <p style="font-size: 0.8rem; color: var(--text-muted); margin: 0 0 1rem 0;">Explore each section of a PromptVault Pro card to understand its purpose, importance, and how the AI agent interprets it.</p>
+        <div style="margin-top: 1.25rem; border-top: 1px solid var(--border-subtle); padding-top: 1.25rem;">
+          <div style="margin-bottom: 0.75rem;">
+            <h4 style="font-size: 1.05rem; font-weight: 800; color: var(--text-primary); margin: 0 0 0.25rem 0; display: flex; align-items: center; gap: 0.5rem;">
+              <span>🔬 Interactive Anatomy of a Prompt Card</span>
+            </h4>
+            <p style="font-size: 0.825rem; color: var(--text-secondary); margin: 0;">Click any numerical accent button (❶ to ❻) or hover over the numbered pins on the blueprint card to inspect its purpose, LLM interpretation, and best practices.</p>
+          </div>
+
+          <!-- Hotspot Numerical Accent Quick-Bar -->
+          <div class="hotspot-selector-bar" role="tablist" aria-label="Card Anatomy Hotspots">
+            <button type="button" class="hotspot-btn active" data-hotspot="1">
+              <span class="hotspot-num-badge">1</span>
+              <span class="hotspot-btn-label">Domain Pillar</span>
+            </button>
+            <button type="button" class="hotspot-btn" data-hotspot="2">
+              <span class="hotspot-num-badge">2</span>
+              <span class="hotspot-btn-label">Category &amp; Level</span>
+            </button>
+            <button type="button" class="hotspot-btn" data-hotspot="3">
+              <span class="hotspot-num-badge">3</span>
+              <span class="hotspot-btn-label">Variables {{...}}</span>
+            </button>
+            <button type="button" class="hotspot-btn" data-hotspot="4">
+              <span class="hotspot-num-badge">4</span>
+              <span class="hotspot-btn-label">Clickable #Tags</span>
+            </button>
+            <button type="button" class="hotspot-btn" data-hotspot="5">
+              <span class="hotspot-num-badge">5</span>
+              <span class="hotspot-btn-label">Author Credit</span>
+            </button>
+            <button type="button" class="hotspot-btn" data-hotspot="6">
+              <span class="hotspot-num-badge">6</span>
+              <span class="hotspot-btn-label">Action Buttons</span>
+            </button>
+          </div>
 
           <div class="card-inspector-container">
             <!-- Simulated Mock Card with Hotspot Pins -->
             <div class="mock-card-wrapper" id="mockCardWrapper">
               <!-- Pin 1: Domain Pillar & Blueprint Badge -->
-              <div class="inspector-hotspot-pin active" data-hotspot="1" style="top: -10px; left: -10px;" title="Pin 1: Domain Pillar">1</div>
+              <div class="inspector-hotspot-pin active" data-hotspot="1" style="top: -12px; left: -12px;" title="Pin 1: Domain Pillar"><span class="pin-num">1</span></div>
               <div style="display: flex; gap: 0.4rem; align-items: center; flex-wrap: wrap;">
                 <span class="badge-blueprint">📐 Blueprint</span>
                 <span class="tag-badge" style="background: rgba(99, 102, 241, 0.2); color: #818cf8; border-color: rgba(99, 102, 241, 0.4); font-weight: 700;">AUTOMATION &amp; SYSTEMS</span>
               </div>
 
               <!-- Pin 2: Category & Difficulty -->
-              <div class="inspector-hotspot-pin" data-hotspot="2" style="top: 36px; right: -10px;" title="Pin 2: Category & Level">2</div>
+              <div class="inspector-hotspot-pin" data-hotspot="2" style="top: 36px; right: -12px;" title="Pin 2: Category & Level"><span class="pin-num">2</span></div>
               <div style="display: flex; gap: 0.4rem; align-items: center; flex-wrap: wrap;">
                 <span class="tag-badge" style="background: rgba(255, 255, 255, 0.05); color: #cbd5e1;">Spreadsheet Automation</span>
                 <span class="tag-badge" style="background: rgba(245, 158, 11, 0.15); color: #fbbf24; border-color: rgba(245, 158, 11, 0.3);">★ Featured</span>
@@ -1178,13 +1239,13 @@
               <p style="font-size: 0.775rem; color: var(--text-secondary); margin: 0; line-height: 1.4;">Build robust, high-performance Excel formulas (LAMBDA, XLOOKUP) and VBA macro automations...</p>
 
               <!-- Pin 3: Prompt Preview & Dynamic Variable Tokens -->
-              <div class="inspector-hotspot-pin" data-hotspot="3" style="top: 135px; left: -10px;" title="Pin 3: Dynamic Variables">3</div>
+              <div class="inspector-hotspot-pin" data-hotspot="3" style="top: 135px; left: -12px;" title="Pin 3: Dynamic Variables"><span class="pin-num">3</span></div>
               <div style="background: rgba(9, 13, 22, 0.85); border: 1px solid var(--border-medium); border-radius: var(--radius-sm); padding: 0.65rem; font-family: var(--font-mono); font-size: 0.75rem; color: #e2e8f0; line-height: 1.5; position: relative;">
                 You are a World-Class Excel Specialist. **Platform:** <span style="color: var(--accent-cyan); font-weight: 700; background: rgba(6, 182, 212, 0.15); padding: 0 4px; border-radius: 3px;">{{platform: Excel 365 | Sheets}}</span>. **Task:** <span style="color: var(--accent-emerald); font-weight: 700; background: rgba(16, 185, 129, 0.15); padding: 0 4px; border-radius: 3px;">{{task_description}}</span>...
               </div>
 
               <!-- Pin 4: Hashtags -->
-              <div class="inspector-hotspot-pin" data-hotspot="4" style="bottom: 74px; right: -10px;" title="Pin 4: Clickable Hashtags">4</div>
+              <div class="inspector-hotspot-pin" data-hotspot="4" style="bottom: 74px; right: -12px;" title="Pin 4: Clickable Hashtags"><span class="pin-num">4</span></div>
               <div style="display: flex; gap: 0.35rem; flex-wrap: wrap;">
                 <span class="tag-badge">#excel</span>
                 <span class="tag-badge">#vba</span>
@@ -1195,7 +1256,7 @@
               <div style="display: flex; flex-direction: column; gap: 0.5rem; border-top: 1px solid var(--border-subtle); padding-top: 0.65rem;">
                 <!-- Pin 5: Author Attribution -->
                 <div style="position: relative; display: flex; align-items: center; justify-content: space-between;">
-                  <div class="inspector-hotspot-pin" data-hotspot="5" style="top: -8px; left: -10px;" title="Pin 5: Originator Credit">5</div>
+                  <div class="inspector-hotspot-pin" data-hotspot="5" style="top: -8px; left: -12px;" title="Pin 5: Originator Credit"><span class="pin-num">5</span></div>
                   <span style="font-size: 0.775rem; font-weight: 600; color: #38bdf8; display: inline-flex; align-items: center; gap: 0.35rem;">
                     👤 Randy Austin - ExcelForFreelancers
                   </span>
@@ -1203,7 +1264,7 @@
 
                 <!-- Pin 6: Action Buttons -->
                 <div style="position: relative; display: flex; gap: 0.5rem;">
-                  <div class="inspector-hotspot-pin" data-hotspot="6" style="top: -8px; right: -10px;" title="Pin 6: Action Buttons">6</div>
+                  <div class="inspector-hotspot-pin" data-hotspot="6" style="top: -8px; right: -12px;" title="Pin 6: Action Buttons"><span class="pin-num">6</span></div>
                   <button type="button" class="btn btn-secondary" style="flex: 1; font-size: 0.775rem; padding: 0.35rem 0.65rem; pointer-events: none;">
                     📋 Copy
                   </button>
@@ -1843,8 +1904,8 @@
   </button>
 
   <!-- Scripts -->
-  <script src="js/data.js?v=3.8"></script>
-  <script src="js/storage.js?v=3.8"></script>
-  <script src="js/app.js?v=3.8"></script>
+  <script src="js/data.js?v=3.9"></script>
+  <script src="js/storage.js?v=3.9"></script>
+  <script src="js/app.js?v=3.9"></script>
 </body>
 </html>

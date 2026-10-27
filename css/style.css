@@ -2866,18 +2866,12 @@ textarea.input-field {
 /* Help Modal Tab Navigation */
 .help-tabs-nav {
   display: flex;
+  flex-wrap: wrap; /* Allows all 6 tabs to remain fully visible without horizontal clipping */
   gap: 0.5rem;
-  padding: 0.5rem 1.5rem;
-  background: rgba(15, 23, 42, 0.55);
+  padding: 0.75rem 1.5rem;
+  background: var(--bg-secondary);
   border-bottom: 1px solid var(--border-subtle);
-  overflow-x: auto;
-  scrollbar-width: none;
-  -webkit-overflow-scrolling: touch;
   flex-shrink: 0;
-}
-
-.help-tabs-nav::-webkit-scrollbar {
-  display: none;
 }
 
 .help-tab-btn {
@@ -2886,7 +2880,7 @@ textarea.input-field {
   color: var(--text-muted);
   font-size: 0.825rem;
   font-weight: 600;
-  padding: 0.5rem 0.95rem;
+  padding: 0.45rem 0.9rem;
   border-radius: var(--radius-full);
   cursor: pointer;
   white-space: nowrap;
@@ -2901,11 +2895,41 @@ textarea.input-field {
   background: rgba(255, 255, 255, 0.05);
 }
 
+[data-theme="light"] .help-tab-btn:hover,
+[data-theme-preset="light"] .help-tab-btn:hover {
+  background: rgba(15, 23, 42, 0.06);
+}
+
 .help-tab-btn.active {
   color: var(--accent-emerald);
   background: rgba(16, 185, 129, 0.12);
   border-color: rgba(16, 185, 129, 0.35);
   box-shadow: 0 0 12px rgba(16, 185, 129, 0.18);
+}
+
+.help-tab-btn.help-tab-wiki-highlight {
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.12) 0%, rgba(99, 102, 241, 0.12) 100%);
+  border: 1px solid rgba(6, 182, 212, 0.45);
+  color: var(--accent-cyan);
+  font-weight: 700;
+}
+
+.help-tab-btn.help-tab-wiki-highlight.active {
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.25) 0%, rgba(99, 102, 241, 0.25) 100%);
+  border-color: var(--accent-cyan);
+  box-shadow: 0 0 14px rgba(6, 182, 212, 0.35);
+  color: #38bdf8;
+}
+
+.help-tab-pill-badge {
+  font-size: 0.65rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
+  color: #ffffff;
+  padding: 0.1rem 0.45rem;
+  border-radius: var(--radius-full);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
 /* Help Modal Body & Pane Animation */
@@ -3213,7 +3237,7 @@ textarea.input-field {
 
 .tour-card-desc {
   font-size: 0.885rem;
-  color: #f8fafc; /* Ultra high contrast crisp white text */
+  color: #f8fafc;
   font-weight: 500;
   line-height: 1.62;
   margin: 0;
@@ -3261,7 +3285,197 @@ textarea.input-field {
 }
 
 /* ==========================================================================
-   Card Anatomy Inspector (Interactive Hotspots)
+   Light Mode Tour Overrides (Crystal Clear Readability)
+   ========================================================================== */
+[data-theme="light"] .tour-highlight-box,
+[data-theme-preset="light"] .tour-highlight-box {
+  box-shadow: 0 0 0 9999px rgba(15, 23, 42, 0.52), 0 0 0 3.5px #6366f1, 0 0 25px rgba(99, 102, 241, 0.45);
+}
+
+[data-theme="light"] .tour-card,
+[data-theme-preset="light"] .tour-card {
+  background: #ffffff !important;
+  border: 2px solid #6366f1 !important;
+  box-shadow: 0 20px 45px rgba(15, 23, 42, 0.22), 0 0 35px rgba(99, 102, 241, 0.25) !important;
+  color: #0f172a !important;
+}
+
+[data-theme="light"] .tour-card-title,
+[data-theme-preset="light"] .tour-card-title {
+  color: #0f172a !important;
+  font-weight: 800 !important;
+}
+
+[data-theme="light"] .tour-card-desc,
+[data-theme-preset="light"] .tour-card-desc {
+  color: #1e293b !important;
+  font-weight: 500 !important;
+  line-height: 1.62 !important;
+}
+
+[data-theme="light"] .tour-card-desc strong,
+[data-theme-preset="light"] .tour-card-desc strong {
+  color: #4338ca !important;
+  font-weight: 800 !important;
+}
+
+[data-theme="light"] .tour-topic-badge,
+[data-theme-preset="light"] .tour-topic-badge {
+  color: #0284c7 !important;
+  font-weight: 700 !important;
+}
+
+[data-theme="light"] .tour-close-btn,
+[data-theme-preset="light"] .tour-close-btn {
+  background: #f1f5f9 !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #475569 !important;
+}
+
+[data-theme="light"] .tour-close-btn:hover,
+[data-theme-preset="light"] .tour-close-btn:hover {
+  background: #fee2e2 !important;
+  color: #dc2626 !important;
+  border-color: #f87171 !important;
+}
+
+[data-theme="light"] .tour-card-footer,
+[data-theme-preset="light"] .tour-card-footer {
+  border-top: 1px solid #e2e8f0 !important;
+}
+
+[data-theme="light"] .tour-card .btn-ghost,
+[data-theme-preset="light"] .tour-card .btn-ghost {
+  background: #f1f5f9 !important;
+  color: #334155 !important;
+  border: 1px solid #cbd5e1 !important;
+}
+
+[data-theme="light"] .tour-card .btn-ghost:hover,
+[data-theme-preset="light"] .tour-card .btn-ghost:hover {
+  background: #e2e8f0 !important;
+  color: #0f172a !important;
+}
+
+[data-theme="light"] .tour-dot,
+[data-theme-preset="light"] .tour-dot {
+  background: #cbd5e1 !important;
+}
+
+[data-theme="light"] .tour-dot.active,
+[data-theme-preset="light"] .tour-dot.active {
+  background: #6366f1 !important;
+  box-shadow: 0 0 8px rgba(99, 102, 241, 0.6) !important;
+}
+
+/* ==========================================================================
+   Wiki Callout Banner
+   ========================================================================== */
+.wiki-callout-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.1) 0%, rgba(99, 102, 241, 0.1) 100%);
+  border: 1.5px solid rgba(6, 182, 212, 0.35);
+  border-radius: var(--radius-lg);
+  padding: 1.15rem 1.35rem;
+  margin-top: 1.25rem;
+  box-shadow: 0 4px 20px rgba(6, 182, 212, 0.12);
+}
+
+[data-theme="light"] .wiki-callout-banner,
+[data-theme-preset="light"] .wiki-callout-banner {
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.08) 0%, rgba(99, 102, 241, 0.08) 100%);
+  border-color: rgba(6, 182, 212, 0.45);
+  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.06);
+}
+
+/* ==========================================================================
+   Hotspot Numerical Accent Quick-Bar
+   ========================================================================== */
+.hotspot-selector-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.hotspot-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.75rem;
+  background: rgba(15, 23, 42, 0.65);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-full);
+  color: var(--text-secondary);
+  font-size: 0.785rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.hotspot-num-badge {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
+  color: #ffffff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 800;
+  box-shadow: 0 2px 6px rgba(6, 182, 212, 0.5);
+}
+
+.hotspot-btn:hover {
+  background: rgba(6, 182, 212, 0.15);
+  border-color: var(--accent-cyan);
+  color: var(--text-primary);
+  transform: translateY(-1px);
+}
+
+.hotspot-btn.active {
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.22) 0%, rgba(16, 185, 129, 0.22) 100%);
+  border-color: var(--accent-cyan);
+  color: #38bdf8;
+  font-weight: 700;
+  box-shadow: 0 0 14px rgba(6, 182, 212, 0.35);
+}
+
+.hotspot-btn.active .hotspot-num-badge {
+  background: linear-gradient(135deg, #10b981 0%, #06b6d4 100%);
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.8);
+}
+
+[data-theme="light"] .hotspot-btn,
+[data-theme-preset="light"] .hotspot-btn {
+  background: #ffffff;
+  border-color: #cbd5e1;
+  color: #334155;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="light"] .hotspot-btn:hover,
+[data-theme-preset="light"] .hotspot-btn:hover {
+  background: #f8fafc;
+  border-color: #0284c7;
+  color: #0f172a;
+}
+
+[data-theme="light"] .hotspot-btn.active,
+[data-theme-preset="light"] .hotspot-btn.active {
+  background: #eff6ff;
+  border-color: #2563eb;
+  color: #1d4ed8;
+  box-shadow: 0 0 12px rgba(37, 99, 235, 0.2);
+}
+
+/* ==========================================================================
+   Numerical Accent Pins on Mock Card
    ========================================================================== */
 .card-inspector-container {
   display: grid;
@@ -3294,28 +3508,32 @@ textarea.input-field {
 
 .inspector-hotspot-pin {
   position: absolute;
-  width: 26px;
-  height: 26px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
   color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 800;
-  font-size: 0.75rem;
-  box-shadow: 0 0 12px rgba(6, 182, 212, 0.8);
+  font-weight: 900;
+  font-size: 0.85rem;
+  box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.35), 0 0 16px rgba(6, 182, 212, 0.85);
   cursor: pointer;
   z-index: 10;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.22s ease, background 0.22s ease;
   border: 2px solid #ffffff;
+}
+
+.inspector-hotspot-pin .pin-num {
+  line-height: 1;
 }
 
 .inspector-hotspot-pin:hover,
 .inspector-hotspot-pin.active {
-  transform: scale(1.22);
+  transform: scale(1.25);
   background: linear-gradient(135deg, #10b981 0%, #06b6d4 100%);
-  box-shadow: 0 0 20px rgba(16, 185, 129, 0.9);
+  box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.45), 0 0 25px rgba(16, 185, 129, 0.95);
 }
 
 .inspector-detail-card {
@@ -3358,6 +3576,41 @@ textarea.input-field {
   color: #f1f5f9;
   line-height: 1.6;
   margin: 0;
+}
+
+[data-theme="light"] .card-inspector-container,
+[data-theme-preset="light"] .card-inspector-container {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+}
+
+[data-theme="light"] .mock-card-wrapper,
+[data-theme-preset="light"] .mock-card-wrapper {
+  background: #ffffff;
+  border-color: #cbd5e1;
+  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
+}
+
+[data-theme="light"] .inspector-detail-card,
+[data-theme-preset="light"] .inspector-detail-card {
+  background: #ffffff;
+  border-color: #cbd5e1;
+  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
+}
+
+[data-theme="light"] .inspector-detail-title,
+[data-theme-preset="light"] .inspector-detail-title {
+  color: #0f172a;
+}
+
+[data-theme="light"] .inspector-section-label,
+[data-theme-preset="light"] .inspector-section-label {
+  color: #0284c7;
+}
+
+[data-theme="light"] .inspector-detail-text,
+[data-theme-preset="light"] .inspector-detail-text {
+  color: #334155;
 }
 
 /* ==========================================================================
