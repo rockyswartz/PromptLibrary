@@ -170,6 +170,15 @@
           return true;
         });
         initialList = defaultList.concat(customPrompts);
+      } else {
+        // Prune deprecated starter prompts and inject newly registered flagship domain exemplars
+        if (initialList.some(p => p.id === "prompt-designer-blueprint")) {
+          initialList = initialList.filter(p => p.id !== "prompt-designer-blueprint");
+          const newStarter = defaultList.find(p => p.id === "seo-geo-website-audit-scorer");
+          if (newStarter && !initialList.some(p => p.id === newStarter.id)) {
+            initialList.unshift(newStarter);
+          }
+        }
       }
 
       this.cachedPrompts = this._normalizeList(initialList);

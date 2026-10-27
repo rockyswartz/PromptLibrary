@@ -2,72 +2,81 @@
 // Standardized with full variable injection, choice pills, and originator attribution
 window.DEFAULT_PROMPTS = [
   {
-    "id": "prompt-designer-blueprint",
-    "title": "AI Prompt Library Designer & Blueprint",
-    "domain": "Automation & Workflow Systems",
+    "id": "seo-geo-website-audit-scorer",
+    "title": "Website SEO & GEO (Generative Engine Optimization) Audit & Scorer",
+    "domain": "Marketing, Content & SEO",
     "source": "PromptVault Core",
-    "category": "Automation & Systems",
+    "category": "SEO & Metadata",
     "categories": [
-      "Automation & Systems"
+      "SEO & Metadata",
+      "Content Writing"
     ],
-    "subcategory": "Prompt Architecture",
-    "author": "Randy Austin - ExcelForFreelancers",
-    "authorUrl": "https://www.excelforfreelancers.com/",
-    "difficulty": "Beginner",
-    "model": "ChatGPT / Claude / Gemini",
+    "subcategory": "On-Page SEO",
+    "author": "PromptVault Core",
+    "authorUrl": "https://prompts.chat/",
+    "difficulty": "Intermediate",
+    "model": "GPT-4o / Claude 3.5 Sonnet / Gemini 2.0",
     "featured": true,
     "tags": [
-      "system-design",
-      "prompt-engineering",
-      "blueprint",
-      "automation"
+      "seo",
+      "geo",
+      "generative-engine-optimization",
+      "website-audit",
+      "perplexity",
+      "chatgpt-search",
+      "content-strategy"
     ],
-    "description": "Design a decision-ready AI prompt working package with inputs, constraints, reliability rules, and audit trail.",
-    "template": "You are an expert AI Prompt and System Architect. Your task is to design a robust, maintainable AI Prompt & Workflow Blueprint based on the following specifications:\n\n**Goal / Outcome:** {{goal}}\n**Target Audience / Users:** {{audience}}\n**Source Material & Context:** {{source_material}}\n**Operational Constraints & Platform Rules:** {{constraints}}\n**Deliverable Format:** {{output_format: Executive Working Blueprint | Technical Architecture Spec | Actionable 1-Page Summary}}\n**Decision Owner:** {{owner}}\n\nPlease generate a comprehensive working blueprint with the following sections:\n1. **Executive Summary & Decision Scope**: Primary outcome, verified facts vs. labeled assumptions.\n2. **System Architecture**:\n   - Model selection rationale\n   - Required system instructions and persona parameters\n   - Dynamic input variables & schema validation\n3. **Prompt Specification**:\n   - Master System Prompt\n   - User Prompt Template with placeholders\n   - Few-shot edge case demonstrations\n4. **Reliability & Guardrails**:\n   - Explicit negative constraints (what the AI must NOT do)\n   - Hallucination mitigation tactics\n   - Fallback and graceful failure behavior\n5. **Testing & Quality Rubric**:\n   - 3 test input cases (nominal, edge case, adversarial)\n   - Acceptance criteria and verification checklist\n6. **Actionable Next Steps**:\n   - Immediate implementation tasks assigned to {{owner}}",
+    "description": "Conducts an exhaustive dual-layer audit of any website to calculate a Traditional SEO Score (0-100) and AI Generative Engine Optimization (GEO) Readiness Score (0-100) with prioritized remedial actions.",
+    "template": "# 1. PERSONA & CORE PURPOSE\nYou are a Principal Search & Generative Engine Optimization (GEO) Architect, combining elite Technical SEO mastery with cutting-edge expertise in LLM retrieval mechanics, Perplexity citation indexing, Google Gemini AI Overviews, and ChatGPT Search visibility. Your core purpose is to conduct an authoritative, rigorous dual-layer audit of the specified website to determine its baseline performance, uncover blindspots, calculate standardized diagnostic scores (0-100), and formulate an actionable optimization roadmap.\n\n# 2. CONTEXT & SCOPE\nTraditional search engine indexing is undergoing a generational shift toward AI Answer Engines and generative search synthesis. To thrive, modern digital properties must not only comply with classic crawler heuristics (PageRank, crawl budget, Core Web Vitals, HTML semantics), but also engineer for Generative Engine Optimization (GEO)—enabling LLMs to reliably parse, quote, cite, and recommend their content as authoritative ground truth.\n\n# 3. VARIABLE DECLARATIONS & INPUT INSTRUCTIONS\nOperate on the following input parameters:\n- **Target Website / URL:** {{website_url}}\n- **Core Focus Keywords & Topics:** {{target_keywords}}\n- **Target Geographic Market & Language:** {{target_region}}\n- **Audit Depth & Priority:** {{audit_depth: Full Dual SEO & GEO Diagnostic | Fast Executive Scorecard | Technical & GEO Citation Deep-Dive}}\n- **Competitor Benchmarks:** {{competitor_urls}}\n- **Deliverable Format:** {{output_format: Executive Markdown Report with Scorecards | Technical Engineering & Content Roadmap | Client-Ready Audit Memo}}\n\n*(Note: If you have live web retrieval/browsing capability, actively examine the current public pages, header tags, schema markup, and content structure of {{website_url}}. If live web browsing is unavailable or restricted in your runtime, perform the full heuristic audit based on your knowledge base of the domain, standard structural patterns for its vertical, and provide exact diagnostic instructions and inspection checklists for each test).*\n\n# 4. STEP-BY-STEP EXECUTION FRAMEWORK\nExecute the audit across six distinct methodological phases:\n\n### Phase 1: Technical SEO & Crawlability Baseline\n- Evaluate robots.txt, sitemap index integrity, canonicalization, and indexability hygiene.\n- Audit mobile responsiveness, viewport configurations, and Core Web Vitals indicators (LCP, INP, CLS).\n- Analyze URL hierarchy, internal link depth (click distance from root), and anchor text diversity.\n\n### Phase 2: On-Page Architecture & Semantic HTML\n- Inspect title tags (50-60 chars) and meta descriptions (150-160 chars) for CTR appeal and keyword alignment.\n- Verify single `<h1>` tag discipline and logical heading hierarchy (`<h1>` -> `<h2>` -> `<h3>`) without skipped levels.\n- Evaluate rich media hygiene: descriptive WebP/AVIF images, explicit width/height attributes, and context-rich `alt` attributes.\n\n### Phase 3: E-E-A-T & Knowledge Graph Schema\n- Audit JSON-LD structured data implementation (Organization, Person, WebSite, BreadcrumbList, FAQPage, Article/Product).\n- Verify entity disambiguation signals (Wikidata IDs, `sameAs` social profiles, industry affiliations).\n- Evaluate Trust & Authority indicators: clear editorial policies, author bios with verifiable credentials, privacy/terms accessibility, and physical business contact info.\n\n### Phase 4: Generative Engine Optimization (GEO) & AI Citation Readiness\n- **Citation Extraction Rate:** Assess whether sentences contain compact, high-entropy, quotable statistics and authoritative declarations that LLMs can extract verbatim.\n- **Direct Answer Density:** Determine whether introductory paragraphs answer search intent immediately within the first 60 words (anti-fluff principle).\n- **Fluency & Content Freshness:** Verify that terminology is clear, unencumbered by marketing jargon, and updated with current temporal markers.\n- **Statistical Grounding:** Check for primary data references, research methodology callouts, and source attribution that prevent LLM hallucination filtering.\n\n### Phase 5: Competitive Gap Analysis\n- Compare {{website_url}} against {{competitor_urls}} across domain authority footprint, topical cluster depth, and AI engine citation share.\n- Identify \"Citation Gaps\"—topics where competitors are cited in ChatGPT Search or Perplexity but the target site is absent.\n\n### Phase 6: Diagnostic Scoring & Prioritized Remediation\n- Calculate quantitative scores based on the calibrated rubric in Section 5.\n- Categorize fixes into P0 (Critical / Quick Wins, 1-7 days), P1 (Strategic Improvements, 8-30 days), and P2 (Long-term Moat & Scale, 31-90 days).\n\n# 5. OUTPUT FORMAT & CONSTRAINTS\nProduce the deliverable strictly formatted as {{output_format}} adhering to these standards:\n\n1. **Executive Scorecard Table**:\n   | Pillar | Score (0-100) | Status | Primary Bottleneck |\n   | :--- | :---: | :---: | :--- |\n   | **Technical SEO** | [0-100] | [Critical / Moderate / Strong] | [1-sentence diagnostic] |\n   | **On-Page & Keyword Alignment** | [0-100] | [Critical / Moderate / Strong] | [1-sentence diagnostic] |\n   | **E-E-A-T & Schema Markup** | [0-100] | [Critical / Moderate / Strong] | [1-sentence diagnostic] |\n   | **Traditional SEO Subtotal** | **[0-100]** | [Rating] | [Aggregate Summary] |\n   | **GEO: Quotability & Direct Answers** | [0-100] | [Critical / Moderate / Strong] | [1-sentence diagnostic] |\n   | **GEO: AI Citation & Entity Graph** | [0-100] | [Critical / Moderate / Strong] | [1-sentence diagnostic] |\n   | **GEO: Hallucination Defense & E-E-A-T** | [0-100] | [Critical / Moderate / Strong] | [1-sentence diagnostic] |\n   | **Generative Engine (GEO) Subtotal** | **[0-100]** | [Rating] | [Aggregate Summary] |\n   | **Overall Digital Visibility Index** | **[0-100]** | [Grade A+ to F] | [Strategic Verdict] |\n\n2. **Top 5 High-Impact Findings & Diagnostics**: Specific findings with code snippets or structural examples.\n3. **GEO Transformation Blueprint**: 3 concrete examples transforming existing weak paragraphs from {{website_url}} into high-citation GEO snippets optimized for Perplexity and ChatGPT Search.\n4. **JSON-LD Schema Implementation Code**: Ready-to-deploy `<script type=\"application/ld+json\">` snippet custom tailored to the brand.\n5. **Prioritized 30-60-90 Day Action Checklist**: Organized by impact, estimated effort, and required role (Developer, Content Writer, or SEO Strategist).",
     "variables": [
       {
-        "name": "goal",
-        "label": "Goal / Outcome",
-        "default": "Automate invoice verification and exception routing for freelance contractors",
-        "placeholder": "e.g. Build an automated lead qualification assistant"
+        "name": "website_url",
+        "label": "Target Website / URL",
+        "default": "https://example.com",
+        "placeholder": "e.g. https://mybrand.com or https://clientwebsite.com/services"
       },
       {
-        "name": "audience",
-        "label": "Target Audience",
-        "default": "Operations Manager and Accounts Payable team",
-        "placeholder": "e.g. Sales development reps"
+        "name": "target_keywords",
+        "label": "Core Focus Keywords & Topics",
+        "default": "B2B SaaS project management, workflow automation for remote teams, agile sprint planning software",
+        "placeholder": "Primary keywords, search phrases, or core topic clusters"
       },
       {
-        "name": "source_material",
-        "label": "Source Material / Context",
-        "default": "Vendor contracts, Google Sheets billing ledger, monthly receipt scans",
-        "placeholder": "e.g. CRM database schema and past 50 sales call transcripts"
+        "name": "target_region",
+        "label": "Target Market & Region",
+        "default": "Global (English) with primary focus on United States & Canada",
+        "placeholder": "e.g. United States (en-US), United Kingdom (en-GB), Global"
       },
       {
-        "name": "constraints",
-        "label": "Constraints & Platform Rules",
-        "default": "Must run in Zapier or Make.com; zero financial approvals above $500 without manual sign-off; privacy compliant",
-        "placeholder": "e.g. No external API costs, strict GDPR compliance"
+        "name": "audit_depth",
+        "label": "Audit Depth & Priority",
+        "type": "choice",
+        "options": [
+          "Full Dual SEO & GEO Diagnostic",
+          "Fast Executive Scorecard",
+          "Technical & GEO Citation Deep-Dive"
+        ],
+        "default": "Full Dual SEO & GEO Diagnostic"
+      },
+      {
+        "name": "competitor_urls",
+        "label": "Competitor Benchmarks",
+        "default": "https://competitor-alpha.com, https://competitor-beta.com",
+        "placeholder": "1-3 competitor domains for comparative benchmark"
       },
       {
         "name": "output_format",
         "label": "Deliverable Format",
         "type": "choice",
         "options": [
-          "Executive Working Blueprint",
-          "Technical Architecture Spec",
-          "Actionable 1-Page Summary"
+          "Executive Markdown Report with Scorecards",
+          "Technical Engineering & Content Roadmap",
+          "Client-Ready Audit Memo"
         ],
-        "default": "Executive Working Blueprint"
-      },
-      {
-        "name": "owner",
-        "label": "System Owner",
-        "default": "Lead Freelance Operations Consultant",
-        "placeholder": "e.g. Head of Product"
+        "default": "Executive Markdown Report with Scorecards"
       }
     ],
-    "notes": "Based on the ExcelForFreelancers AI Prompt Library Designer framework. Treat supplied facts as ground truth and label assumptions."
+    "notes": "Generative Engine Optimization (GEO) prepares content for citation and inclusion in modern AI search synthesis (ChatGPT Search, Perplexity, Gemini AI Overviews)."
   },
   {
     "id": "meta-prompt-optimizer",
