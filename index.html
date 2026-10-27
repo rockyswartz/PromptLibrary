@@ -1051,7 +1051,7 @@
   <!-- ==========================================================================
        Help Center & Interactive Guided Tour Modal
        ========================================================================== -->
-  <dialog id="helpModal" class="modal" closedby="any" aria-labelledby="helpModalTitle" style="max-width: 960px;">
+  <dialog id="helpModal" class="modal" closedby="any" aria-labelledby="helpModalTitle" style="max-width: 1040px;">
     <div class="modal-header">
       <div class="modal-header-info">
         <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem; width: 100%;">
@@ -1086,6 +1086,9 @@
       </button>
       <button type="button" class="help-tab-btn" data-help-tab="backup" role="tab" aria-selected="false">
         <span>📥 Ingestion & Backups</span>
+      </button>
+      <button type="button" class="help-tab-btn" data-help-tab="wiki" role="tab" aria-selected="false">
+        <span>📚 Prompting Wiki & Handbook</span>
       </button>
     </div>
 
@@ -1141,6 +1144,91 @@
             <p style="font-size: 0.8rem; color: var(--text-secondary); line-height: 1.5; margin: 0;">
               Every card credits its original creator (e.g. Randy Austin, HubSpot, Anthropic). Click <strong>"Use Blueprint"</strong> to open the interactive runner and fill in dynamic variables.
             </p>
+          </div>
+        </div>
+
+        <!-- Interactive Card Anatomy Inspector -->
+        <div style="margin-top: 1rem; border-top: 1px solid var(--border-subtle); padding-top: 1.25rem;">
+          <h4 style="font-size: 1rem; font-weight: 800; color: #ffffff; margin: 0 0 0.35rem 0; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem;">
+            <span>🔬 Interactive Anatomy of a Prompt Card</span>
+            <span style="font-size: 0.725rem; font-weight: 700; color: var(--accent-cyan); background: rgba(6, 182, 212, 0.15); border: 1px solid rgba(6, 182, 212, 0.3); padding: 0.2rem 0.6rem; border-radius: var(--radius-full);">Click / Hover Pins (1–6) Below</span>
+          </h4>
+          <p style="font-size: 0.8rem; color: var(--text-muted); margin: 0 0 1rem 0;">Explore each section of a PromptVault Pro card to understand its purpose, importance, and how the AI agent interprets it.</p>
+
+          <div class="card-inspector-container">
+            <!-- Simulated Mock Card with Hotspot Pins -->
+            <div class="mock-card-wrapper" id="mockCardWrapper">
+              <!-- Pin 1: Domain Pillar & Blueprint Badge -->
+              <div class="inspector-hotspot-pin active" data-hotspot="1" style="top: -10px; left: -10px;" title="Pin 1: Domain Pillar">1</div>
+              <div style="display: flex; gap: 0.4rem; align-items: center; flex-wrap: wrap;">
+                <span class="badge-blueprint">📐 Blueprint</span>
+                <span class="tag-badge" style="background: rgba(99, 102, 241, 0.2); color: #818cf8; border-color: rgba(99, 102, 241, 0.4); font-weight: 700;">AUTOMATION &amp; SYSTEMS</span>
+              </div>
+
+              <!-- Pin 2: Category & Difficulty -->
+              <div class="inspector-hotspot-pin" data-hotspot="2" style="top: 36px; right: -10px;" title="Pin 2: Category & Level">2</div>
+              <div style="display: flex; gap: 0.4rem; align-items: center; flex-wrap: wrap;">
+                <span class="tag-badge" style="background: rgba(255, 255, 255, 0.05); color: #cbd5e1;">Spreadsheet Automation</span>
+                <span class="tag-badge" style="background: rgba(245, 158, 11, 0.15); color: #fbbf24; border-color: rgba(245, 158, 11, 0.3);">★ Featured</span>
+                <span class="tag-badge" style="background: rgba(16, 185, 129, 0.12); color: #34d399;">Beginner</span>
+              </div>
+
+              <!-- Card Title -->
+              <h4 style="font-size: 0.95rem; font-weight: 700; color: #ffffff; margin: 0.2rem 0;">Excel, VBA &amp; Google Sheets Formula Architect</h4>
+              <p style="font-size: 0.775rem; color: var(--text-secondary); margin: 0; line-height: 1.4;">Build robust, high-performance Excel formulas (LAMBDA, XLOOKUP) and VBA macro automations...</p>
+
+              <!-- Pin 3: Prompt Preview & Dynamic Variable Tokens -->
+              <div class="inspector-hotspot-pin" data-hotspot="3" style="top: 135px; left: -10px;" title="Pin 3: Dynamic Variables">3</div>
+              <div style="background: rgba(9, 13, 22, 0.85); border: 1px solid var(--border-medium); border-radius: var(--radius-sm); padding: 0.65rem; font-family: var(--font-mono); font-size: 0.75rem; color: #e2e8f0; line-height: 1.5; position: relative;">
+                You are a World-Class Excel Specialist. **Platform:** <span style="color: var(--accent-cyan); font-weight: 700; background: rgba(6, 182, 212, 0.15); padding: 0 4px; border-radius: 3px;">{{platform: Excel 365 | Sheets}}</span>. **Task:** <span style="color: var(--accent-emerald); font-weight: 700; background: rgba(16, 185, 129, 0.15); padding: 0 4px; border-radius: 3px;">{{task_description}}</span>...
+              </div>
+
+              <!-- Pin 4: Hashtags -->
+              <div class="inspector-hotspot-pin" data-hotspot="4" style="bottom: 74px; right: -10px;" title="Pin 4: Clickable Hashtags">4</div>
+              <div style="display: flex; gap: 0.35rem; flex-wrap: wrap;">
+                <span class="tag-badge">#excel</span>
+                <span class="tag-badge">#vba</span>
+                <span class="tag-badge">#formulas</span>
+                <span class="tag-badge">#automation</span>
+              </div>
+
+              <div style="display: flex; flex-direction: column; gap: 0.5rem; border-top: 1px solid var(--border-subtle); padding-top: 0.65rem;">
+                <!-- Pin 5: Author Attribution -->
+                <div style="position: relative; display: flex; align-items: center; justify-content: space-between;">
+                  <div class="inspector-hotspot-pin" data-hotspot="5" style="top: -8px; left: -10px;" title="Pin 5: Originator Credit">5</div>
+                  <span style="font-size: 0.775rem; font-weight: 600; color: #38bdf8; display: inline-flex; align-items: center; gap: 0.35rem;">
+                    👤 Randy Austin - ExcelForFreelancers
+                  </span>
+                </div>
+
+                <!-- Pin 6: Action Buttons -->
+                <div style="position: relative; display: flex; gap: 0.5rem;">
+                  <div class="inspector-hotspot-pin" data-hotspot="6" style="top: -8px; right: -10px;" title="Pin 6: Action Buttons">6</div>
+                  <button type="button" class="btn btn-secondary" style="flex: 1; font-size: 0.775rem; padding: 0.35rem 0.65rem; pointer-events: none;">
+                    📋 Copy
+                  </button>
+                  <button type="button" class="btn btn-primary" style="flex: 1.6; font-size: 0.775rem; padding: 0.35rem 0.65rem; pointer-events: none;">
+                    ⚡ Use Prompt (5 vars)
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Detail Panel that updates on pin hover/click -->
+            <div class="inspector-detail-card" id="cardInspectorDetail">
+              <div class="inspector-detail-header">
+                <span id="inspectorDetailBadge" style="font-size: 0.75rem; font-weight: 800; background: var(--accent-primary); color: #fff; padding: 0.2rem 0.55rem; border-radius: var(--radius-full);">HOTSPOT 1</span>
+                <h5 class="inspector-detail-title" id="inspectorDetailTitle">Domain Pillar &amp; Blueprint Badge</h5>
+              </div>
+              <div class="inspector-section-label">What It Represents:</div>
+              <p class="inspector-detail-text" id="inspectorDetailWhat">The top-level architectural discipline (Automation &amp; Systems). The "Blueprint" badge indicates an enterprise 5-section prompt structured with Persona, Objective, Inputs, Guardrails, and Rubric.</p>
+              
+              <div class="inspector-section-label">How AI Models Interpret It:</div>
+              <p class="inspector-detail-text" id="inspectorDetailAi">Maps to the cognitive domain anchor. It primes the AI's internal attention mechanisms for technical rigor and domain vocabulary rather than surface-level consumer answers.</p>
+
+              <div class="inspector-section-label">Importance &amp; Best Practice:</div>
+              <p class="inspector-detail-text" id="inspectorDetailBest">Categorization enables rapid discovery by function. If omitted, prompts blend into an unstructured list with no clear professional context.</p>
+            </div>
           </div>
         </div>
       </div>
@@ -1411,6 +1499,275 @@
           </div>
         </div>
       </div>
+
+      <!-- ====================================================================
+           TAB 6: PROMPTING WIKI & HANDBOOK (Academy)
+           ==================================================================== -->
+      <div id="paneHelpWiki" class="help-tab-pane" role="tabpanel">
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem; background: rgba(99, 102, 241, 0.08); padding: 0.85rem 1.25rem; border-radius: var(--radius-md); border: 1px solid rgba(99, 102, 241, 0.25);">
+          <div>
+            <h4 style="font-size: 0.95rem; font-weight: 800; color: #ffffff; margin: 0 0 0.2rem 0;">Prompt Engineering Academy &amp; Wiki Handbook</h4>
+            <span style="font-size: 0.775rem; color: #38bdf8;">Synthesized from PromptVault Pro Architecture &amp; <em>The Prompting Book</em> by Fatih Kadir Akın (creator of prompts.chat)</span>
+          </div>
+          <span style="font-size: 0.725rem; font-weight: 700; color: var(--accent-emerald); background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.3); padding: 0.2rem 0.65rem; border-radius: var(--radius-full);">
+            📖 Reference &amp; Best Practices
+          </span>
+        </div>
+
+        <div class="wiki-layout">
+          <!-- Wiki Chapter Navigation Sidebar -->
+          <nav class="wiki-sidebar-nav" aria-label="Wiki Chapters">
+            <button type="button" class="wiki-nav-item active" data-wiki-target="ch1">
+              <span>🏗️ 5-Section Blueprint Anatomy</span>
+            </button>
+            <button type="button" class="wiki-nav-item" data-wiki-target="ch2">
+              <span>⚡ The Variable Multiplier</span>
+            </button>
+            <button type="button" class="wiki-nav-item" data-wiki-target="ch3">
+              <span>📖 Akın's Core Principles</span>
+            </button>
+            <button type="button" class="wiki-nav-item" data-wiki-target="ch4">
+              <span>🏷️ Domains vs Collection Packs</span>
+            </button>
+            <button type="button" class="wiki-nav-item" data-wiki-target="ch5">
+              <span>💼 Real-World Case Studies</span>
+            </button>
+            <button type="button" class="wiki-nav-item" data-wiki-target="ch6">
+              <span>📚 AI Prompting Glossary</span>
+            </button>
+          </nav>
+
+          <!-- Wiki Article Display Pane -->
+          <div class="wiki-article-view" id="wikiArticleView">
+            <!-- CHAPTER 1: 5-SECTION BLUEPRINT ANATOMY -->
+            <article class="wiki-article-chapter" id="wikiArticle-ch1">
+              <h3 style="font-size: 1.15rem; font-weight: 800; color: #ffffff; margin: 0 0 0.5rem 0;">1. The 5-Section Modular Blueprint Anatomy</h3>
+              <p style="font-size: 0.85rem; color: #cbd5e1; line-height: 1.6; margin: 0 0 0.85rem 0;">
+                Traditional prompting relies on fragile, one-line requests that produce erratic, generic outputs. PromptVault Pro employs an enterprise 5-part architecture that anchors large language models (LLMs) to rigorous, deterministic performance.
+              </p>
+
+              <div class="wiki-quote-box">
+                "Every great prompt shares common structural elements. Understanding these components allows you to construct prompts systematically rather than through trial and error. Think of these components like LEGO bricks."
+                <span class="wiki-quote-author">— Fatih Kadir Akın, <em>The Prompting Book</em> (Foundations: Anatomy of an Effective Prompt)</span>
+              </div>
+
+              <table class="wiki-table">
+                <thead>
+                  <tr>
+                    <th>Section</th>
+                    <th>What It Represents</th>
+                    <th>How the AI Agent Interprets It</th>
+                    <th>If Omitted vs. Provided</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong style="color: var(--accent-cyan);">1. Role / Persona</strong></td>
+                    <td>Domain identity, cognitive framework, voice, and level of seniority.</td>
+                    <td>Activates high-depth domain weights and specialized technical vocabulary.</td>
+                    <td><strong>Omitted:</strong> AI defaults to a generic polite assistant.<br /><strong>Provided:</strong> Speaks with senior authority.</td>
+                  </tr>
+                  <tr>
+                    <td><strong style="color: var(--accent-emerald);">2. Primary Objective</strong></td>
+                    <td>Unambiguous deliverable statement and mission scope.</td>
+                    <td>Focuses attention mechanisms on the primary goal, preventing conversational drift.</td>
+                    <td><strong>Omitted:</strong> Wanders off-topic into surface summaries.<br /><strong>Provided:</strong> Direct, laser-focused execution.</td>
+                  </tr>
+                  <tr>
+                    <td><strong style="color: var(--accent-amber);">3. Dynamic Context &amp; Inputs</strong></td>
+                    <td>Strict parameter slots with <code>{{variables}}</code>.</td>
+                    <td>Treats inputs as isolated operational data payloads distinct from instructions.</td>
+                    <td><strong>Omitted:</strong> Prompt is hard-coded for 1 scenario.<br /><strong>Provided:</strong> Reusable across infinite projects.</td>
+                  </tr>
+                  <tr>
+                    <td><strong style="color: var(--accent-rose);">4. Negative Guardrails</strong></td>
+                    <td>Anti-patterns, prohibited assumptions, hallucination limits.</td>
+                    <td>Sets boundary filters that prune inappropriate response branches before token generation.</td>
+                    <td><strong>Omitted:</strong> Models guess and fabricate data.<br /><strong>Provided:</strong> Zero fluff, strict adherence.</td>
+                  </tr>
+                  <tr>
+                    <td><strong style="color: var(--accent-violet);">5. Output Rubric &amp; Schema</strong></td>
+                    <td>Structural format (tables, JSON) and quality evaluation criteria.</td>
+                    <td>Provides self-evaluation checklist so the model audits its output before returning.</td>
+                    <td><strong>Omitted:</strong> Unstructured prose walls.<br /><strong>Provided:</strong> Production-ready, copy-pasteable data.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </article>
+
+            <!-- CHAPTER 2: THE VARIABLE MULTIPLIER -->
+            <article class="wiki-article-chapter" id="wikiArticle-ch2" style="display: none;">
+              <h3 style="font-size: 1.15rem; font-weight: 800; color: #ffffff; margin: 0 0 0.5rem 0;">2. The Variable Multiplier: Why Dynamic Placeholders Matter</h3>
+              <p style="font-size: 0.85rem; color: #cbd5e1; line-height: 1.6; margin: 0 0 0.85rem 0;">
+                The most important innovation in modern prompt systems is the <strong>Separation of Instructions and Data</strong>. In static prompt engineering, you have to rewrite the prompt every time a client or topic changes. With PromptVault variables, the prompt becomes a software template.
+              </p>
+
+              <div class="wiki-quote-box">
+                "One of the most important habits in prompt engineering is clearly separating your instructions from your context... Mixing them together confuses the model about what to do versus what to use."
+                <span class="wiki-quote-author">— Fatih Kadir Akın, <em>The Prompting Book</em> (Core Prompting Principles)</span>
+              </div>
+
+              <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-top: 0.75rem;">
+                <div style="background: rgba(255,255,255,0.03); padding: 0.85rem; border-radius: var(--radius-md); border: 1px solid var(--border-subtle);">
+                  <h5 style="color: var(--accent-cyan); margin: 0 0 0.25rem 0; font-size: 0.9rem;">1. Free-Text Variables: <code>{{variable_name}}</code></h5>
+                  <p style="font-size: 0.8rem; color: #cbd5e1; margin: 0;">Allows users to insert bespoke topics, URLs, customer names, or code snippets without editing the blueprint logic.</p>
+                </div>
+
+                <div style="background: rgba(255,255,255,0.03); padding: 0.85rem; border-radius: var(--radius-md); border: 1px solid var(--border-subtle);">
+                  <h5 style="color: var(--accent-emerald); margin: 0 0 0.25rem 0; font-size: 0.9rem;">2. Multiple-Choice Pills: <code>{{tone: Professional | Technical | Conversational}}</code></h5>
+                  <p style="font-size: 0.8rem; color: #cbd5e1; margin: 0;">Restricts variables to high-impact proven values. Clicking pills in the runner replaces typing with 1-click execution.</p>
+                </div>
+
+                <div style="background: rgba(255,255,255,0.03); padding: 0.85rem; border-radius: var(--radius-md); border: 1px solid var(--border-subtle);">
+                  <h5 style="color: var(--accent-amber); margin: 0 0 0.25rem 0; font-size: 0.9rem;">3. Why This Makes Prompts More Suitable &amp; Flexible</h5>
+                  <p style="font-size: 0.8rem; color: #cbd5e1; margin: 0;">A single blueprint for <em>"Executive Decision Memo"</em> can serve 500 different business proposals simply by swapping <code>{{initiative}}</code>, <code>{{budget}}</code>, and <code>{{risk_level}}</code>. You curate once, and use forever.</p>
+                </div>
+              </div>
+            </article>
+
+            <!-- CHAPTER 3: AKIN'S CORE PRINCIPLES -->
+            <article class="wiki-article-chapter" id="wikiArticle-ch3" style="display: none;">
+              <h3 style="font-size: 1.15rem; font-weight: 800; color: #ffffff; margin: 0 0 0.5rem 0;">3. Core Prompting Principles from Fatih Kadir Akın</h3>
+              <p style="font-size: 0.85rem; color: #cbd5e1; line-height: 1.6; margin: 0 0 0.85rem 0;">
+                Key foundational concepts extracted directly from <em>The Prompting Book</em> to elevate everyday prompting into mastery:
+              </p>
+
+              <div style="display: flex; flex-direction: column; gap: 0.85rem;">
+                <div>
+                  <h5 style="color: #67e8f9; margin: 0 0 0.2rem 0; font-size: 0.875rem;">• Principle 1: Clarity Trumps Brevity</h5>
+                  <p style="font-size: 0.8rem; color: #cbd5e1; margin: 0;">Don't worry about making prompts as short as possible. Specificity and explicit constraints produce exponentially higher quality outputs than terse queries.</p>
+                </div>
+
+                <div>
+                  <h5 style="color: #67e8f9; margin: 0 0 0.2rem 0; font-size: 0.875rem;">• Principle 2: Role-Based Priming (The Persona Effect)</h5>
+                  <p style="font-size: 0.8rem; color: #cbd5e1; margin: 0;">Telling an AI "Act as a Senior Database Administrator" primes it to evaluate indexing, query plans, and concurrency rather than giving beginner textbook definitions.</p>
+                </div>
+
+                <div>
+                  <h5 style="color: #67e8f9; margin: 0 0 0.2rem 0; font-size: 0.875rem;">• Principle 3: From Prose to Data (Structured Output)</h5>
+                  <p style="font-size: 0.8rem; color: #cbd5e1; margin: 0;">Never ask for "some suggestions." Ask for a Markdown table with columns: <code>Option | Pros | Cons | Estimated Effort (1-5)</code>. Structured formats force the AI to reason concretely.</p>
+                </div>
+
+                <div>
+                  <h5 style="color: #67e8f9; margin: 0 0 0.2rem 0; font-size: 0.875rem;">• Principle 4: Chain of Thought (Show Your Work)</h5>
+                  <p style="font-size: 0.8rem; color: #cbd5e1; margin: 0;">Ask the model: <em>"First, analyze the underlying constraints step-by-step. Only then output the final recommendation."</em> When models reason before answering, error rates drop dramatically.</p>
+                </div>
+
+                <div>
+                  <h5 style="color: #67e8f9; margin: 0 0 0.2rem 0; font-size: 0.875rem;">• Principle 5: Negative Constraints (The Guardrail Method)</h5>
+                  <p style="font-size: 0.8rem; color: #cbd5e1; margin: 0;">Telling the AI what NOT to do is as crucial as telling it what to do. Example: <em>"Do NOT apologize, do NOT mention you are an AI, and do NOT use marketing buzzwords like 'game-changer' or 'revolutionize'."</em></p>
+                </div>
+              </div>
+            </article>
+
+            <!-- CHAPTER 4: DOMAINS VS COLLECTION PACKS -->
+            <article class="wiki-article-chapter" id="wikiArticle-ch4" style="display: none;">
+              <h3 style="font-size: 1.15rem; font-weight: 800; color: #ffffff; margin: 0 0 0.5rem 0;">4. Functional Domains vs. Collection Packs Explained</h3>
+              <p style="font-size: 0.85rem; color: #cbd5e1; line-height: 1.6; margin: 0 0 0.85rem 0;">
+                PromptVault Pro provides two complementary navigation views. Knowing when to switch modes saves time:
+              </p>
+
+              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; margin-top: 0.5rem;">
+                <div style="background: rgba(99, 102, 241, 0.08); border: 1px solid rgba(99, 102, 241, 0.3); border-radius: var(--radius-md); padding: 1rem;">
+                  <h5 style="color: var(--accent-primary); margin: 0 0 0.4rem 0; font-size: 0.95rem;">🏷️ By Functional Domain (7 Pillars)</h5>
+                  <p style="font-size: 0.8rem; color: #cbd5e1; line-height: 1.5; margin: 0 0 0.5rem 0;">
+                    Organizes your library by <strong>job-to-be-done</strong>. The 7 architectural domains group prompts across Automation, Engineering, Business, Marketing, Generative AI, UX/UI, and Education.
+                  </p>
+                  <span style="font-size: 0.75rem; color: #818cf8; font-weight: 700;">Best When:</span>
+                  <span style="font-size: 0.75rem; color: var(--text-muted); display: block;">You have a specific goal: "I need to automate an Excel task" or "I need to design a landing page."</span>
+                </div>
+
+                <div style="background: rgba(6, 182, 212, 0.08); border: 1px solid rgba(6, 182, 212, 0.3); border-radius: var(--radius-md); padding: 1rem;">
+                  <h5 style="color: var(--accent-cyan); margin: 0 0 0.4rem 0; font-size: 0.95rem;">📦 By Collection Pack</h5>
+                  <p style="font-size: 0.8rem; color: #cbd5e1; line-height: 1.5; margin: 0 0 0.5rem 0;">
+                    Organizes your library by <strong>originator, author, or creator source</strong> (e.g. Randy Austin Excel Pack, HubSpot Pack, Anthropic Lab, ChatPRD).
+                  </p>
+                  <span style="font-size: 0.75rem; color: #67e8f9; font-weight: 700;">Best When:</span>
+                  <span style="font-size: 0.75rem; color: var(--text-muted); display: block;">You want to explore an expert's signature methodologies or inspect prompts from a trusted source.</span>
+                </div>
+              </div>
+            </article>
+
+            <!-- CHAPTER 5: REAL-WORLD CASE STUDIES -->
+            <article class="wiki-article-chapter" id="wikiArticle-ch5" style="display: none;">
+              <h3 style="font-size: 1.15rem; font-weight: 800; color: #ffffff; margin: 0 0 0.5rem 0;">5. Real-World Case Studies &amp; Prompt Recipes</h3>
+              
+              <div style="display: flex; flex-direction: column; gap: 1rem; margin-top: 0.5rem;">
+                <div style="background: rgba(255,255,255,0.025); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 1rem;">
+                  <h5 style="color: #34d399; margin: 0 0 0.35rem 0; font-size: 0.925rem;">Case 1: Excel &amp; VBA Formula Architect (Randy Austin Method)</h5>
+                  <p style="font-size: 0.8rem; color: #cbd5e1; line-height: 1.5; margin: 0 0 0.5rem 0;">
+                    Instead of asking: <em>"How do I look up values in Excel?"</em><br />
+                    <strong>Blueprint Recipe:</strong> Establishes Persona (Senior Excel Developer), binds <code>{{platform: Excel 365 | Google Sheets}}</code>, requires syntax explanation, enforces negative guardrail <em>"Do NOT use volatile formulas like OFFSET or INDIRECT unless requested"</em>, and outputs formula with edge case warnings.
+                  </p>
+                </div>
+
+                <div style="background: rgba(255,255,255,0.025); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 1rem;">
+                  <h5 style="color: #818cf8; margin: 0 0 0.35rem 0; font-size: 0.925rem;">Case 2: Amazon PR/FAQ 1-Page Decision Memo</h5>
+                  <p style="font-size: 0.8rem; color: #cbd5e1; line-height: 1.5; margin: 0 0 0.5rem 0;">
+                    Instead of asking: <em>"Write a memo about my new product idea."</em><br />
+                    <strong>Blueprint Recipe:</strong> Adopts Amazon Chief of Staff Persona, takes <code>{{initiative}}</code> and <code>{{budget}}</code>, enforces negative guardrail <em>"Do NOT exceed 1 page; eliminate corporate buzzwords"</em>, and outputs PR Headline, Customer Problem, and 5 Critical FAQs.
+                  </p>
+                </div>
+
+                <div style="background: rgba(255,255,255,0.025); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 1rem;">
+                  <h5 style="color: #38bdf8; margin: 0 0 0.35rem 0; font-size: 0.925rem;">Case 3: Enterprise Code Refactor &amp; Security Review</h5>
+                  <p style="font-size: 0.8rem; color: #cbd5e1; line-height: 1.5; margin: 0 0 0.5rem 0;">
+                    Instead of asking: <em>"Fix my code."</em><br />
+                    <strong>Blueprint Recipe:</strong> Establishes Principal AppSec Engineer, injects <code>{{language}}</code> and <code>{{source_code}}</code>, enforces negative guardrail <em>"Do NOT change public APIs; do NOT introduce external libraries"</em>, and returns unified diff with vulnerability severity matrix.
+                  </p>
+                </div>
+              </div>
+            </article>
+
+            <!-- CHAPTER 6: PROMPTING GLOSSARY -->
+            <article class="wiki-article-chapter" id="wikiArticle-ch6" style="display: none;">
+              <h3 style="font-size: 1.15rem; font-weight: 800; color: #ffffff; margin: 0 0 0.5rem 0;">6. AI Prompting Glossary &amp; Technical Reference</h3>
+              
+              <table class="wiki-table" style="margin-top: 0.5rem;">
+                <thead>
+                  <tr>
+                    <th>Term</th>
+                    <th>Definition</th>
+                    <th>Impact on Prompting</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>Token</strong></td>
+                    <td>The basic unit of text processed by LLMs (~4 characters or 0.75 words in English).</td>
+                    <td>Both inputs and outputs consume context window tokens. PromptVault tracks tokens live.</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Context Window</strong></td>
+                    <td>The total memory capacity an LLM can process in a single conversation.</td>
+                    <td>Keep blueprints modular and focused so models don't suffer from attention degradation.</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Temperature</strong></td>
+                    <td>A sampling parameter controlling randomness (0.0 = deterministic, 1.0 = creative).</td>
+                    <td>Use 0.0–0.2 for Excel/Code/Memos; use 0.7–0.9 for creative ideation and storytelling.</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Hallucination</strong></td>
+                    <td>When an AI confidently invents false facts, citations, or code APIs.</td>
+                    <td>Prevented through Negative Guardrails and forcing the AI to admit unknowns.</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Grounding</strong></td>
+                    <td>Anchoring the AI's response in explicit source text or supplied data inputs.</td>
+                    <td>Using <code>{{variables}}</code> grounds the LLM strictly in your data.</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Few-Shot Prompting</strong></td>
+                    <td>Supplying 1 to 3 concrete input/output examples inside the prompt.</td>
+                    <td>Guarantees exact formatting and tone match better than paragraphs of description.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </article>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div class="modal-footer" style="justify-content: space-between; flex-wrap: wrap; gap: 0.75rem;">
@@ -1486,8 +1843,8 @@
   </button>
 
   <!-- Scripts -->
-  <script src="js/data.js?v=3.7"></script>
-  <script src="js/storage.js?v=3.7"></script>
-  <script src="js/app.js?v=3.7"></script>
+  <script src="js/data.js?v=3.8"></script>
+  <script src="js/storage.js?v=3.8"></script>
+  <script src="js/app.js?v=3.8"></script>
 </body>
 </html>

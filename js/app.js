@@ -1125,10 +1125,14 @@ document.addEventListener("DOMContentLoaded", () => {
         });
       }
 
-      // Tag filter click
+      // Tag filter click with visual feedback & tour safety
       card.querySelectorAll(".tag-badge").forEach(tagBadge => {
         tagBadge.addEventListener("click", (e) => {
           e.stopPropagation();
+          if (isTourActive) {
+            showToast("Tour Active: In the live library, clicking #tags instantly filters by that tag!", "info");
+            return;
+          }
           const tag = tagBadge.getAttribute("data-tag");
           state.searchQuery = tag;
           if (elements.searchInput) {
@@ -1136,6 +1140,9 @@ document.addEventListener("DOMContentLoaded", () => {
             if (elements.searchClearBtn) elements.searchClearBtn.style.display = "block";
           }
           renderGrid();
+          showToast(`Filtered library by #${tag}`, "info");
+          const grid = document.getElementById("promptsGrid");
+          if (grid) grid.scrollIntoView({ behavior: "smooth", block: "start" });
         });
       });
 
@@ -1143,6 +1150,10 @@ document.addEventListener("DOMContentLoaded", () => {
       card.querySelectorAll('[data-action="run"]').forEach(el => {
         el.addEventListener("click", (e) => {
           e.stopPropagation();
+          if (isTourActive) {
+            showToast("Tour Active: Click 'Next →' on the tour card to proceed with the walkthrough.", "info");
+            return;
+          }
           openRunnerModal(id);
         });
       });
@@ -2694,6 +2705,92 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
 
+    // Interactive Card Anatomy Inspector
+    const HOTSPOT_DATA = {
+      1: {
+        badge: "HOTSPOT 1",
+        title: "Domain Pillar & Blueprint Badge",
+        what: "The top-level architectural discipline (Automation & Systems). The 'Blueprint' badge indicates an enterprise 5-section prompt structured with Persona, Objective, Inputs, Guardrails, and Rubric.",
+        ai: "Maps to the cognitive domain anchor. It primes the AI's internal attention mechanisms for technical rigor and domain vocabulary rather than surface-level consumer answers.",
+        best: "Categorization enables rapid discovery by function. If omitted, prompts blend into an unstructured list with no clear professional context."
+      },
+      2: {
+        badge: "HOTSPOT 2",
+        title: "Category, Subcategory & Difficulty Badges",
+        what: "Granular taxonomy tags (e.g., Spreadsheet Automation, VBA Macros) and skill rating (Beginner / Intermediate / Advanced).",
+        ai: "Helps users calibrate prompt complexity and informs the AI of the expected depth and audience skill level.",
+        best: "Subcategories prevent sprawling duplicate lists. All subcategories in PromptVault Pro pull from a unified, deduplicated master pool."
+      },
+      3: {
+        badge: "HOTSPOT 3",
+        title: "Prompt Preview & Dynamic Variables ({{var}})",
+        what: "The actual prompt text showing reactive variable parameter slots like {{platform: Excel 365 | Sheets}} and {{task_description}}.",
+        ai: "THE CORE ENGINE OF PROMPT ENGINEERING. As Akın notes in 'The Prompting Book', separating instructions from context allows 1 single blueprint to serve hundreds of different situations without rewriting.",
+        best: "Always parameterize values that change between runs (topic, platform, audience). Never hardcode names or dates directly into reusable blueprints."
+      },
+      4: {
+        badge: "HOTSPOT 4",
+        title: "Clickable Hashtags (#tags)",
+        what: "Keyword metadata for instant discovery (e.g., #excel, #vba, #formulas).",
+        ai: "Used by PromptVault Pro's instant fuzzy search engine. In the active library, clicking any hashtag immediately filters the grid to all related prompts.",
+        best: "Use standardized hashtags to link complementary prompts across different domain pillars."
+      },
+      5: {
+        badge: "HOTSPOT 5",
+        title: "Originator / Author Credit",
+        what: "Dedicated author attribution recognizing original creators and thought leaders (e.g., Randy Austin - ExcelForFreelancers, HubSpot, Anthropic Lab).",
+        ai: "Identifies prompt lineage and allows users to browse specialized author collection packs.",
+        best: "PromptVault Pro ensures creators are properly attributed on every card and export."
+      },
+      6: {
+        badge: "HOTSPOT 6",
+        title: "Action Buttons: Copy vs. Use Blueprint",
+        what: "Two distinct execution modes: 'Copy' places the raw template into your clipboard; 'Use Blueprint' opens the interactive prompt runner.",
+        ai: "The Runner parses all {{variables}} and choice pills into interactive UI fields with real-time token estimation, live compilation, and model switching.",
+        best: "Use 'Copy' for quick pasting into external automation pipelines; use 'Use Blueprint' for interactive parameterized workflows."
+      }
+    };
+
+    function selectHotspot(hotspotId) {
+      const pins = document.querySelectorAll(".inspector-hotspot-pin");
+      pins.forEach(pin => {
+        pin.classList.toggle("active", pin.dataset.hotspot === String(hotspotId));
+      });
+      const data = HOTSPOT_DATA[hotspotId];
+      if (!data) return;
+      const b = document.getElementById("inspectorDetailBadge");
+      const t = document.getElementById("inspectorDetailTitle");
+      const w = document.getElementById("inspectorDetailWhat");
+      const a = document.getElementById("inspectorDetailAi");
+      const best = document.getElementById("inspectorDetailBest");
+      if (b) b.textContent = data.badge;
+      if (t) t.textContent = data.title;
+      if (w) w.textContent = data.what;
+      if (a) a.textContent = data.ai;
+      if (best) best.textContent = data.best;
+    }
+
+    document.querySelectorAll(".inspector-hotspot-pin").forEach(pin => {
+      pin.addEventListener("mouseenter", () => selectHotspot(pin.dataset.hotspot));
+      pin.addEventListener("click", () => selectHotspot(pin.dataset.hotspot));
+    });
+
+    // Wiki Chapter Navigation
+    const wikiNavBtns = document.querySelectorAll(".wiki-nav-item");
+    const wikiArticles = document.querySelectorAll(".wiki-article-chapter");
+
+    wikiNavBtns.forEach(btn => {
+      btn.addEventListener("click", () => {
+        const target = btn.dataset.wikiTarget;
+        wikiNavBtns.forEach(b => b.classList.toggle("active", b === btn));
+        wikiArticles.forEach(art => {
+          art.style.display = art.id === `wikiArticle-${target}` ? "block" : "none";
+        });
+        const articleView = document.getElementById("wikiArticleView");
+        if (articleView) articleView.scrollTop = 0;
+      });
+    });
+
     // Tour launch buttons
     if (elements.startSpotlightTourBtn) {
       elements.startSpotlightTourBtn.addEventListener("click", () => startTour(0));
@@ -2712,27 +2809,27 @@ document.addEventListener("DOMContentLoaded", () => {
   const TOUR_STEPS = [
     {
       targetSelector: ".nav-mode-bar",
-      title: "7 Domain Pillars & Modes",
+      title: "7 Domain Pillars & Dual View Modes",
       topic: "Architecture",
-      desc: "Top-level domain pillars organize your library: Automation, Software Engineering, Business, Marketing, Generative AI, UX/UI, and Education. Toggle between Functional Domains and Collection Packs."
+      desc: "• 🏷️ By Functional Domain: Groups prompts by job-to-be-done (Automation, Software Engineering, Business, Marketing, etc.).\n• 📦 By Collection Pack: Groups prompts by creator or source (e.g. Randy Austin Pack, HubSpot Pack, Anthropic Lab). Toggle between them anytime!"
     },
     {
       targetSelector: "#categoryNav",
-      title: "Category & Subcategory Pills",
+      title: "Category & Subcategory Taxonomy",
       topic: "Taxonomy",
-      desc: "Click categories under each domain pillar to instantly filter. Click 'More...' to browse all 44 categories and filter by granular subcategories."
+      desc: "Browse categories under each domain pillar. Subcategories represent specific granular operations (like VBA Macros or API Integration). Click 'More...' to view the complete 44-category taxonomy tree."
     },
     {
       targetSelector: ".search-container",
       title: "Instant Fuzzy Search (⌘K)",
       topic: "Navigation",
-      desc: "Press ⌘K or type here to search across titles, descriptions, blueprint sections, parameter tags, authors, and hashtags in real-time."
+      desc: "Press ⌘K to instantly search across titles, descriptions, blueprint sections, {{variables}}, authors, and hashtags in real-time. Zero server latency!"
     },
     {
       targetSelector: ".prompt-card",
-      title: "Smart Blueprint Cards",
+      title: "Smart Blueprint Cards & Anatomy",
       topic: "Execution",
-      desc: "Each card displays its domain, author attribution, and variable count. Click 'Use Blueprint' to run the interactive parameter form, or 'Copy' for instant clipboard use."
+      desc: "Each card displays its domain, author attribution (e.g. 👤 Randy Austin), and variable count. Click 'Use Blueprint' to fill dynamic variables in real-time, or 'Copy' for instant clipboard access. In the library, clicking any #hashtag filters by that tag!"
     },
     {
       targetSelector: "#openCategoryManagerBtn",
@@ -2742,9 +2839,9 @@ document.addEventListener("DOMContentLoaded", () => {
     },
     {
       targetSelector: "#openDataModalBtn",
-      title: "Backup, Ingest & Restore",
+      title: "Backup, Ingest & Vault Portability",
       topic: "Data Portability",
-      desc: "Export your library to JSON, SQLite, or Markdown. Use Smart Ingest to auto-convert [brackets] into {{variables}}, or reset to the clean 7-pillar Starter Pack."
+      desc: "Export your library to JSON, SQLite, or Markdown. Paste raw text into Smart Ingest to auto-convert [brackets] into {{variables}}, or reset to the clean 7-pillar Starter Pack."
     },
     {
       targetSelector: "#openAddPromptBtn",
