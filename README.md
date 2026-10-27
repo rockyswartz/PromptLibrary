@@ -1,5 +1,9 @@
 # 🚀 PromptVault Pro — Interactive AI Prompt Library & Blueprint System
 
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/rockyswartz/PromptLibrary)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![GitHub Pages](https://img.shields.io/badge/Deployment-GitHub%20Pages-brightgreen)](https://rockyswartz.github.io/PromptLibrary/)
+
 A beautiful, offline-ready, open-source web application for exploring, parameterizing, testing, and managing production-grade AI prompts and automation blueprints.
 
 Built with modern semantic HTML5, Vanilla CSS, and lightweight Vanilla JavaScript. Zero npm dependencies, zero complex build steps, and ready for instant deployment to **GitHub Pages**.
