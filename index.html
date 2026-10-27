@@ -1169,7 +1169,7 @@
             <div>
               <h4 style="margin: 0; font-size: 0.95rem; font-weight: 800; color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
                 <span>The Prompting Wiki &amp; Handbook</span>
-                <span class="badge" style="background: rgba(6, 182, 212, 0.2); color: var(--accent-cyan); font-size: 0.7rem; padding: 0.15rem 0.5rem; border-radius: var(--radius-full);">Fatih Kadir Akın Reference</span>
+                <a href="https://prompts.chat/" target="_blank" rel="noopener noreferrer" class="badge" style="background: rgba(6, 182, 212, 0.2); color: var(--accent-cyan); font-size: 0.7rem; padding: 0.15rem 0.5rem; border-radius: var(--radius-full); text-decoration: none;" title="Visit prompts.chat by Fatih Kadir Akın">Fatih Kadir Akın (prompts.chat) ↗</a>
               </h4>
               <p style="margin: 0.2rem 0 0; font-size: 0.8rem; color: var(--text-secondary); line-height: 1.45;">Deep-dive into production blueprint architecture, dynamic variables, and Akın's core principles.</p>
             </div>
@@ -1568,11 +1568,14 @@
         <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem; background: rgba(99, 102, 241, 0.08); padding: 0.85rem 1.25rem; border-radius: var(--radius-md); border: 1px solid rgba(99, 102, 241, 0.25);">
           <div>
             <h4 style="font-size: 0.95rem; font-weight: 800; color: #ffffff; margin: 0 0 0.2rem 0;">Prompt Engineering Academy &amp; Wiki Handbook</h4>
-            <span style="font-size: 0.775rem; color: #38bdf8;">Synthesized from PromptVault Pro Architecture &amp; <em>The Prompting Book</em> by Fatih Kadir Akın (creator of prompts.chat)</span>
+            <span style="font-size: 0.775rem; color: #38bdf8;">Synthesized from PromptVault Pro Architecture &amp; <em>The Prompting Book</em> by <a href="https://prompts.chat/" target="_blank" rel="noopener noreferrer" style="color: #67e8f9; font-weight: 700; text-decoration: underline;">Fatih Kadir Akın</a> (creator of <a href="https://prompts.chat/" target="_blank" rel="noopener noreferrer" style="color: #67e8f9; font-weight: 700; text-decoration: underline;">prompts.chat</a>)</span>
           </div>
-          <span style="font-size: 0.725rem; font-weight: 700; color: var(--accent-emerald); background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.3); padding: 0.2rem 0.65rem; border-radius: var(--radius-full);">
-            📖 Reference &amp; Best Practices
-          </span>
+          <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+            <a href="https://deepwiki.com/f/prompts.chat/1-overview" target="_blank" rel="noopener noreferrer" class="badge" style="background: rgba(99, 102, 241, 0.18); color: #a5b4fc; border: 1px solid rgba(99, 102, 241, 0.4); text-decoration: none; font-size: 0.725rem; font-weight: 700; padding: 0.2rem 0.6rem; border-radius: var(--radius-full);" title="View prompts.chat Architecture on DeepWiki">🌐 prompts.chat on DeepWiki ↗</a>
+            <span style="font-size: 0.725rem; font-weight: 700; color: var(--accent-emerald); background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.3); padding: 0.2rem 0.65rem; border-radius: var(--radius-full);">
+              📖 Reference &amp; Best Practices
+            </span>
+          </div>
         </div>
 
         <div class="wiki-layout">
@@ -1596,6 +1599,9 @@
             <button type="button" class="wiki-nav-item" data-wiki-target="ch6">
               <span>📚 AI Prompting Glossary</span>
             </button>
+            <button type="button" class="wiki-nav-item" data-wiki-target="ch7">
+              <span>🌐 DeepWiki &amp; MCP Architecture</span>
+            </button>
           </nav>
 
           <!-- Wiki Article Display Pane -->
@@ -1609,7 +1615,7 @@
 
               <div class="wiki-quote-box">
                 "Every great prompt shares common structural elements. Understanding these components allows you to construct prompts systematically rather than through trial and error. Think of these components like LEGO bricks."
-                <span class="wiki-quote-author">— Fatih Kadir Akın, <em>The Prompting Book</em> (Foundations: Anatomy of an Effective Prompt)</span>
+                <span class="wiki-quote-author">— <a href="https://prompts.chat/" target="_blank" rel="noopener noreferrer" style="color: #38bdf8; text-decoration: underline; font-weight: 700;">Fatih Kadir Akın</a>, <em>The Prompting Book</em> (Foundations: Anatomy of an Effective Prompt)</span>
               </div>
 
               <table class="wiki-table">
@@ -1665,7 +1671,7 @@
 
               <div class="wiki-quote-box">
                 "One of the most important habits in prompt engineering is clearly separating your instructions from your context... Mixing them together confuses the model about what to do versus what to use."
-                <span class="wiki-quote-author">— Fatih Kadir Akın, <em>The Prompting Book</em> (Core Prompting Principles)</span>
+                <span class="wiki-quote-author">— <a href="https://prompts.chat/" target="_blank" rel="noopener noreferrer" style="color: #38bdf8; text-decoration: underline; font-weight: 700;">Fatih Kadir Akın</a>, <em>The Prompting Book</em> (Core Prompting Principles)</span>
               </div>
 
               <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-top: 0.75rem;">
@@ -1688,7 +1694,7 @@
 
             <!-- CHAPTER 3: AKIN'S CORE PRINCIPLES -->
             <article class="wiki-article-chapter" id="wikiArticle-ch3" style="display: none;">
-              <h3 style="font-size: 1.15rem; font-weight: 800; color: #ffffff; margin: 0 0 0.5rem 0;">3. Core Prompting Principles from Fatih Kadir Akın</h3>
+              <h3 style="font-size: 1.15rem; font-weight: 800; color: #ffffff; margin: 0 0 0.5rem 0;">3. Core Prompting Principles from <a href="https://prompts.chat/" target="_blank" rel="noopener noreferrer" style="color: #38bdf8; text-decoration: underline;">Fatih Kadir Akın</a></h3>
               <p style="font-size: 0.85rem; color: #cbd5e1; line-height: 1.6; margin: 0 0 0.85rem 0;">
                 Key foundational concepts extracted directly from <em>The Prompting Book</em> to elevate everyday prompting into mastery:
               </p>
@@ -1825,6 +1831,86 @@
                   </tr>
                 </tbody>
               </table>
+            </article>
+
+            <!-- CHAPTER 7: DEEPWIKI & MCP ARCHITECTURE -->
+            <article class="wiki-article-chapter" id="wikiArticle-ch7" style="display: none;">
+              <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.75rem;">
+                <h3 style="font-size: 1.15rem; font-weight: 800; color: #ffffff; margin: 0;">7. DeepWiki Architecture &amp; Remote MCP Setup</h3>
+                <a href="https://deepwiki.com/f/prompts.chat/1-overview" target="_blank" rel="noopener noreferrer" class="badge" style="background: rgba(99, 102, 241, 0.2); color: #818cf8; border: 1px solid rgba(99, 102, 241, 0.4); text-decoration: none; font-size: 0.725rem; font-weight: 700; padding: 0.2rem 0.6rem; border-radius: var(--radius-full);">
+                  🌐 View prompts.chat on DeepWiki ↗
+                </a>
+              </div>
+
+              <p style="font-size: 0.85rem; color: #cbd5e1; line-height: 1.6; margin: 0 0 1rem 0;">
+                <a href="https://deepwiki.com/" target="_blank" rel="noopener noreferrer" style="color: #67e8f9; font-weight: 700; text-decoration: underline;">DeepWiki</a> (engineered by Cognition Labs, creators of Devin) represents a major evolution in automated repository architecture analysis. It transforms open-source GitHub codebases into interactive technical handbooks complete with component diagrams, execution flowcharts, and conversational AI querying.
+              </p>
+
+              <div class="wiki-quote-box" style="margin-bottom: 1.25rem;">
+                "DeepWiki turns GitHub repositories into living architectural books with interactive diagrams, data models, and direct AI chat interfaces."
+                <span class="wiki-quote-author">— As demonstrated by <a href="https://prompts.chat/" target="_blank" rel="noopener noreferrer" style="color: #38bdf8; text-decoration: underline; font-weight: 700;">Fatih Kadir Akın</a> on <a href="https://deepwiki.com/f/prompts.chat/1-overview" target="_blank" rel="noopener noreferrer" style="color: #38bdf8; text-decoration: underline; font-weight: 700;">deepwiki.com/f/prompts.chat</a></span>
+              </div>
+
+              <div style="background: rgba(99, 102, 241, 0.08); border: 1px solid rgba(99, 102, 241, 0.25); border-radius: var(--radius-md); padding: 1rem 1.25rem; margin-bottom: 1.25rem;">
+                <h4 style="font-size: 0.95rem; font-weight: 800; color: #ffffff; margin: 0 0 0.35rem 0; display: flex; align-items: center; gap: 0.5rem;">
+                  <span>🌐 Inspect PromptVault Pro on DeepWiki</span>
+                </h4>
+                <p style="font-size: 0.8rem; color: #cbd5e1; line-height: 1.5; margin: 0 0 0.75rem 0;">
+                  Because PromptVault Pro is hosted on GitHub, DeepWiki can index our repository to generate a live, multi-chapter product architecture guide:
+                </p>
+                <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem; background: rgba(9, 13, 22, 0.85); padding: 0.65rem 0.95rem; border-radius: var(--radius-sm); border: 1px solid var(--border-medium);">
+                  <code style="font-family: var(--font-mono); font-size: 0.8rem; color: #38bdf8;">https://deepwiki.com/rockyswartz/PromptLibrary</code>
+                  <a href="https://deepwiki.com/rockyswartz/PromptLibrary" target="_blank" rel="noopener noreferrer" class="btn btn-secondary" style="font-size: 0.75rem; padding: 0.3rem 0.75rem; border-color: rgba(6, 182, 212, 0.4); color: var(--accent-cyan); text-decoration: none;">
+                    Open DeepWiki ↗
+                  </a>
+                </div>
+              </div>
+
+              <h4 style="font-size: 1rem; font-weight: 800; color: #ffffff; margin: 1rem 0 0.5rem 0;">🔌 Setting Up the DeepWiki Remote MCP Server</h4>
+              <p style="font-size: 0.85rem; color: #cbd5e1; line-height: 1.6; margin: 0 0 0.85rem 0;">
+                Cognition provides a public Model Context Protocol (MCP) server at <code style="color: #67e8f9; background: rgba(6, 182, 212, 0.15); padding: 1px 5px; border-radius: 4px;">https://mcp.deepwiki.com/mcp</code> over Server-Sent Events (SSE). Adding this MCP server empowers your AI coding assistant to query DeepWiki documentation on demand for any public repository.
+              </p>
+
+              <div style="display: flex; flex-direction: column; gap: 0.85rem;">
+                <!-- Setup Option A: Antigravity IDE -->
+                <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 1rem;">
+                  <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
+                    <strong style="color: var(--accent-cyan); font-size: 0.875rem;">Option A: Google Antigravity IDE</strong>
+                    <span style="font-size: 0.7rem; color: var(--text-muted); font-family: var(--font-mono);">~/.gemini/config/mcp_config.json</span>
+                  </div>
+                  <pre style="background: rgba(9, 13, 22, 0.95); border: 1px solid var(--border-medium); border-radius: var(--radius-sm); padding: 0.75rem; font-family: var(--font-mono); font-size: 0.775rem; color: #e2e8f0; overflow-x: auto; margin: 0;">{
+  "mcpServers": {
+    "deepwiki": {
+      "serverUrl": "https://mcp.deepwiki.com/mcp"
+    }
+  }
+}</pre>
+                </div>
+
+                <!-- Setup Option B: Claude Code CLI -->
+                <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 1rem;">
+                  <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
+                    <strong style="color: var(--accent-emerald); font-size: 0.875rem;">Option B: Claude Code CLI</strong>
+                    <span style="font-size: 0.7rem; color: var(--text-muted); font-family: var(--font-mono);">Terminal Command</span>
+                  </div>
+                  <pre style="background: rgba(9, 13, 22, 0.95); border: 1px solid var(--border-medium); border-radius: var(--radius-sm); padding: 0.75rem; font-family: var(--font-mono); font-size: 0.775rem; color: #e2e8f0; overflow-x: auto; margin: 0;">claude mcp add -s user -t http deepwiki https://mcp.deepwiki.com/mcp</pre>
+                </div>
+
+                <!-- Setup Option C: Cursor IDE -->
+                <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 1rem;">
+                  <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
+                    <strong style="color: var(--accent-violet); font-size: 0.875rem;">Option C: Cursor IDE</strong>
+                    <span style="font-size: 0.7rem; color: var(--text-muted); font-family: var(--font-mono);">~/.cursor/mcp.json</span>
+                  </div>
+                  <pre style="background: rgba(9, 13, 22, 0.95); border: 1px solid var(--border-medium); border-radius: var(--radius-sm); padding: 0.75rem; font-family: var(--font-mono); font-size: 0.775rem; color: #e2e8f0; overflow-x: auto; margin: 0;">{
+  "mcpServers": {
+    "deepwiki": {
+      "url": "https://mcp.deepwiki.com/mcp"
+    }
+  }
+}</pre>
+                </div>
+              </div>
             </article>
           </div>
         </div>

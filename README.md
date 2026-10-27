@@ -195,3 +195,12 @@ PromtLibrary/
 ├── SKILL.md                    # AI Prompt Library Designer skill specification & JSON schema
 └── README.md                   # Complete documentation & user guide
 ```
+
+---
+
+## 📚 Acknowledgments & References
+
+- **[Fatih Kadir Akın](https://prompts.chat/)**: Creator of [prompts.chat](https://prompts.chat/) (Awesome ChatGPT Prompts) and author of *The Prompting Book*. His structural philosophy—separating static instructions from dynamic context payloads, role-based priming, and negative guardrails—forms the architectural basis of PromptVault Pro's 5-section blueprints and Prompting Wiki.
+- **DeepWiki Architectural Documentation**: Inspired by the deep repository breakdown on [DeepWiki (prompts.chat Overview)](https://deepwiki.com/f/prompts.chat/1-overview). Inspect PromptVault Pro's architecture on DeepWiki at: [https://deepwiki.com/rockyswartz/PromptLibrary](https://deepwiki.com/rockyswartz/PromptLibrary).
+- **Randy Austin ([ExcelForFreelancers](https://www.youtube.com/@ExcelForFreelancers))**: Pioneering enterprise Excel, VBA, and workflow automation blueprints.
+

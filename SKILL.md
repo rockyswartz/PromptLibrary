@@ -337,4 +337,29 @@ The runner modal (`#runnerModal`) supports three synchronized perspectives:
 - [x] **Mutual-Exclusion Taxonomy Accordion**: Auto-collapsing accordion in Taxonomy Hierarchy with `flex-shrink: 0` to prevent tab compression and custom extended scrollbar.
 - [x] **Mobile Phone Portrait Fluid Design**: Complete `clamp()` token system for spacing and typography, single-row mobile header, and responsive runner modal stacking.
 - [x] **Brand Assets & Navigation**: Header brand logo and browser favicon from `assets/PromptLibrary_pro_Favicon.png`, plus floating smooth-scrolling "To the Top" button.
+- [x] **Prompting Wiki & Handbook**: Comprehensive 7-chapter in-app curriculum synthesizing production blueprint anatomy and Fatih Kadir Akın's *The Prompting Book*.
+- [x] **Author Attribution & Provenance**: Standardized recognition for creators ([Fatih Kadir Akın](https://prompts.chat/), Randy Austin - ExcelForFreelancers, HubSpot, Anthropic).
 
+---
+
+## 11. Author Recognition, External References & DeepWiki
+
+- **Fatih Kadir Akın Recognition**:
+  - Author of *The Prompting Book* and creator of [prompts.chat](https://prompts.chat/) (Awesome ChatGPT Prompts).
+  - Core methodologies embedded in PromptVault Pro: 5-section enterprise blueprint anatomy, dynamic context parameterization via `{{variables}}`, role-based priming, and negative guardrails to prevent hallucinations.
+  - Primary URL: [https://prompts.chat/](https://prompts.chat/)
+- **DeepWiki Architectural Documentation**:
+  - Reference implementation: [https://deepwiki.com/f/prompts.chat/1-overview](https://deepwiki.com/f/prompts.chat/1-overview)
+  - Live PromptVault Pro DeepWiki: [https://deepwiki.com/rockyswartz/PromptLibrary](https://deepwiki.com/rockyswartz/PromptLibrary)
+- **DeepWiki Remote MCP Server Integration**:
+  - Remote endpoint: `https://mcp.deepwiki.com/mcp` (SSE transport)
+  - Antigravity IDE configuration (`~/.gemini/config/mcp_config.json`):
+    ```json
+    {
+      "mcpServers": {
+        "deepwiki": {
+          "serverUrl": "https://mcp.deepwiki.com/mcp"
+        }
+      }
+    }
+    ```
