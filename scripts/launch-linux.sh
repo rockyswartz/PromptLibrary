@@ -3,7 +3,7 @@
 # Starts local server in background if needed and opens default browser
 
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-PORT=3456
+PORT=8080
 
 # Check if server is running
 if ! pgrep -f "server/server.py" > /dev/null && ! ss -tuln | grep -q ":$PORT"; then

@@ -7,7 +7,7 @@ An optional local backend for **Prompt Library Pro** powered by Python's built-i
 - **Zero External Dependencies**: Uses only standard Python library modules (`sqlite3`, `http.server`, `json`). No `pip install` required.
 - **ACID-Compliant SQLite Database**: Manages `promptlibrary.db` directly on disk with fast indexing.
 - **RESTful API**: Endpoints for CRUD operations on prompts, taxonomy synchronization, and database backups.
-- **Dual Mode**: Serves both the web app and the API on a single port (default: `8000`).
+- **Dual Mode**: Serves both the web app and the API on a single port (default: `8080`).
 
 ---
 
@@ -25,14 +25,14 @@ python3 server/init_db.py
 python3 server/server.py
 ```
 
-By default, the server runs on port `8000`. You can customize the port:
+By default, the server runs on port `8080`. You can customize the port:
 
 ```bash
-python3 server/server.py --port 3456
+python3 server/server.py --port 8080
 ```
 
 ### 3. Open the App
-Visit: [http://localhost:8000](http://localhost:8000)
+Visit: [http://localhost:8080](http://localhost:8080)
 
 The web application automatically detects the active SQLite backend and syncs changes to `promptlibrary.db`. If you close the server or open the frontend standalone, it gracefully continues using in-browser IndexedDB without interruptions.
 

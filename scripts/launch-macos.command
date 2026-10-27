@@ -3,7 +3,7 @@
 # Starts Python server if not already active and opens localhost in default browser
 
 DIR="$(cd "$(dirname "$0")/.." && pwd)"
-PORT=3456
+PORT=8080
 
 # Check if Python server is already running
 if ! pgrep -f "server/server.py" > /dev/null && ! lsof -i :$PORT > /dev/null 2>&1; then

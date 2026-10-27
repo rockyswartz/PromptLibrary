@@ -89,7 +89,7 @@ Built with modern semantic HTML5, Vanilla CSS, and lightweight Vanilla JavaScrip
 - **Optional Local SQLite Backend (`server/server.py`)**:
   - Python-powered local server connecting directly to `server/promptlibrary.db`.
   - Zero pip dependencies required (standard library `sqlite3` + `http.server`).
-  - Web app auto-detects if `server.py` is running on `localhost:8000` and syncs changes automatically.
+  - Web app auto-detects if `server.py` is running on `localhost:8080` and syncs changes automatically.
 - **Triple-Format Backup & Portability**:
   - **JSON**: Full v2.0 JSON backup with taxonomy structure and merge/overwrite options.
   - **Markdown**: Beautifully formatted Markdown ready for Obsidian and Notion.
@@ -139,9 +139,9 @@ The project is hosted on GitHub at:
 
 ### Method 3: Local SQLite Server (For Developers)
 ```bash
-python3 server/server.py --port 3456
+python3 server/server.py --port 8080
 ```
-Then visit: [http://localhost:3456](http://localhost:3456)
+Then visit: [http://localhost:8080](http://localhost:8080)
 
 ---
 
@@ -156,7 +156,7 @@ To launch PromptVault Pro with a single click—without opening a terminal or re
 #### Option A: Pre-packaged Command Launcher (Fastest)
 1. In Finder, open the project's `scripts/` folder.
 2. Drag `launch-macos.command` to your **Desktop** or **Dock**.
-3. Double-clicking it automatically checks if the Python backend is active, starts it in the background if needed, and launches `http://localhost:3456` in your default browser.
+3. Double-clicking it automatically checks if the Python backend is active, starts it in the background if needed, and launches `http://localhost:8080` in your default browser.
 
 #### Option B: Standalone Native macOS App (`PromptVault.app`)
 To create a clean native `.app` bundle with the official PromptVault icon:
@@ -166,12 +166,12 @@ To create a clean native `.app` bundle with the official PromptVault icon:
    -- Check if PromptVault backend is active; if not, launch in background
    set serverRunning to (do shell script "pgrep -f 'server.py' || true")
    if serverRunning is "" then
-       do shell script "cd '/Volumes/Active/AI Builds/PromtLibrary' && python3 server/server.py --port 3456 > /dev/null 2>&1 &"
+       do shell script "cd '/Volumes/Active/AI Builds/PromtLibrary' && python3 server/server.py --port 8080 > /dev/null 2>&1 &"
        delay 1
    end if
 
    -- Launch PromptVault Pro in default browser
-   open location "http://localhost:3456"
+   open location "http://localhost:8080"
    ```
 3. Click **File > Export...**
    - **Save As**: `PromptVault Pro`
@@ -189,7 +189,7 @@ To create a clean native `.app` bundle with the official PromptVault icon:
 #### Option A: 1-Click Batch File (`scripts/launch-windows.bat`)
 1. Create a Desktop shortcut to `scripts/launch-windows.bat`:
    - Right-click `scripts\launch-windows.bat` > **Send to > Desktop (create shortcut)**.
-2. Double-clicking the shortcut automatically spins up the background Python backend and opens `http://localhost:3456`.
+2. Double-clicking the shortcut automatically spins up the background Python backend and opens `http://localhost:8080`.
 
 #### Option B: Completely Silent Launcher (No Black Console Window)
 To launch silently in the background without leaving a CMD prompt window open:
@@ -197,16 +197,16 @@ To launch silently in the background without leaving a CMD prompt window open:
    ```vbscript
    Set WshShell = CreateObject("WScript.Shell")
    ' Launch server silently without console window (0 = hidden)
-   WshShell.Run "python server\server.py --port 3456", 0, False
+   WshShell.Run "python server\server.py --port 8080", 0, False
    WScript.Sleep 1000
    ' Open default web browser to localhost
-   WshShell.Run "http://localhost:3456"
+   WshShell.Run "http://localhost:8080"
    ```
 2. Right-click `Launch_PromptVault.vbs` > **Send to > Desktop (create shortcut)**.
 3. Right-click the desktop shortcut > **Properties > Change Icon...** and pick an icon.
 
 #### Option C: Native PWA Desktop App (Edge or Chrome)
-1. Open `http://localhost:3456` in **Microsoft Edge** or **Google Chrome**.
+1. Open `http://localhost:8080` in **Microsoft Edge** or **Google Chrome**.
 2. Click the browser menu (`...`) in the top-right corner.
 3. Select **Apps > Install PromptVault Pro as an App** (or click the install icon in the URL address bar).
 4. PromptVault will run in its own dedicated, frameless desktop application window with taskbar pinning.
@@ -227,7 +227,7 @@ To launch silently in the background without leaving a CMD prompt window open:
    Type=Application
    Name=PromptVault Pro
    Comment=Interactive AI Prompt Library & Blueprint System
-   Exec=bash -c "cd '/path/to/PromtLibrary' && (pgrep -f 'server.py' || python3 server/server.py --port 3456 &) && sleep 1 && xdg-open http://localhost:3456"
+   Exec=bash -c "cd '/path/to/PromtLibrary' && (pgrep -f 'server.py' || python3 server/server.py --port 8080 &) && sleep 1 && xdg-open http://localhost:8080"
    Icon=/path/to/PromtLibrary/assets/PromptLibrary_pro_Favicon.png
    Terminal=false
    Categories=Development;Utility;
@@ -252,7 +252,7 @@ Run or link `scripts/launch-linux.sh`:
 #### Option A: Native "Add to Home Screen" Web App
 PromptVault is fully responsive and features touch-optimized typography and drawer navigation:
 1. Ensure your iPhone/iPad is connected to the same local Wi-Fi network as your host machine (or open your published GitHub Pages URL: `https://rockyswartz.github.io/PromptLibrary/`).
-2. In **Safari**, visit `http://<YOUR_HOST_IP>:3456` or the GitHub Pages URL.
+2. In **Safari**, visit `http://<YOUR_HOST_IP>:8080` or the GitHub Pages URL.
 3. Tap the **Share** button (the square icon with the upward arrow).
 4. Scroll down and tap **Add to Home Screen** (➕).
 5. Label the app **PromptVault Pro** and tap **Add**.
@@ -262,7 +262,7 @@ PromptVault is fully responsive and features touch-optimized typography and draw
 1. Open the **Shortcuts** app on your iPhone or iPad.
 2. Tap **+** (New Shortcut) in the top-right corner.
 3. Tap **Add Action** > Search for **Open URLs**.
-4. In the URL parameter field, enter `http://<YOUR_HOST_IP>:3456` (or `https://rockyswartz.github.io/PromptLibrary/`).
+4. In the URL parameter field, enter `http://<YOUR_HOST_IP>:8080` (or `https://rockyswartz.github.io/PromptLibrary/`).
 5. Tap the shortcut name at the top, select **Rename**, and set it to **Open PromptVault**.
 6. Tap the icon to customize the color and glyph (e.g. lightning bolt or book icon).
 7. Tap **Add to Home Screen**. You can also trigger it hands-free via Siri: *"Hey Siri, Open PromptVault"*.

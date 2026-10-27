@@ -240,7 +240,7 @@ class PromptLibraryHandler(http.server.SimpleHTTPRequestHandler):
 class ReusableTCPServer(socketserver.TCPServer):
     allow_reuse_address = True
 
-def run(port=3456):
+def run(port=8080):
     current_port = port
     max_attempts = 15
     for attempt in range(max_attempts):
@@ -265,6 +265,6 @@ def run(port=3456):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Prompt Library Pro Local SQLite Server")
-    parser.add_argument("--port", type=int, default=3456, help="Port to run on (default: 3456)")
+    parser.add_argument("--port", type=int, default=8080, help="Port to run on (default: 8080)")
     args = parser.parse_args()
     run(args.port)
