@@ -15,7 +15,7 @@
   <link rel="icon" type="image/png" href="assets/PromptLibrary_pro_Favicon.png" />
 
   <!-- Main Stylesheet -->
-  <link rel="stylesheet" href="css/style.css?v=3.5" />
+  <link rel="stylesheet" href="css/style.css?v=4.1" />
 </head>
 <body>
 
@@ -348,12 +348,197 @@
         </button>
       </div>
 
-      <div style="display: flex; gap: 0.75rem; align-items: center;">
+      <div style="display: flex; gap: 0.75rem; align-items: center; position: relative;">
         <span class="kbd-badge" style="display: none; @media(min-width: 600px){ display:inline-block; }">⌘+Enter to copy</span>
-        <button id="runnerCopyBtn" class="btn btn-primary" style="padding: 0.65rem 1.4rem;">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
-          <span>Copy Prompt</span>
-        </button>
+        
+        <div class="split-btn-container" id="runnerCopySplitGroup">
+          <button id="runnerCopyBtn" class="btn btn-primary split-btn-action" title="Copy compiled prompt directly (⌘+Enter)">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+            <span>Copy Prompt</span>
+          </button>
+          <button id="runnerExportToggleBtn" type="button" class="btn btn-primary split-btn-dropdown" title="Send to LLM Chat or Copy Code Formats" aria-haspopup="true" aria-expanded="false">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </button>
+        </div>
+
+        <!-- Floating LLM Chat & Code Export Popover -->
+        <div id="llmExportPopover" class="llm-export-popover hidden" role="menu" aria-label="Send to LLM or Export Code">
+          <div class="llm-popover-header">
+            <div class="llm-popover-tabs" role="tablist">
+              <button type="button" id="llmTabChat" class="llm-tab-btn active" role="tab" aria-selected="true">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                <span>Chat</span>
+              </button>
+              <button type="button" id="llmTabCode" class="llm-tab-btn" role="tab" aria-selected="false">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+                <span>Code</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Chat Engines List -->
+          <div id="llmChatList" class="llm-popover-body">
+            <div class="llm-list-note">Copies prompt & opens chat in new tab:</div>
+            <button type="button" class="llm-option-row" data-llm="chatgpt">
+              <span class="llm-icon-wrap" style="color: #10a37f;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+              </span>
+              <span class="llm-option-name">ChatGPT</span>
+              <span class="llm-option-arrow">›</span>
+            </button>
+            <button type="button" class="llm-option-row" data-llm="claude">
+              <span class="llm-icon-wrap" style="color: #d97706;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 2v20M2 12h20M5 5l14 14M19 5L5 19"/></svg>
+              </span>
+              <span class="llm-option-name">Claude</span>
+              <span class="llm-option-arrow">›</span>
+            </button>
+            <button type="button" class="llm-option-row" data-llm="gemini">
+              <span class="llm-icon-wrap" style="color: #3b82f6;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3Z"/></svg>
+              </span>
+              <span class="llm-option-name">Google Gemini</span>
+              <span class="llm-option-arrow">›</span>
+            </button>
+            <button type="button" class="llm-option-row" data-llm="perplexity">
+              <span class="llm-icon-wrap" style="color: #06b6d4;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><path d="m4.93 4.93 4.24 4.24"/><path d="m14.83 9.17 4.24-4.24"/><path d="m14.83 14.83 4.24 4.24"/><path d="m9.17 14.83-4.24 4.24"/></svg>
+              </span>
+              <span class="llm-option-name">Perplexity AI</span>
+              <span class="llm-option-arrow">›</span>
+            </button>
+            <button type="button" class="llm-option-row" data-llm="deepseek">
+              <span class="llm-icon-wrap" style="color: #0284c7;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+              </span>
+              <span class="llm-option-name">DeepSeek</span>
+              <span class="llm-option-arrow">›</span>
+            </button>
+            <button type="button" class="llm-option-row" data-llm="grok">
+              <span class="llm-icon-wrap" style="color: #ffffff;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 4l16 16M20 4L4 20"/></svg>
+              </span>
+              <span class="llm-option-name">Grok (xAI)</span>
+              <span class="llm-option-arrow">›</span>
+            </button>
+            <button type="button" class="llm-option-row" data-llm="copilot">
+              <span class="llm-icon-wrap" style="color: #6366f1;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 2a8 8 0 0 0-8 8v12l8-4 8 4V10a8 8 0 0 0-8-8z"/></svg>
+              </span>
+              <span class="llm-option-name">Microsoft Copilot</span>
+              <span class="llm-option-arrow">›</span>
+            </button>
+            <button type="button" class="llm-option-row" data-llm="mistral">
+              <span class="llm-icon-wrap" style="color: #f97316;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect width="6" height="6" x="3" y="3" rx="1"/><rect width="6" height="6" x="15" y="3" rx="1"/><rect width="6" height="6" x="9" y="9" rx="1"/><rect width="6" height="6" x="3" y="15" rx="1"/><rect width="6" height="6" x="15" y="15" rx="1"/></svg>
+              </span>
+              <span class="llm-option-name">Mistral Le Chat</span>
+              <span class="llm-option-arrow">›</span>
+            </button>
+            <button type="button" class="llm-option-row" data-llm="falai">
+              <span class="llm-icon-wrap" style="color: #10b981;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+              </span>
+              <span class="llm-option-name">fal.ai Sandbox</span>
+              <span class="llm-option-arrow">›</span>
+            </button>
+            <button type="button" class="llm-option-row" data-llm="poe">
+              <span class="llm-icon-wrap" style="color: #a855f7;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><path d="M8 12h8"/><path d="M12 8v8"/></svg>
+              </span>
+              <span class="llm-option-name">Poe</span>
+              <span class="llm-option-arrow">›</span>
+            </button>
+            <button type="button" class="llm-option-row" data-llm="mitte">
+              <span class="llm-icon-wrap" style="color: #ec4899;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+              </span>
+              <span class="llm-option-name">Mitte.ai</span>
+              <span class="llm-option-arrow">›</span>
+            </button>
+          </div>
+
+          <!-- Code Formats List -->
+          <div id="llmCodeList" class="llm-popover-body hidden">
+            <div class="llm-list-note">Select code format to copy to clipboard:</div>
+            <button type="button" class="llm-option-row" data-code-format="raw">
+              <span class="llm-icon-wrap" style="color: #10b981;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+              </span>
+              <div class="llm-option-text-group">
+                <span class="llm-option-name">Raw Prompt Text</span>
+                <span class="llm-option-sub">Plain interpolated markdown string</span>
+              </div>
+              <span class="llm-option-arrow">📋</span>
+            </button>
+
+            <button type="button" class="llm-option-row" data-code-format="json">
+              <span class="llm-icon-wrap" style="color: #f59e0b;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7c0-2 2-3 4-3m8 0c2 0 4 1 4 3m0 10c0 2-2 3-4 3m-8 0c-2 0-4-1-4-3M9 12h6"/></svg>
+              </span>
+              <div class="llm-option-text-group">
+                <span class="llm-option-name">JSON Blueprint</span>
+                <span class="llm-option-sub">Full prompt schema with variable map</span>
+              </div>
+              <span class="llm-option-arrow">📋</span>
+            </button>
+
+            <button type="button" class="llm-option-row" data-code-format="python-openai">
+              <span class="llm-icon-wrap" style="color: #38bdf8;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m10 15 5 3-5 3v-6Z"/><rect width="20" height="14" x="2" y="3" rx="2"/></svg>
+              </span>
+              <div class="llm-option-text-group">
+                <span class="llm-option-name">Python (OpenAI SDK)</span>
+                <span class="llm-option-sub">client.chat.completions.create(...)</span>
+              </div>
+              <span class="llm-option-arrow">📋</span>
+            </button>
+
+            <button type="button" class="llm-option-row" data-code-format="python-anthropic">
+              <span class="llm-icon-wrap" style="color: #d97706;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m10 15 5 3-5 3v-6Z"/><rect width="20" height="14" x="2" y="3" rx="2"/></svg>
+              </span>
+              <div class="llm-option-text-group">
+                <span class="llm-option-name">Python (Anthropic SDK)</span>
+                <span class="llm-option-sub">client.messages.create(...)</span>
+              </div>
+              <span class="llm-option-arrow">📋</span>
+            </button>
+
+            <button type="button" class="llm-option-row" data-code-format="js-fetch">
+              <span class="llm-icon-wrap" style="color: #facc15;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+              </span>
+              <div class="llm-option-text-group">
+                <span class="llm-option-name">JavaScript (Fetch API)</span>
+                <span class="llm-option-sub">Modern async/await fetch snippet</span>
+              </div>
+              <span class="llm-option-arrow">📋</span>
+            </button>
+
+            <button type="button" class="llm-option-row" data-code-format="curl">
+              <span class="llm-icon-wrap" style="color: #a855f7;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+              </span>
+              <div class="llm-option-text-group">
+                <span class="llm-option-name">cURL Terminal Command</span>
+                <span class="llm-option-sub">curl -X POST https://api.openai.com...</span>
+              </div>
+              <span class="llm-option-arrow">📋</span>
+            </button>
+
+            <button type="button" class="llm-option-row" data-code-format="xml-claude">
+              <span class="llm-icon-wrap" style="color: #ec4899;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M2 12h20"/></svg>
+              </span>
+              <div class="llm-option-text-group">
+                <span class="llm-option-name">Claude XML &lt;prompt&gt;</span>
+                <span class="llm-option-sub">Encapsulated in structural XML tags</span>
+              </div>
+              <span class="llm-option-arrow">📋</span>
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   </dialog>
@@ -1990,8 +2175,8 @@
   </button>
 
   <!-- Scripts -->
-  <script src="js/data.js?v=4.0"></script>
-  <script src="js/storage.js?v=4.0"></script>
-  <script src="js/app.js?v=4.0"></script>
+  <script src="js/data.js?v=4.1"></script>
+  <script src="js/storage.js?v=4.1"></script>
+  <script src="js/app.js?v=4.1"></script>
 </body>
 </html>

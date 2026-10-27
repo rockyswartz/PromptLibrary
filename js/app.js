@@ -76,6 +76,12 @@ document.addEventListener("DOMContentLoaded", () => {
     runnerCharCount: document.getElementById("runnerCharCount"),
     runnerTokenCount: document.getElementById("runnerTokenCount"),
     runnerCopyBtn: document.getElementById("runnerCopyBtn"),
+    runnerExportToggleBtn: document.getElementById("runnerExportToggleBtn"),
+    llmExportPopover: document.getElementById("llmExportPopover"),
+    llmTabChat: document.getElementById("llmTabChat"),
+    llmTabCode: document.getElementById("llmTabCode"),
+    llmChatList: document.getElementById("llmChatList"),
+    llmCodeList: document.getElementById("llmCodeList"),
     runnerEditBtn: document.getElementById("runnerEditBtn"),
     runnerDuplicateBtn: document.getElementById("runnerDuplicateBtn"),
     runnerDeleteBtn: document.getElementById("runnerDeleteBtn"),
@@ -1486,6 +1492,13 @@ document.addEventListener("DOMContentLoaded", () => {
       elements.runnerCopyBtn.innerHTML = `${ICONS.copy} <span>Copy Prompt</span>`;
     }
 
+    if (elements.llmExportPopover) {
+      elements.llmExportPopover.classList.add("hidden");
+    }
+    if (elements.runnerExportToggleBtn) {
+      elements.runnerExportToggleBtn.setAttribute("aria-expanded", "false");
+    }
+
     if (elements.runnerModal && typeof elements.runnerModal.showModal === "function") {
       elements.runnerModal.showModal();
     }
@@ -2137,6 +2150,276 @@ document.addEventListener("DOMContentLoaded", () => {
         showToast("Compiled prompt copied to clipboard!", "success");
       });
     }
+
+    // ----------------------------------------------------
+    // LLM Chat Destination & Code Export Controller
+    // ----------------------------------------------------
+    function formatPromptAsCode(format, promptObj, compiledText, variableValues) {
+      const title = promptObj?.title || "AI Prompt Blueprint";
+      const author = promptObj?.author || "PromptVault Pro";
+
+      switch (format) {
+        case "raw":
+          return compiledText;
+
+        case "json": {
+          const payload = {
+            id: promptObj?.id,
+            title: promptObj?.title,
+            domain: promptObj?.domain,
+            category: promptObj?.category,
+            categories: promptObj?.categories,
+            author: promptObj?.author,
+            model: promptObj?.model,
+            difficulty: promptObj?.difficulty,
+            tags: promptObj?.tags,
+            compiledPrompt: compiledText,
+            injectedVariables: variableValues || {}
+          };
+          return JSON.stringify(payload, null, 2);
+        }
+
+        case "python-openai":
+          return `"""
+${title} — Python OpenAI SDK Snippet
+Generated via PromptVault Pro
+"""
+import os
+from openai import OpenAI
+
+# Initialize client (requires OPENAI_API_KEY environment variable)
+client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
+
+response = client.chat.completions.create(
+    model="gpt-4o",
+    messages=[
+        {
+            "role": "user",
+            "content": """${compiledText.replace(/"""/g, '\\"\\"\\"')}"""
+        }
+    ],
+    temperature=0.7
+)
+
+print(response.choices[0].message.content)`;
+
+        case "python-anthropic":
+          return `"""
+${title} — Python Anthropic Claude SDK Snippet
+Generated via PromptVault Pro
+"""
+import os
+import anthropic
+
+# Initialize client (requires ANTHROPIC_API_KEY environment variable)
+client = anthropic.Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY"))
+
+message = client.messages.create(
+    model="claude-3-5-sonnet-20241022",
+    max_tokens=4096,
+    messages=[
+        {
+            "role": "user",
+            "content": """${compiledText.replace(/"""/g, '\\"\\"\\"')}"""
+        }
+    ]
+)
+
+print(message.content[0].text)`;
+
+        case "js-fetch":
+          return `/**
+ * ${title} — Modern JavaScript Fetch API Snippet
+ * Generated via PromptVault Pro
+ */
+async function runPrompt() {
+  const apiKey = process.env.OPENAI_API_KEY;
+  const promptText = ${JSON.stringify(compiledText)};
+
+  const response = await fetch("https://api.openai.com/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": \`Bearer \${apiKey}\`
+    },
+    body: JSON.stringify({
+      model: "gpt-4o",
+      messages: [
+        { role: "user", content: promptText }
+      ],
+      temperature: 0.7
+    })
+  });
+
+  const data = await response.json();
+  console.log(data.choices[0].message.content);
+}
+
+runPrompt().catch(console.error);`;
+
+        case "curl":
+          return `# ${title} — Terminal cURL Command
+# Generated via PromptVault Pro
+curl https://api.openai.com/v1/chat/completions \\
+  -H "Content-Type: application/json" \\
+  -H "Authorization: Bearer $OPENAI_API_KEY" \\
+  -d '{
+    "model": "gpt-4o",
+    "messages": [
+      {
+        "role": "user",
+        "content": '"$(cat <<'EOF'
+${compiledText}
+EOF
+)"'
+      }
+    ]
+  }'`;
+
+        case "xml-claude":
+          return `<system_instructions>
+You are an expert AI execution engine. Execute the following structured prompt with maximum rigor and adherence to all constraints.
+</system_instructions>
+
+<prompt title="${escapeHTML(title)}" author="${escapeHTML(author)}">
+${compiledText}
+</prompt>`;
+
+        default:
+          return compiledText;
+      }
+    }
+
+    const LLM_ENGINES = {
+      chatgpt: { name: "ChatGPT", url: "https://chatgpt.com/" },
+      claude: { name: "Claude", url: "https://claude.ai/new" },
+      gemini: { name: "Google Gemini", url: "https://gemini.google.com/app" },
+      perplexity: { name: "Perplexity AI", url: "https://www.perplexity.ai/" },
+      deepseek: { name: "DeepSeek", url: "https://chat.deepseek.com/" },
+      grok: { name: "Grok (xAI)", url: "https://grok.com/" },
+      copilot: { name: "Microsoft Copilot", url: "https://copilot.microsoft.com/" },
+      mistral: { name: "Mistral Le Chat", url: "https://chat.mistral.ai/chat" },
+      falai: { name: "fal.ai Sandbox", url: "https://fal.ai/" },
+      poe: { name: "Poe", url: "https://poe.com/" },
+      mitte: { name: "Mitte.ai", url: "https://mitte.ai/" }
+    };
+
+    // Toggle LLM Export Popover
+    if (elements.runnerExportToggleBtn && elements.llmExportPopover) {
+      elements.runnerExportToggleBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const isHidden = elements.llmExportPopover.classList.contains("hidden");
+        elements.llmExportPopover.classList.toggle("hidden", !isHidden);
+        elements.runnerExportToggleBtn.setAttribute("aria-expanded", String(isHidden));
+      });
+    }
+
+    // Switch between Chat and Code tabs in popover
+    if (elements.llmTabChat && elements.llmTabCode) {
+      elements.llmTabChat.addEventListener("click", (e) => {
+        e.stopPropagation();
+        elements.llmTabChat.classList.add("active");
+        elements.llmTabChat.setAttribute("aria-selected", "true");
+        elements.llmTabCode.classList.remove("active");
+        elements.llmTabCode.setAttribute("aria-selected", "false");
+        if (elements.llmChatList) elements.llmChatList.classList.remove("hidden");
+        if (elements.llmCodeList) elements.llmCodeList.classList.add("hidden");
+      });
+
+      elements.llmTabCode.addEventListener("click", (e) => {
+        e.stopPropagation();
+        elements.llmTabCode.classList.add("active");
+        elements.llmTabCode.setAttribute("aria-selected", "true");
+        elements.llmTabChat.classList.remove("active");
+        elements.llmTabChat.setAttribute("aria-selected", "false");
+        if (elements.llmCodeList) elements.llmCodeList.classList.remove("hidden");
+        if (elements.llmChatList) elements.llmChatList.classList.add("hidden");
+      });
+    }
+
+    // Handle LLM Destination Clicks (Copies prompt and opens chat in new tab)
+    if (elements.llmChatList) {
+      elements.llmChatList.addEventListener("click", (e) => {
+        const row = e.target.closest(".llm-option-row[data-llm]");
+        if (!row || !state.selectedPrompt) return;
+        e.stopPropagation();
+
+        const llmKey = row.getAttribute("data-llm");
+        const engine = LLM_ENGINES[llmKey];
+        if (!engine) return;
+
+        const compiled = compilePrompt(state.selectedPrompt.template, state.variableValues);
+        copyToClipboard(compiled);
+        window.PromptStorage.recordUsage(state.selectedPrompt.id);
+        updateStatsBar();
+
+        showToast(`Copied to clipboard! Opening ${engine.name} — press ⌘+V to paste!`, "success");
+        window.open(engine.url, "_blank", "noopener,noreferrer");
+
+        if (elements.llmExportPopover) {
+          elements.llmExportPopover.classList.add("hidden");
+          if (elements.runnerExportToggleBtn) elements.runnerExportToggleBtn.setAttribute("aria-expanded", "false");
+        }
+      });
+    }
+
+    // Handle Code Format Clicks (Formats code and copies to clipboard)
+    if (elements.llmCodeList) {
+      elements.llmCodeList.addEventListener("click", (e) => {
+        const row = e.target.closest(".llm-option-row[data-code-format]");
+        if (!row || !state.selectedPrompt) return;
+        e.stopPropagation();
+
+        const format = row.getAttribute("data-code-format");
+        const compiled = compilePrompt(state.selectedPrompt.template, state.variableValues);
+        const formattedCode = formatPromptAsCode(format, state.selectedPrompt, compiled, state.variableValues);
+
+        copyToClipboard(formattedCode);
+        window.PromptStorage.recordUsage(state.selectedPrompt.id);
+        updateStatsBar();
+
+        const formatLabels = {
+          "raw": "Raw Prompt",
+          "json": "JSON Blueprint",
+          "python-openai": "Python OpenAI code",
+          "python-anthropic": "Python Anthropic code",
+          "js-fetch": "JavaScript Fetch code",
+          "curl": "cURL command",
+          "xml-claude": "Claude XML prompt"
+        };
+
+        showToast(`${formatLabels[format] || "Code"} copied to clipboard!`, "success");
+
+        if (elements.llmExportPopover) {
+          elements.llmExportPopover.classList.add("hidden");
+          if (elements.runnerExportToggleBtn) elements.runnerExportToggleBtn.setAttribute("aria-expanded", "false");
+        }
+      });
+    }
+
+    // Close LLM popover when clicking anywhere outside
+    document.addEventListener("click", (e) => {
+      if (elements.llmExportPopover && !elements.llmExportPopover.classList.contains("hidden")) {
+        const splitGroup = document.getElementById("runnerCopySplitGroup");
+        if (splitGroup && !splitGroup.contains(e.target) && !elements.llmExportPopover.contains(e.target)) {
+          elements.llmExportPopover.classList.add("hidden");
+          if (elements.runnerExportToggleBtn) {
+            elements.runnerExportToggleBtn.setAttribute("aria-expanded", "false");
+          }
+        }
+      }
+    });
+
+    // Close LLM popover on Escape
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && elements.llmExportPopover && !elements.llmExportPopover.classList.contains("hidden")) {
+        e.stopPropagation();
+        elements.llmExportPopover.classList.add("hidden");
+        if (elements.runnerExportToggleBtn) {
+          elements.runnerExportToggleBtn.setAttribute("aria-expanded", "false");
+        }
+      }
+    });
 
     if (elements.runnerEditBtn) {
       elements.runnerEditBtn.addEventListener("click", () => {
