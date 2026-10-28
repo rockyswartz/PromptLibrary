@@ -1024,7 +1024,8 @@ document.addEventListener("DOMContentLoaded", () => {
       const choiceVarsCount = vars.filter(v => v.isChoice).length;
       const previewText = templateStr
         .replace(/\{\{[^}]+\}\}/g, "[...]")
-        .replace(/\{([A-Za-z0-9_\-\s:\|]{1,50})\}/g, "[...]")
+        .replace(/\{([A-Za-z0-9_\-\s:\|\x27]{1,60})\}/g, "[...]")
+        .replace(/\[([A-Za-z0-9_\-\s:\|\x27]{2,60})\](?!\()/g, "[...]")
         .substring(0, 140) + "...";
       const sections = window.PromptStorage ? window.PromptStorage.parsePromptSections(prompt) : { isModular: false };
 
@@ -1254,7 +1255,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // 3. Replace square bracket variables [var] if defined in valMap
-    result = result.replace(/\[([A-Za-z0-9_\-\s]{2,50})\]/g, (match, raw) => {
+    result = result.replace(/\[([A-Za-z0-9_\-\s:\|\(\)\.\,\?\/\x27]{2,70})\]/g, (match, raw) => {
       const val = getVal(raw.trim());
       return val !== undefined ? val : match;
     });
@@ -1264,10 +1265,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function highlightVariablesInHtml(html) {
     if (!html) return "";
-    // Highlight {{var}} or {var} with .variable-name-tag
-    return html.replace(/(\{\{[^}]+\}\})|(\{([A-Za-z0-9_\-\s:\|\(\)\.\,\?\/]{1,60})\})/g, (match, dbl, sgl, sglName) => {
-      const content = dbl ? dbl.slice(2, -2).trim() : (sglName ? sglName.trim() : "");
-      if (!content || content.includes('"') || content.includes("'") || content.includes(";")) {
+    // Highlight {{var}}, {var}, or [var] with .variable-name-tag
+    return html.replace(/(\{\{[^}]+\}\})|(\{([A-Za-z0-9_\-\s:\|\(\)\.\,\?\/\x27]{1,70})\})|(\[([A-Za-z0-9_\-\s:\|\(\)\.\,\?\/\x27]{2,70})\])/g, (match, dbl, sgl, sglName, sqr, sqrName) => {
+      const content = dbl ? dbl.slice(2, -2).trim() : (sglName ? sglName.trim() : (sqrName ? sqrName.trim() : ""));
+      if (!content || content.includes('"') || content.includes(";") || content.startsWith("^")) {
         return match;
       }
       let varName = content;
@@ -1296,6 +1297,7 @@ document.addEventListener("DOMContentLoaded", () => {
     return name
       .replace(/[-_]/g, " ")
       .replace(/\b\w/g, c => c.toUpperCase())
+      .replace(/'S\b/g, "'s")
       .trim();
   }
 

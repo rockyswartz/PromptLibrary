@@ -90,12 +90,14 @@
       return name
         .replace(/[-_]/g, " ")
         .replace(/\b\w/g, c => c.toUpperCase())
+        .replace(/'S\b/g, "'s")
         .trim();
     }
 
-    // Auto-convert single-bracket variables {user input} to standard {{user input}} template brackets
-    // Protects JSON blocks, code blocks, CSS, and existing {{...}}
-    convertSingleBracketsToTemplateVars(text) {
+    // Auto-convert both square brackets [Investor's Name] and single curly braces {user input}
+    // to standard {{variable}} template syntax. Protects markdown links [text](url), images ![text](url),
+    // JSON blocks, code blocks, CSS, and existing {{...}}
+    convertBracketsToTemplateVars(text) {
       if (!text || typeof text !== "string") return text;
 
       // 1. Temporarily protect existing double braces {{...}}
@@ -106,13 +108,19 @@
         return placeholder;
       });
 
-      // 2. Convert single {var} to {{var}}
+      // 2. Temporarily protect markdown links [text](url) and images ![text](url)
+      const existingLinks = [];
+      safeText = safeText.replace(/!?\[([^\]]+)\]\(([^)]+)\)/g, (m) => {
+        const placeholder = `___PROMPT_MD_LINK_${existingLinks.length}___`;
+        existingLinks.push(m);
+        return placeholder;
+      });
+
+      // 3. Convert single curly braces {var} to {{var}}
       safeText = safeText.replace(/\{([^{}\r\n]+)\}/g, (match, inner) => {
         const trimmed = inner.trim();
-        // Skip JSON, code, CSS, or excessively long fragments
         if (
           trimmed.includes('"') ||
-          trimmed.includes("'") ||
           trimmed.includes(";") ||
           trimmed.includes("`") ||
           trimmed.includes("$") ||
@@ -123,15 +131,47 @@
           return match;
         }
 
-        // Check for variable-like characters (e.g. "user input", "topic", "tone: Formal | Casual")
-        if (/^[A-Za-z0-9_\-\s:\|\(\)\.\,\?\/]+$/.test(trimmed)) {
+        if (/^[A-Za-z0-9_\-\s:\|\(\)\.\,\?\/\x27]+$/.test(trimmed)) {
           return `{{${trimmed}}}`;
         }
         return match;
       });
 
-      // 3. Restore existing double braces
+      // 4. Convert square brackets [var] to {{var}} (e.g. [Investor's Name or Investor Type], [Company Name])
+      safeText = safeText.replace(/\[([^\[\]\r\n]+)\]/g, (match, inner) => {
+        const trimmed = inner.trim();
+        // Skip markdown checkboxes [ ] [x], footnotes [^1], or pure whitespace
+        if (trimmed === "" || trimmed === " " || trimmed === "x" || trimmed === "X" || trimmed.startsWith("^")) {
+          return match;
+        }
+        // Skip code-like blocks or excessively long sentences
+        if (
+          trimmed.includes(";") ||
+          trimmed.includes("`") ||
+          trimmed.includes("$") ||
+          trimmed.includes("=") ||
+          trimmed.length < 2 ||
+          trimmed.length > 70
+        ) {
+          return match;
+        }
+
+        if (/^[A-Za-z0-9_\-\s:\|\(\)\.\,\?\/\x27]+$/.test(trimmed)) {
+          return `{{${trimmed}}}`;
+        }
+        return match;
+      });
+
+      // 5. Restore markdown links
+      safeText = safeText.replace(/___PROMPT_MD_LINK_(\d+)___/g, (_, idx) => existingLinks[Number(idx)]);
+
+      // 6. Restore double braces
       return safeText.replace(/___PROMPT_VAR_DBL_(\d+)___/g, (_, idx) => existingDoubles[Number(idx)]);
+    }
+
+    // Alias for backwards compatibility
+    convertSingleBracketsToTemplateVars(text) {
+      return this.convertBracketsToTemplateVars(text);
     }
 
     // Comprehensive variable definition extractor (supports {{var}}, {var}, [var], and metadata)
@@ -190,10 +230,13 @@
 
       const templateStr = typeof template === "string" ? template : "";
       if (templateStr) {
+        // First convert any square or single brackets to standard template vars
+        const unifiedTemplate = this.convertBracketsToTemplateVars(templateStr);
+
         // 1. Scan for double braces {{var}}
         const dblRegex = /\{\{([^}]+)\}\}/g;
         let dm;
-        while ((dm = dblRegex.exec(templateStr)) !== null) {
+        while ((dm = dblRegex.exec(unifiedTemplate)) !== null) {
           const raw = dm[1].trim();
           let varName = raw;
           let inlineOptions = null;
@@ -220,54 +263,6 @@
               default: defaultValue,
               placeholder: meta.placeholder || `Enter value for ${varName}...`
             });
-          }
-        }
-
-        // 2. Scan for single braces {var} (excluding JSON/CSS/code)
-        const sglRegex = /\{([^{}\r\n]+)\}/g;
-        let sm;
-        while ((sm = sglRegex.exec(templateStr)) !== null) {
-          const raw = sm[1].trim();
-          if (
-            raw.includes('"') ||
-            raw.includes("'") ||
-            raw.includes(";") ||
-            raw.includes("`") ||
-            raw.includes("$") ||
-            raw.includes("=") ||
-            raw.length < 1 ||
-            raw.length > 70
-          ) {
-            continue;
-          }
-
-          if (/^[A-Za-z0-9_\-\s:\|\(\)\.\,\?\/]+$/.test(raw)) {
-            let varName = raw;
-            let inlineOptions = null;
-            if (raw.includes(":")) {
-              const parts = raw.split(":");
-              varName = parts[0].trim();
-              const optionsStr = parts.slice(1).join(":");
-              if (optionsStr.includes("|")) {
-                inlineOptions = optionsStr.split("|").map(s => s.trim()).filter(Boolean);
-              }
-            }
-
-            if (varName && !varMap.has(varName)) {
-              const meta = metaMap.get(varName.toLowerCase()) || {};
-              const options = inlineOptions || meta.options || null;
-              const isChoice = Array.isArray(options) && options.length > 0;
-              const defaultValue = meta.default !== undefined && meta.default !== "" ? meta.default : (isChoice ? options[0] : "");
-
-              varMap.set(varName, {
-                name: varName,
-                options: options,
-                isChoice: isChoice,
-                label: meta.label || this.formatVarLabel(varName),
-                default: defaultValue,
-                placeholder: meta.placeholder || `Enter value for ${varName}...`
-              });
-            }
           }
         }
       }
