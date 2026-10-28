@@ -3091,14 +3091,18 @@ ${compiledText}
     // Copy code snippet buttons in Help tabs
     document.querySelectorAll(".help-btn-copy-code").forEach(btn => {
       btn.addEventListener("click", () => {
-        const text = btn.dataset.copyText;
+        let text = btn.dataset.copyText;
+        if (!text && btn.dataset.copyTarget) {
+          const targetEl = document.querySelector(btn.dataset.copyTarget);
+          if (targetEl) text = targetEl.innerText || targetEl.textContent;
+        }
         if (text) {
           copyToClipboard(text);
           const originalText = btn.innerHTML;
           btn.innerHTML = `✓ Copied!`;
           btn.style.borderColor = "var(--accent-emerald)";
           btn.style.color = "var(--accent-emerald)";
-          showToast(`Copied snippet: ${text}`, "success");
+          showToast(`Copied to clipboard!`, "success");
           setTimeout(() => {
             btn.innerHTML = originalText;
             btn.style.borderColor = "";

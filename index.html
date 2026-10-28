@@ -802,7 +802,7 @@
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/><path d="M3 12c0 1.66 4 3 9 3s9-1.34 9-3"/></svg>
             <span>SQLite (.db)</span>
           </button>
-          <button id="exportNoVarsJsonBtn" class="btn btn-secondary" style="flex: 1.2; min-width: 175px; border-color: rgba(245, 158, 11, 0.45); color: #fde047; font-weight: 600;" title="Download JSON containing only prompts that currently have 0 variables for easy bulk editing">
+          <button id="exportNoVarsJsonBtn" class="btn btn-export-novars" title="Download JSON containing only prompts that currently have 0 variables for easy bulk editing">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
             <span id="exportNoVarsBtnText">Export 0-Var Prompts (JSON)</span>
           </button>
@@ -822,15 +822,15 @@
         </div>
 
         <!-- Prominently Emphasized Variable Ingestion Banner -->
-        <div style="background: linear-gradient(135deg, rgba(6, 182, 212, 0.12) 0%, rgba(99, 102, 241, 0.15) 100%); border: 1px solid rgba(6, 182, 212, 0.45); border-left: 4px solid var(--accent-cyan); border-radius: var(--radius-md); padding: 0.85rem 1rem; margin-bottom: 0.95rem; display: flex; align-items: flex-start; gap: 0.75rem; box-shadow: 0 4px 15px rgba(6, 182, 212, 0.1);">
-          <span style="font-size: 1.35rem; flex-shrink: 0; line-height: 1;">⚡</span>
-          <div style="font-size: 0.825rem; color: var(--text-primary); line-height: 1.55;">
-            <strong style="color: var(--accent-cyan); font-weight: 700; font-size: 0.85rem; display: block; margin-bottom: 0.2rem;">Smart Variable Ingestion &amp; Parameter Auto-Detection:</strong>
-            Paste any raw text or markdown prompt below. Placeholders like <code style="background: rgba(6,182,212,0.25); color: #67e8f9; padding: 0.15rem 0.45rem; border-radius: 4px; font-weight: 700; border: 1px solid rgba(6,182,212,0.4);">[Topic]</code>, <code style="background: rgba(99,102,241,0.25); color: #a5b4fc; padding: 0.15rem 0.45rem; border-radius: 4px; font-weight: 700; border: 1px solid rgba(99,102,241,0.4);">&lt;Audience&gt;</code>, or <code style="background: rgba(16,185,129,0.25); color: #6ee7b7; padding: 0.15rem 0.45rem; border-radius: 4px; font-weight: 700; border: 1px solid rgba(16,185,129,0.4);">{Tone}</code> will be <strong>auto-converted into interactive</strong> <code style="background: rgba(245,158,11,0.25); color: #fde047; padding: 0.15rem 0.45rem; border-radius: 4px; font-weight: 800; border: 1px solid rgba(245,158,11,0.5);">{{variables}}</code> with live runner fields!
+        <div class="smart-ingest-tip-box">
+          <span class="smart-ingest-tip-icon">⚡</span>
+          <div class="smart-ingest-tip-content">
+            <strong class="smart-ingest-tip-title">Smart Variable Ingestion &amp; Parameter Auto-Detection:</strong>
+            Paste any raw text or markdown prompt below. Placeholders like <code class="ingest-badge ingest-badge-cyan">[Topic]</code>, <code class="ingest-badge ingest-badge-purple">&lt;Audience&gt;</code>, or <code class="ingest-badge ingest-badge-green">{Tone}</code> will be <strong>auto-converted into interactive</strong> <code class="ingest-badge ingest-badge-amber">{{variables}}</code> with live runner fields!
           </div>
         </div>
 
-        <div style="display: flex; flex-direction: column; gap: 0.75rem; background: rgba(0,0,0,0.2); padding: 0.85rem; border-radius: var(--radius-md); border: 1px solid var(--border-subtle);">
+        <div class="smart-ingest-form-card">
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.65rem;">
             <div>
               <label class="form-label" style="font-size: 0.75rem;" for="ingestTitle">Prompt Title (Optional)</label>
@@ -1649,47 +1649,51 @@
 
           <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 0.75rem;">
             <!-- Format 1: Double Braces -->
-            <div style="background: rgba(0,0,0,0.25); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: var(--radius-sm); padding: 0.75rem;">
+            <div class="help-format-card help-format-card-amber">
               <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.35rem;">
-                <strong style="color: #fde047; font-size: 0.8rem;">1. Double Braces (Native Standard)</strong>
-                <span style="font-size: 0.7rem; background: rgba(245, 158, 11, 0.2); color: #fde047; padding: 0.1rem 0.4rem; border-radius: 4px;">Recommended</span>
+                <strong class="help-format-title-amber" style="font-size: 0.8rem;">1. Double Braces (Native Standard)</strong>
+                <span class="help-format-badge-amber">Recommended</span>
               </div>
               <p style="font-size: 0.775rem; color: var(--text-secondary); margin: 0 0 0.45rem 0; line-height: 1.45;">
-                Standard syntax for text and choice pills:
+                Standard syntax for text inputs and dropdown pills:
               </p>
-              <code style="font-size: 0.75rem; color: #fde047; display: block; background: rgba(0,0,0,0.4); padding: 0.35rem 0.5rem; border-radius: 4px;">{{topic}}</code>
-              <code style="font-size: 0.75rem; color: #a5b4fc; display: block; background: rgba(0,0,0,0.4); padding: 0.35rem 0.5rem; border-radius: 4px; margin-top: 0.3rem;">{{tone: Professional | Direct | Casual}}</code>
+              <code class="help-format-code-amber">{{topic}}</code>
+              <code class="help-format-code-amber" style="margin-top: 0.3rem;">{{tone: Professional | Direct | Casual}}</code>
             </div>
 
             <!-- Format 2: Square Brackets -->
-            <div style="background: rgba(0,0,0,0.25); border: 1px solid rgba(6, 182, 212, 0.3); border-radius: var(--radius-sm); padding: 0.75rem;">
+            <div class="help-format-card help-format-card-cyan">
               <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.35rem;">
-                <strong style="color: #67e8f9; font-size: 0.8rem;">2. Square Brackets (Natural Writing)</strong>
-                <span style="font-size: 0.7rem; background: rgba(6, 182, 212, 0.2); color: #67e8f9; padding: 0.1rem 0.4rem; border-radius: 4px;">Fast &amp; Easy</span>
+                <strong class="help-format-title-cyan" style="font-size: 0.8rem;">2. Square Brackets (Natural Writing)</strong>
+                <span class="help-format-badge-cyan">Fast &amp; Easy</span>
               </div>
               <p style="font-size: 0.775rem; color: var(--text-secondary); margin: 0 0 0.45rem 0; line-height: 1.45;">
-                Type placeholders naturally as you write:
+                Type placeholders naturally as you draft prompts:
               </p>
-              <code style="font-size: 0.75rem; color: #67e8f9; display: block; background: rgba(0,0,0,0.4); padding: 0.35rem 0.5rem; border-radius: 4px;">[Company Name]</code>
-              <code style="font-size: 0.75rem; color: #67e8f9; display: block; background: rgba(0,0,0,0.4); padding: 0.35rem 0.5rem; border-radius: 4px; margin-top: 0.3rem;">[Investor's Name or Investor Type]</code>
+              <code class="help-format-code-cyan">[Company Name]</code>
+              <code class="help-format-code-cyan" style="margin-top: 0.3rem;">[Investor's Name or Investor Type]</code>
             </div>
 
             <!-- Format 3: Single Curly Braces -->
-            <div style="background: rgba(0,0,0,0.25); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: var(--radius-sm); padding: 0.75rem;">
+            <div class="help-format-card help-format-card-emerald">
               <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.35rem;">
-                <strong style="color: #6ee7b7; font-size: 0.8rem;">3. Single Braces</strong>
-                <span style="font-size: 0.7rem; background: rgba(16, 185, 129, 0.2); color: #6ee7b7; padding: 0.1rem 0.4rem; border-radius: 4px;">Auto-Detected</span>
+                <strong class="help-format-title-emerald" style="font-size: 0.8rem;">3. Single Braces</strong>
+                <span class="help-format-badge-emerald">Auto-Detected</span>
               </div>
               <p style="font-size: 0.775rem; color: var(--text-secondary); margin: 0 0 0.45rem 0; line-height: 1.45;">
-                Clean bracket syntax supported everywhere:
+                Clean curly brackets auto-detected everywhere:
               </p>
-              <code style="font-size: 0.75rem; color: #6ee7b7; display: block; background: rgba(0,0,0,0.4); padding: 0.35rem 0.5rem; border-radius: 4px;">{user input}</code>
-              <code style="font-size: 0.75rem; color: #6ee7b7; display: block; background: rgba(0,0,0,0.4); padding: 0.35rem 0.5rem; border-radius: 4px; margin-top: 0.3rem;">{specific industry or market}</code>
+              <code class="help-format-code-emerald">{user input}</code>
+              <code class="help-format-code-emerald" style="margin-top: 0.3rem;">{specific industry or market}</code>
             </div>
           </div>
 
-          <div style="background: rgba(255,255,255,0.04); padding: 0.65rem 0.85rem; border-radius: var(--radius-sm); font-size: 0.775rem; color: var(--text-muted); line-height: 1.5;">
-            💡 <strong>How to Add Variables in the Editor:</strong> When editing an existing prompt, highlight any word or phrase in the template box and click <strong style="color: var(--accent-cyan);">"✨ Wrap Selection in {{...}}"</strong>. It instantly wraps the selection as an interactive parameter!
+          <div style="background: rgba(99, 102, 241, 0.08); border: 1px solid rgba(99, 102, 241, 0.2); padding: 0.75rem 0.95rem; border-radius: var(--radius-sm); font-size: 0.785rem; color: var(--text-secondary); line-height: 1.55;">
+            <strong>🛠️ Fast Ways to Add Variables to Existing Prompts:</strong>
+            <br />• <strong>Dashboard Filter:</strong> Set the main filter to <strong style="color: var(--accent-amber);">"⚠️ Needs Variables (0 vars)"</strong> to find all static prompts in your vault.
+            <br />• <strong>In the Editor:</strong> Highlight any word or phrase and click <strong style="color: var(--accent-cyan);">"✨ Wrap Selection in {{...}}"</strong> to convert it instantly into an interactive input.
+            <br />• <strong>One-Click Bracket Conversion:</strong> If your prompt already has words in <code>[brackets]</code> or <code>{braces}</code>, click <strong style="color: var(--accent-cyan);">"🔄 Convert [brackets] to {{vars}}"</strong> to convert all of them in one click!
+            <br />• <strong>Bulk LLM Processing:</strong> Export prompts with 0 variables using the Backup modal, batch-process them with an LLM, and re-import them (see Tab 5).
           </div>
         </div>
 
@@ -1817,6 +1821,52 @@
               <p class="help-step-desc">
                 Click <strong>"Import JSON Backup"</strong> in the Backup modal. PromptVault Pro parses the JSON file, merges new prompts, and automatically registers any new custom categories without overwriting your existing library.
               </p>
+            </div>
+          </div>
+
+          <div class="help-step-item">
+            <div class="help-step-num">5</div>
+            <div class="help-step-content">
+              <h5 class="help-step-title">Bulk LLM Variable Enrichment (0-Variable Prompts)</h5>
+              <p class="help-step-desc">
+                Have existing prompts without dynamic variables? You can batch-parameterize them in seconds using an LLM (ChatGPT, Claude, or Gemini):
+                <br /><strong>1. Export:</strong> Click <strong>"Export 0-Var Prompts (JSON)"</strong> in the Backup modal to download only your static prompts.
+                <br /><strong>2. LLM Parameterization:</strong> Copy the Turnkey LLM Prompt below, attach or paste your exported JSON, and run it. The LLM identifies key parameters, inserts <code>{{text_variables}}</code> and <code>{{choice: Option A | Option B}}</code> dropdowns, and returns the updated JSON.
+                <br /><strong>3. Re-Import:</strong> In PromptVault Pro, select <strong>"Merge (Update Existing & Add New)"</strong> and upload the JSON file. All prompts are seamlessly enriched with interactive runner fields!
+              </p>
+
+              <!-- Copyable LLM Master Prompt Card -->
+              <div style="background: rgba(0,0,0,0.25); border: 1px solid var(--border-medium); border-radius: var(--radius-sm); padding: 0.85rem; margin-top: 0.65rem;">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.45rem;">
+                  <strong style="color: var(--accent-cyan); font-size: 0.8rem;">🤖 Turnkey LLM Parameterization Prompt:</strong>
+                  <button type="button" class="btn btn-secondary help-btn-copy-code" data-copy-target="#llmEnrichPromptText" style="padding: 0.25rem 0.65rem; font-size: 0.75rem;">
+                    📋 Copy LLM Prompt
+                  </button>
+                </div>
+                <pre id="llmEnrichPromptText" style="background: rgba(0,0,0,0.4); padding: 0.75rem; border-radius: 4px; font-size: 0.75rem; font-family: var(--font-mono); color: var(--text-secondary); white-space: pre-wrap; max-height: 220px; overflow-y: auto; margin: 0; line-height: 1.45;">You are an expert Prompt Engineer for PromptVault Pro.
+I will provide a JSON array of prompts exported from my library that currently lack dynamic interactive variables.
+
+YOUR TASK:
+Analyze each prompt's `template` text and insert dynamic interactive variables so the prompt becomes highly reusable, structured, and customizable.
+
+VARIABLE RULES:
+1. Free-form text inputs: Replace static placeholders, company names, targets, goals, or topics with double curly braces: `{{variable_name}}` or `{{Variable Name}}`. Example: `{{company_name}}`, `{{industry}}`, `{{target_audience}}`.
+2. Multiple-choice dropdowns: When a parameter has standard or logical choices (such as Tone, Format, Style, Level, or Urgency), format it with choices separated by vertical pipes:
+   `{{name: Option 1 | Option 2 | Option 3}}`
+   Example: `{{tone: Professional | Conversational | Technical | Persuasive}}`
+   Example: `{{format: Markdown Table | Bulleted Hierarchy | Executive Summary}}`
+3. Convert any existing brackets: Convert existing `[brackets]`, `{single_braces}`, or `<angles>` into `{{variable_name}}`.
+
+JSON REQUIREMENTS:
+1. Preserve all existing object fields intact (`id`, `title`, `categories`, `category`, `subcategories`, `subcategory`, `model`, `difficulty`, `author`, `notes`, `source`, `createdAt`, `featured`, `tags`).
+2. Update the `template` string with the newly inserted variables.
+3. In the `variables` array, list the extracted variable objects:
+   `{"name": "variable_name", "label": "Descriptive Label", "type": "text" or "choice", "options": ["Option 1", "Option 2"] (if choice), "default": ""}`
+4. Return ONLY the raw valid JSON array `[...]` with no conversational markdown preambles or explanations so it can be imported directly.
+
+Here is the JSON data to process:
+[PASTE YOUR EXPORTED JSON HERE]</pre>
+              </div>
             </div>
           </div>
         </div>
