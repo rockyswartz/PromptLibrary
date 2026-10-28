@@ -1022,7 +1022,10 @@ document.addEventListener("DOMContentLoaded", () => {
       const templateStr = prompt.template || "";
       const vars = extractVariableDefinitions(templateStr, prompt.variables);
       const choiceVarsCount = vars.filter(v => v.isChoice).length;
-      const previewText = templateStr.replace(/\{\{[^}]+\}\}/g, "[...]").substring(0, 140) + "...";
+      const previewText = templateStr
+        .replace(/\{\{[^}]+\}\}/g, "[...]")
+        .replace(/\{([A-Za-z0-9_\-\s:\|]{1,50})\}/g, "[...]")
+        .substring(0, 140) + "...";
       const sections = window.PromptStorage ? window.PromptStorage.parsePromptSections(prompt) : { isModular: false };
 
       const promptCats = Array.isArray(prompt.categories) && prompt.categories.length > 0
@@ -1173,55 +1176,105 @@ document.addEventListener("DOMContentLoaded", () => {
   // Dynamic Variable Extraction & Compilation (With Choices)
   // ----------------------------------------------------
   function extractVariableDefinitions(template, promptVariables = []) {
-    if (!template) return [];
-    const regex = /\{\{([^}]+)\}\}/g;
+    if (window.PromptStorage && typeof window.PromptStorage.extractVariableDefinitions === "function") {
+      return window.PromptStorage.extractVariableDefinitions(template, promptVariables);
+    }
+    if (!template && (!promptVariables || promptVariables.length === 0)) return [];
     const varMap = new Map();
-    let m;
-
-    const metaMap = new Map((promptVariables || []).map(v => [v.name, v]));
-
-    while ((m = regex.exec(template)) !== null) {
-      const raw = m[1].trim();
-      let varName = raw;
-      let inlineOptions = null;
-
-      if (raw.includes(":")) {
-        const parts = raw.split(":");
-        varName = parts[0].trim();
-        const optionsStr = parts.slice(1).join(":");
-        if (optionsStr.includes("|")) {
-          inlineOptions = optionsStr.split("|").map(s => s.trim()).filter(Boolean);
-        }
-      }
-
-      if (!varMap.has(varName)) {
-        const meta = metaMap.get(varName) || {};
-        const options = inlineOptions || meta.options || null;
-        const isChoice = Array.isArray(options) && options.length > 0;
-        const defaultValue = meta.default || (isChoice ? options[0] : "");
-
-        varMap.set(varName, {
-          name: varName,
-          options: options,
-          isChoice: isChoice,
-          label: meta.label || formatVarLabel(varName),
-          default: defaultValue,
-          placeholder: meta.placeholder || `Enter value for ${varName}...`
+    (promptVariables || []).forEach(v => {
+      if (!v) return;
+      const name = typeof v === "string" ? v.trim() : (v.name || v.key || v.variable || "");
+      if (name) {
+        varMap.set(name, {
+          name: name,
+          label: (typeof v === "object" && v.label) || formatVarLabel(name),
+          default: (typeof v === "object" && v.default) || "",
+          options: (typeof v === "object" && v.options) || null,
+          isChoice: Boolean(typeof v === "object" && Array.isArray(v.options) && v.options.length > 0)
         });
       }
-    }
-
+    });
     return Array.from(varMap.values());
   }
 
-  function compilePrompt(template, varValues) {
+  function compilePrompt(template, varValues = {}) {
     if (!template) return "";
-    return template.replace(/\{\{([^}]+)\}\}/g, (match, rawContent) => {
-      let key = rawContent.trim();
+
+    // Build flexible lookup map for case/underscore/space matching
+    const valMap = new Map();
+    Object.entries(varValues || {}).forEach(([k, v]) => {
+      if (v !== undefined && v !== "") {
+        const strVal = String(v);
+        valMap.set(k, strVal);
+        valMap.set(k.trim(), strVal);
+        valMap.set(k.trim().toLowerCase(), strVal);
+        valMap.set(k.trim().toLowerCase().replace(/\s+/g, "_"), strVal);
+        valMap.set(k.trim().toLowerCase().replace(/_/g, " "), strVal);
+      }
+    });
+
+    function getVal(rawKey) {
+      let key = rawKey.trim();
       if (key.includes(":")) {
         key = key.split(":")[0].trim();
       }
-      return varValues[key] !== undefined && varValues[key] !== "" ? varValues[key] : match;
+      if (valMap.has(key)) return valMap.get(key);
+      const lower = key.toLowerCase();
+      if (valMap.has(lower)) return valMap.get(lower);
+      const under = lower.replace(/\s+/g, "_");
+      if (valMap.has(under)) return valMap.get(under);
+      const spaced = lower.replace(/_/g, " ");
+      if (valMap.has(spaced)) return valMap.get(spaced);
+      return undefined;
+    }
+
+    // 1. Replace double curly braces {{var}}
+    let result = template.replace(/\{\{([^}]+)\}\}/g, (match, raw) => {
+      const val = getVal(raw);
+      return val !== undefined ? val : match;
+    });
+
+    // 2. Replace single curly braces {var} (excluding JSON/CSS/code snippets)
+    result = result.replace(/\{([^{}\r\n]+)\}/g, (match, raw) => {
+      const trimmed = raw.trim();
+      if (
+        trimmed.includes('"') ||
+        trimmed.includes("'") ||
+        trimmed.includes(";") ||
+        trimmed.includes("`") ||
+        trimmed.includes("$") ||
+        trimmed.includes("=") ||
+        trimmed.length < 1 ||
+        trimmed.length > 70
+      ) {
+        return match;
+      }
+      const val = getVal(trimmed);
+      return val !== undefined ? val : match;
+    });
+
+    // 3. Replace square bracket variables [var] if defined in valMap
+    result = result.replace(/\[([A-Za-z0-9_\-\s]{2,50})\]/g, (match, raw) => {
+      const val = getVal(raw.trim());
+      return val !== undefined ? val : match;
+    });
+
+    return result;
+  }
+
+  function highlightVariablesInHtml(html) {
+    if (!html) return "";
+    // Highlight {{var}} or {var} with .variable-name-tag
+    return html.replace(/(\{\{[^}]+\}\})|(\{([A-Za-z0-9_\-\s:\|\(\)\.\,\?\/]{1,60})\})/g, (match, dbl, sgl, sglName) => {
+      const content = dbl ? dbl.slice(2, -2).trim() : (sglName ? sglName.trim() : "");
+      if (!content || content.includes('"') || content.includes("'") || content.includes(";")) {
+        return match;
+      }
+      let varName = content;
+      if (varName.includes(":")) {
+        varName = varName.split(":")[0].trim();
+      }
+      return `<span class="variable-name-tag" title="Dynamic Prompt Variable">{{${escapeHTML(varName)}}}</span>`;
     });
   }
 
@@ -1299,7 +1352,7 @@ document.addEventListener("DOMContentLoaded", () => {
           <span class="blueprint-section-title">👤 Role / Persona</span>
           <span class="blueprint-section-badge">Expert Alignment</span>
         </div>
-        <div class="blueprint-section-content">${escapeHTML(sections.persona || "Expert AI Specialist")}</div>
+        <div class="blueprint-section-content">${highlightVariablesInHtml(escapeHTML(sections.persona || "Expert AI Specialist"))}</div>
       </div>
 
       <div class="blueprint-section-card accent-objective">
@@ -1307,7 +1360,7 @@ document.addEventListener("DOMContentLoaded", () => {
           <span class="blueprint-section-title">🎯 Core Task / Objective</span>
           <span class="blueprint-section-badge">Deliverable Goal</span>
         </div>
-        <div class="blueprint-section-content">${escapeHTML(sections.objective || "Execute the defined task with precision and clarity.")}</div>
+        <div class="blueprint-section-content">${highlightVariablesInHtml(escapeHTML(sections.objective || "Execute the defined task with precision and clarity."))}</div>
       </div>
 
       <div class="blueprint-section-card accent-inputs">
@@ -1315,7 +1368,7 @@ document.addEventListener("DOMContentLoaded", () => {
           <span class="blueprint-section-title">📥 Context & Dynamic Inputs</span>
           <span class="blueprint-section-badge">${varDefs.length > 0 ? `${varDefs.length} Variables` : "Parameters"}</span>
         </div>
-        <div class="blueprint-section-content">${escapeHTML(sections.context || "Standard context parameters.")}</div>
+        <div class="blueprint-section-content">${highlightVariablesInHtml(escapeHTML(sections.context || "Standard context parameters."))}</div>
       </div>
 
       <div class="blueprint-section-card accent-guardrails">
@@ -1323,7 +1376,7 @@ document.addEventListener("DOMContentLoaded", () => {
           <span class="blueprint-section-title">🛡️ Negative Guardrails & Reliability</span>
           <span class="blueprint-section-badge">Anti-Hallucination</span>
         </div>
-        <div class="blueprint-section-content">${escapeHTML(sections.guardrails || "Adhere strictly to verified facts, mitigate hallucinations, and avoid extraneous filler.")}</div>
+        <div class="blueprint-section-content">${highlightVariablesInHtml(escapeHTML(sections.guardrails || "Adhere strictly to verified facts, mitigate hallucinations, and avoid extraneous filler."))}</div>
       </div>
 
       <div class="blueprint-section-card accent-rubric">
@@ -1331,7 +1384,7 @@ document.addEventListener("DOMContentLoaded", () => {
           <span class="blueprint-section-title">📑 Output Specification & Rubric</span>
           <span class="blueprint-section-badge">Quality Rubric</span>
         </div>
-        <div class="blueprint-section-content">${escapeHTML(sections.outputRubric || "Structured Markdown format with clear headings.")}</div>
+        <div class="blueprint-section-content">${highlightVariablesInHtml(escapeHTML(sections.outputRubric || "Structured Markdown format with clear headings."))}</div>
       </div>
     `;
   }
@@ -1813,6 +1866,7 @@ document.addEventListener("DOMContentLoaded", () => {
       tags: tagsArray,
       description: elements.formDescription.value.trim(),
       template: template,
+      variables: extractVariableDefinitions(template),
       notes: elements.formNotes.value.trim(),
       sections: {
         persona: elements.formSectionPersona ? elements.formSectionPersona.value.trim() : "",
@@ -2716,7 +2770,10 @@ ${compiledText}
 
         let processed = raw;
         if (elements.ingestAutoVars && elements.ingestAutoVars.checked) {
-          // Convert [variable], <variable> to {{variable}}
+          // Convert {variable}, [variable], <variable> to {{variable}}
+          if (window.PromptStorage && typeof window.PromptStorage.convertSingleBracketsToTemplateVars === "function") {
+            processed = window.PromptStorage.convertSingleBracketsToTemplateVars(processed);
+          }
           processed = processed.replace(/\[([A-Za-z0-9_\-\s]{2,40})\]/g, (m, g) => `{{${g.toLowerCase().trim().replace(/\s+/g, '_')}}}`);
           processed = processed.replace(/<([A-Za-z0-9_\-\s]{2,40})>/g, (m, g) => `{{${g.toLowerCase().trim().replace(/\s+/g, '_')}}}`);
         }
@@ -2741,6 +2798,7 @@ ${compiledText}
           tags: ["ingested"],
           description: "Ingested via smart text converter",
           template: processed,
+          variables: extractVariableDefinitions(processed),
           isCustom: true
         };
 
@@ -2765,6 +2823,9 @@ ${compiledText}
             if (!text.trim()) continue;
             let processed = text.trim();
             if (elements.ingestAutoVars && elements.ingestAutoVars.checked) {
+              if (window.PromptStorage && typeof window.PromptStorage.convertSingleBracketsToTemplateVars === "function") {
+                processed = window.PromptStorage.convertSingleBracketsToTemplateVars(processed);
+              }
               processed = processed.replace(/\[([A-Za-z0-9_\-\s]{2,40})\]/g, (m, g) => `{{${g.toLowerCase().trim().replace(/\s+/g, '_')}}}`);
               processed = processed.replace(/<([A-Za-z0-9_\-\s]{2,40})>/g, (m, g) => `{{${g.toLowerCase().trim().replace(/\s+/g, '_')}}}`);
             }
@@ -2781,6 +2842,7 @@ ${compiledText}
               tags: ["bulk-imported"],
               description: `Bulk imported from ${file.name}`,
               template: processed,
+              variables: extractVariableDefinitions(processed),
               isCustom: true
             };
             window.PromptStorage.savePrompt(newPrompt);

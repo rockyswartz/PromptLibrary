@@ -85,6 +85,210 @@
       this.init();
     }
 
+    formatVarLabel(name) {
+      if (!name) return "";
+      return name
+        .replace(/[-_]/g, " ")
+        .replace(/\b\w/g, c => c.toUpperCase())
+        .trim();
+    }
+
+    // Auto-convert single-bracket variables {user input} to standard {{user input}} template brackets
+    // Protects JSON blocks, code blocks, CSS, and existing {{...}}
+    convertSingleBracketsToTemplateVars(text) {
+      if (!text || typeof text !== "string") return text;
+
+      // 1. Temporarily protect existing double braces {{...}}
+      const existingDoubles = [];
+      let safeText = text.replace(/\{\{[^}]+\}\}/g, (m) => {
+        const placeholder = `___PROMPT_VAR_DBL_${existingDoubles.length}___`;
+        existingDoubles.push(m);
+        return placeholder;
+      });
+
+      // 2. Convert single {var} to {{var}}
+      safeText = safeText.replace(/\{([^{}\r\n]+)\}/g, (match, inner) => {
+        const trimmed = inner.trim();
+        // Skip JSON, code, CSS, or excessively long fragments
+        if (
+          trimmed.includes('"') ||
+          trimmed.includes("'") ||
+          trimmed.includes(";") ||
+          trimmed.includes("`") ||
+          trimmed.includes("$") ||
+          trimmed.includes("=") ||
+          trimmed.length < 1 ||
+          trimmed.length > 70
+        ) {
+          return match;
+        }
+
+        // Check for variable-like characters (e.g. "user input", "topic", "tone: Formal | Casual")
+        if (/^[A-Za-z0-9_\-\s:\|\(\)\.\,\?\/]+$/.test(trimmed)) {
+          return `{{${trimmed}}}`;
+        }
+        return match;
+      });
+
+      // 3. Restore existing double braces
+      return safeText.replace(/___PROMPT_VAR_DBL_(\d+)___/g, (_, idx) => existingDoubles[Number(idx)]);
+    }
+
+    // Comprehensive variable definition extractor (supports {{var}}, {var}, [var], and metadata)
+    extractVariableDefinitions(template, promptVariables = []) {
+      const varMap = new Map();
+
+      // Normalize any provided promptVariables metadata (strings or objects)
+      const normalizedMeta = [];
+      if (Array.isArray(promptVariables)) {
+        promptVariables.forEach(v => {
+          if (!v) return;
+          if (typeof v === "string") {
+            const name = v.trim();
+            if (name) {
+              normalizedMeta.push({
+                name,
+                label: this.formatVarLabel(name),
+                default: "",
+                placeholder: `Enter value for ${name}...`,
+                options: null,
+                isChoice: false
+              });
+            }
+          } else if (typeof v === "object") {
+            const name = String(v.name || v.key || v.variable || v.title || v.id || "").trim();
+            if (name) {
+              const options = Array.isArray(v.options) ? v.options : null;
+              normalizedMeta.push({
+                name,
+                label: v.label || this.formatVarLabel(name),
+                default: v.default !== undefined ? String(v.default) : (options ? options[0] : ""),
+                placeholder: v.placeholder || `Enter value for ${name}...`,
+                options,
+                isChoice: Boolean(Array.isArray(options) && options.length > 0)
+              });
+            }
+          }
+        });
+      } else if (promptVariables && typeof promptVariables === "object") {
+        Object.entries(promptVariables).forEach(([key, val]) => {
+          const name = key.trim();
+          if (name) {
+            normalizedMeta.push({
+              name,
+              label: this.formatVarLabel(name),
+              default: typeof val === "string" ? val : "",
+              placeholder: `Enter value for ${name}...`,
+              options: null,
+              isChoice: false
+            });
+          }
+        });
+      }
+
+      const metaMap = new Map(normalizedMeta.map(v => [v.name.toLowerCase(), v]));
+
+      const templateStr = typeof template === "string" ? template : "";
+      if (templateStr) {
+        // 1. Scan for double braces {{var}}
+        const dblRegex = /\{\{([^}]+)\}\}/g;
+        let dm;
+        while ((dm = dblRegex.exec(templateStr)) !== null) {
+          const raw = dm[1].trim();
+          let varName = raw;
+          let inlineOptions = null;
+          if (raw.includes(":")) {
+            const parts = raw.split(":");
+            varName = parts[0].trim();
+            const optionsStr = parts.slice(1).join(":");
+            if (optionsStr.includes("|")) {
+              inlineOptions = optionsStr.split("|").map(s => s.trim()).filter(Boolean);
+            }
+          }
+
+          if (varName && !varMap.has(varName)) {
+            const meta = metaMap.get(varName.toLowerCase()) || {};
+            const options = inlineOptions || meta.options || null;
+            const isChoice = Array.isArray(options) && options.length > 0;
+            const defaultValue = meta.default !== undefined && meta.default !== "" ? meta.default : (isChoice ? options[0] : "");
+
+            varMap.set(varName, {
+              name: varName,
+              options: options,
+              isChoice: isChoice,
+              label: meta.label || this.formatVarLabel(varName),
+              default: defaultValue,
+              placeholder: meta.placeholder || `Enter value for ${varName}...`
+            });
+          }
+        }
+
+        // 2. Scan for single braces {var} (excluding JSON/CSS/code)
+        const sglRegex = /\{([^{}\r\n]+)\}/g;
+        let sm;
+        while ((sm = sglRegex.exec(templateStr)) !== null) {
+          const raw = sm[1].trim();
+          if (
+            raw.includes('"') ||
+            raw.includes("'") ||
+            raw.includes(";") ||
+            raw.includes("`") ||
+            raw.includes("$") ||
+            raw.includes("=") ||
+            raw.length < 1 ||
+            raw.length > 70
+          ) {
+            continue;
+          }
+
+          if (/^[A-Za-z0-9_\-\s:\|\(\)\.\,\?\/]+$/.test(raw)) {
+            let varName = raw;
+            let inlineOptions = null;
+            if (raw.includes(":")) {
+              const parts = raw.split(":");
+              varName = parts[0].trim();
+              const optionsStr = parts.slice(1).join(":");
+              if (optionsStr.includes("|")) {
+                inlineOptions = optionsStr.split("|").map(s => s.trim()).filter(Boolean);
+              }
+            }
+
+            if (varName && !varMap.has(varName)) {
+              const meta = metaMap.get(varName.toLowerCase()) || {};
+              const options = inlineOptions || meta.options || null;
+              const isChoice = Array.isArray(options) && options.length > 0;
+              const defaultValue = meta.default !== undefined && meta.default !== "" ? meta.default : (isChoice ? options[0] : "");
+
+              varMap.set(varName, {
+                name: varName,
+                options: options,
+                isChoice: isChoice,
+                label: meta.label || this.formatVarLabel(varName),
+                default: defaultValue,
+                placeholder: meta.placeholder || `Enter value for ${varName}...`
+              });
+            }
+          }
+        }
+      }
+
+      // 3. Include any variables defined in promptVariables that weren't matched in template
+      normalizedMeta.forEach(meta => {
+        if (meta.name && !varMap.has(meta.name)) {
+          varMap.set(meta.name, {
+            name: meta.name,
+            options: meta.options || null,
+            isChoice: Boolean(meta.isChoice),
+            label: meta.label || this.formatVarLabel(meta.name),
+            default: meta.default || (meta.options ? meta.options[0] : ""),
+            placeholder: meta.placeholder || `Enter value for ${meta.name}...`
+          });
+        }
+      });
+
+      return Array.from(varMap.values());
+    }
+
     _normalizeList(list) {
       if (!Array.isArray(list)) return [];
       
@@ -112,6 +316,16 @@
         const cats = (master && master.categories) || (Array.isArray(p.categories) && p.categories.length > 0 ? p.categories : [p.category || "General"]);
         const subcat = (master && master.subcategory) || p.subcategory || "General";
 
+        // Auto-heal single bracket variables {user input} -> {{user input}}
+        let template = p.template || "";
+        if (template && typeof template === "string") {
+          template = this.convertSingleBracketsToTemplateVars(template);
+        }
+
+        // Auto-populate / normalize variables
+        let vars = (Array.isArray(p.variables) && p.variables.length > 0) ? p.variables : [];
+        const extractedVars = this.extractVariableDefinitions(template, vars);
+
         deduplicated.push({
           ...p,
           domain,
@@ -119,7 +333,9 @@
           categories: cats,
           category: cats[0] || "General",
           subcategories: Array.isArray(p.subcategories) && p.subcategories.length > 0 ? p.subcategories : [subcat],
-          subcategory: subcat
+          subcategory: subcat,
+          template: template,
+          variables: extractedVars
         });
       });
 
@@ -590,6 +806,19 @@
                     : folderName.toLowerCase().includes("image") || folderName.toLowerCase().includes("flux") ? "Midjourney / Flux / DALL-E"
                     : "ChatGPT / Claude / Gemini";
 
+        // Preserve any existing variables from Prompcat export (array or object)
+        let rawVars = [];
+        if (Array.isArray(p.variables) && p.variables.length > 0) {
+          rawVars = p.variables;
+        } else if (p.variables && typeof p.variables === "object") {
+          rawVars = Object.entries(p.variables).map(([k, v]) => ({ name: k, label: k, default: String(v || "") }));
+        }
+
+        // Auto-convert single bracket variables {user input} -> {{user input}}
+        const convertedTemplate = this.convertSingleBracketsToTemplateVars(templateText);
+        // Extract complete variable definitions
+        const extractedVars = this.extractVariableDefinitions(convertedTemplate, rawVars);
+
         return {
           id: "prompcat-" + p.id,
           title: String(p.title || "Untitled Prompt").trim(),
@@ -599,8 +828,8 @@
           subcategories: Array.isArray(p.tags) ? p.tags : [],
           tags: Array.isArray(p.tags) ? p.tags : [],
           description: description || "Imported from Prompcat",
-          template: templateText,
-          variables: [],
+          template: convertedTemplate,
+          variables: extractedVars,
           notes: p.notes || "",
           isFavorite: Boolean(p.isFavorite),
           isCustom: true,
@@ -646,6 +875,20 @@
         } else {
           throw new Error("Invalid format. Expected an array of prompts or object with 'prompts' property.");
         }
+
+        // Normalize all imported prompts: convert single-bracket variables and extract variables
+        importedPrompts = importedPrompts.map(p => {
+          let t = p.template || "";
+          if (typeof t === "string") {
+            t = this.convertSingleBracketsToTemplateVars(t);
+          }
+          const v = this.extractVariableDefinitions(t, p.variables || []);
+          return {
+            ...p,
+            template: t,
+            variables: v
+          };
+        });
 
         if (mode === "replace") {
           this.savePrompts(importedPrompts);
@@ -999,7 +1242,7 @@
           contextLines.push(line);
         } else {
           // Heuristic classification for un-headed templates
-          if (trimmed.includes("{{") || trimmed.startsWith("**Goal") || trimmed.startsWith("**Target") || trimmed.startsWith("**Context") || trimmed.startsWith("**Deliverable")) {
+          if (trimmed.includes("{{") || /\{[A-Za-z0-9_\-\s:\|]{2,50}\}/.test(trimmed) || trimmed.startsWith("**Goal") || trimmed.startsWith("**Target") || trimmed.startsWith("**Context") || trimmed.startsWith("**Deliverable")) {
             contextLines.push(line);
           } else if (/negative|must not|never|avoid|hallucination|fallback/i.test(trimmed) && trimmed.length > 10) {
             guardrailLines.push(line);
