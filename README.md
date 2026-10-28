@@ -142,11 +142,73 @@ If you want a dedicated offline copy on your computer with a real SQLite databas
 - Extract the ZIP folder into any directory on your computer (e.g. `~/Documents/PromptVault` or `C:\PromptVault`).
 
 #### Step 2: Launch the Local Server
-PromptVault Pro includes a lightweight local backend powered by Python's built-in standard library (`sqlite3` and `http.server`—zero `pip install` dependencies required):
+PromptVault Pro includes a lightweight local backend powered exclusively by Python's built-in standard library (`sqlite3`, `http.server`, `json`, `urllib`).
 
-```bash
-python3 server/server.py
-```
+> [!NOTE]
+> **Zero `pip install` Dependencies Required**:
+> You do **NOT** need to run any `pip install` commands to use PromptVault Pro! Everything runs using standard Python. If your system has Python installed, it works immediately out of the box.
+
+<details open>
+<summary><b>🔍 Where to Open the Terminal & Run Commands (Windows, macOS, Linux, Android)</b></summary>
+<br>
+
+If you are unfamiliar with command line tools or aren't sure where to type commands:
+
+#### 🪟 Windows (10 / 11)
+1. **Open the extracted folder** where you unzipped PromptVault (e.g. `C:\PromptVault` or `Downloads\PromptLibrary`).
+2. Click in the File Explorer address bar at the very top, type **`cmd`**, and press <kbd>Enter</kbd>.
+   *(Alternative: hold <kbd>Shift</kbd> and right-click any empty space inside the folder, then select **"Open in Terminal"** or **"Open PowerShell window here"**).*
+3. In the black Command Prompt window that opens, type the command and press <kbd>Enter</kbd>:
+   ```cmd
+   python server\server.py
+   ```
+   *(If `python` is not recognized, try `py server\server.py`. Note: if you ever need to run a `pip install` command in Python projects, this exact Command Prompt window is where you type it).*
+
+#### 🍎 macOS (Apple Mac)
+1. **Open Terminal**: Press <kbd>Cmd</kbd> + <kbd>Space</kbd> to open Spotlight, type **`Terminal`**, and press <kbd>Enter</kbd>.
+2. **Navigate to your folder**: Type `cd ` (with a trailing space), then drag and drop the extracted `PromptLibrary` folder directly from Finder into the Terminal window. The path will fill in automatically:
+   ```bash
+   cd "/path/to/extracted/PromptLibrary"
+   ```
+   Press <kbd>Enter</kbd>.
+3. Start the server:
+   ```bash
+   python3 server/server.py
+   ```
+   *(This Terminal window is also where you would run any standard `pip3 install <package>` commands if ever needed).*
+
+#### 🐧 Linux (Ubuntu, Debian, Fedora, Arch)
+1. **Open Terminal**: Press <kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>T</kbd> (or right-click anywhere inside the project folder and choose **"Open in Terminal"**).
+2. If opened from your home directory, navigate to the folder:
+   ```bash
+   cd ~/Downloads/PromptLibrary
+   ```
+3. Run the server:
+   ```bash
+   python3 server/server.py
+   ```
+   *(Any standard `pip install` or `pip3 install` commands are also executed in this terminal).*
+
+#### 🤖 Android (Phone or Tablet)
+On Android devices, you have two flexible choices:
+- **Option A (Simplest & Recommended — Zero Terminal)**: You don't need a terminal at all! Simply open your published URL (or your computer's Wi-Fi address `http://<YOUR_COMPUTER_IP>:8080`) in **Chrome** or **Firefox**, tap the **three dots menu (⋮)**, and select **"Add to Home screen"** or **"Install app"**. It functions as a complete offline app.
+- **Option B (Run Python Directly on Android with Termux)**:
+  1. Install **[Termux](https://f-droid.org/packages/com.termux/)** from F-Droid (or GitHub Releases).
+  2. Open the Termux app and install Python:
+     ```bash
+     pkg update && pkg install python git
+     ```
+  3. Clone or copy your project folder:
+     ```bash
+     git clone https://github.com/rockyswartz/PromptLibrary.git
+     cd PromptLibrary
+     python server/server.py
+     ```
+  4. Open Chrome on Android and visit: `http://localhost:8080`.
+     *(In Termux, any standard `pip install` command can also be run directly).*
+
+</details>
+
 *(If port 8080 is already occupied by another program on your computer, the server automatically detects the collision and steps to port 8081 without errors).*
 
 #### Step 3: Open in Browser
@@ -157,7 +219,7 @@ All prompts and custom additions are now synchronized with your local `server/pr
 
 ---
 
-## 🖥️ 1-Click Desktop & Mobile Applet Walkthroughs (macOS | Windows | Linux | iOS)
+## 🖥️ 1-Click Desktop & Mobile Applet Walkthroughs (macOS | Windows | Linux | iOS | Android)
 
 To launch PromptVault Pro with a single click—without opening a terminal or remembering ports—follow the walkthrough below for your operating system:
 
@@ -278,6 +340,29 @@ PromptVault is fully responsive and features touch-optimized typography and draw
 5. Tap the shortcut name at the top, select **Rename**, and set it to **Open PromptVault**.
 6. Tap the icon to customize the color and glyph (e.g. lightning bolt or book icon).
 7. Tap **Add to Home Screen**. You can also trigger it hands-free via Siri: *"Hey Siri, Open PromptVault"*.
+
+---
+
+### 🤖 5. Android (Samsung, Google Pixel, Xiaomi, OnePlus)
+
+#### Option A: 1-Tap Home Screen App (PWA)
+1. Open **Google Chrome**, **Edge**, or **Samsung Internet** on your Android device.
+2. Navigate to your PromptVault instance (e.g. `https://rockyswartz.github.io/PromptLibrary/` or `http://<YOUR_COMPUTER_IP>:8080`).
+3. Tap the **three-dots menu icon (⋮)** in the top right.
+4. Select **Add to Home screen** (or **Install app**).
+5. Name the app **PromptVault Pro** and tap **Add**.
+6. The app now lives in your app drawer and home screen as a standalone, distraction-free app that loads instantly.
+
+#### Option B: Offline Local Python Server with Termux Widget
+If you want to run the SQLite Python server directly on your Android phone without needing a computer:
+1. Install **Termux** and **Termux:Widget** from F-Droid.
+2. In Termux, create a one-tap shortcut:
+   ```bash
+   mkdir -p ~/.shortcuts
+   echo "cd ~/PromptLibrary && python server/server.py" > ~/.shortcuts/PromptVault
+   chmod +x ~/.shortcuts/PromptVault
+   ```
+3. Add a **Termux Widget** to your Android home screen and select **PromptVault** to launch the server with a single tap.
 
 ---
 
