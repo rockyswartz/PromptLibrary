@@ -758,6 +758,32 @@
       }, 200);
     }
 
+    // Export only prompts that currently have 0 variables (ready for bulk editing & parameterization)
+    exportPromptsWithoutVariablesJSON() {
+      const allPrompts = this.getPrompts();
+      const withoutVars = allPrompts.filter(p => !p.variables || p.variables.length === 0);
+      const data = {
+        version: "3.3.0",
+        description: "PromptVault Pro prompts with 0 variables (ready for editing & variable parameterization)",
+        exportedAt: new Date().toISOString(),
+        totalCount: withoutVars.length,
+        prompts: withoutVars
+      };
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      const dateStr = new Date().toISOString().split("T")[0];
+      a.href = url;
+      a.download = `prompts-needing-variables-${dateStr}.json`;
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(() => {
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }, 200);
+      return withoutVars.length;
+    }
+
     // Convert Prompcat legacy export to Prompt Library Pro schema
     convertPrompcatFormat(prompcatData) {
       const folders = prompcatData.folders || [];

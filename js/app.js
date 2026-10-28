@@ -18,6 +18,7 @@ document.addEventListener("DOMContentLoaded", () => {
     difficultyFilter: "all",
     sortBy: "featured",
     favoritesOnly: false,
+    variableFilter: "all",
     selectedPrompt: null,
     variableValues: {},
     editingPromptId: null,
@@ -51,6 +52,7 @@ document.addEventListener("DOMContentLoaded", () => {
     openCategoryManagerBtn: document.getElementById("openCategoryManagerBtn"),
     modelFilter: document.getElementById("modelFilter"),
     difficultyFilter: document.getElementById("difficultyFilter"),
+    variableFilter: document.getElementById("variableFilter"),
     sortBy: document.getElementById("sortBy"),
     favoritesToggleBtn: document.getElementById("favoritesToggleBtn"),
 
@@ -123,6 +125,8 @@ document.addEventListener("DOMContentLoaded", () => {
     detectedVarsNotice: document.getElementById("detectedVarsNotice"),
     insertChoiceVarBtn: document.getElementById("insertChoiceVarBtn"),
     insertTextVarBtn: document.getElementById("insertTextVarBtn"),
+    wrapVarBtn: document.getElementById("wrapVarBtn"),
+    autoConvertBracketsBtn: document.getElementById("autoConvertBracketsBtn"),
     closeFormModalBtn: document.getElementById("closeFormModalBtn"),
     cancelFormBtn: document.getElementById("cancelFormBtn"),
     openAddPromptBtn: document.getElementById("openAddPromptBtn"),
@@ -171,6 +175,7 @@ document.addEventListener("DOMContentLoaded", () => {
     openDataModalBtn: document.getElementById("openDataModalBtn"),
     closeDataModalBtn: document.getElementById("closeDataModalBtn"),
     exportJsonBtn: document.getElementById("exportJsonBtn"),
+    exportNoVarsJsonBtn: document.getElementById("exportNoVarsJsonBtn"),
     exportMdBtn: document.getElementById("exportMdBtn"),
     exportSqliteBtn: document.getElementById("exportSqliteBtn"),
     importFile: document.getElementById("importFile"),
@@ -933,6 +938,13 @@ document.addEventListener("DOMContentLoaded", () => {
       result = result.filter(p => (p.difficulty || "").toLowerCase() === state.difficultyFilter.toLowerCase());
     }
 
+    // Variable Presence filter (All / With Variables / Needs Variables)
+    if (state.variableFilter === "with-vars") {
+      result = result.filter(p => p.variables && p.variables.length > 0);
+    } else if (state.variableFilter === "no-vars") {
+      result = result.filter(p => !p.variables || p.variables.length === 0);
+    }
+
     // Search Query
     if (state.searchQuery.trim()) {
       const query = state.searchQuery.toLowerCase().trim();
@@ -1004,10 +1016,12 @@ document.addEventListener("DOMContentLoaded", () => {
           state.selectedSources.clear();
           state.modelFilter = "all";
           state.difficultyFilter = "all";
+          state.variableFilter = "all";
           state.favoritesOnly = false;
           if (elements.searchInput) elements.searchInput.value = "";
           if (elements.modelFilter) elements.modelFilter.value = "all";
           if (elements.difficultyFilter) elements.difficultyFilter.value = "all";
+          if (elements.variableFilter) elements.variableFilter.value = "all";
           if (elements.favoritesToggleBtn) elements.favoritesToggleBtn.classList.remove("active");
           if (elements.searchClearBtn) elements.searchClearBtn.style.display = "none";
           renderCategories();
@@ -1802,7 +1816,50 @@ document.addEventListener("DOMContentLoaded", () => {
       `;
       elements.detectedVarsNotice.style.display = "block";
     } else {
-      elements.detectedVarsNotice.style.display = "none";
+      elements.detectedVarsNotice.innerHTML = `
+        <span style="color: var(--text-muted); font-size: 0.84rem;">
+          💡 <strong>Tip:</strong> No variables detected yet. Highlight any phrase and click <strong>"✨ Wrap Selection in {{...}}"</strong> or type <code>[placeholder]</code> to add interactive inputs.
+        </span>
+      `;
+      elements.detectedVarsNotice.style.display = "block";
+    }
+  }
+
+  function wrapSelectionInVar() {
+    const textarea = elements.formTemplate;
+    if (!textarea) return;
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const text = textarea.value;
+    const selected = text.substring(start, end).trim();
+    if (!selected) {
+      insertVariableSnippet("{{Variable}}");
+      return;
+    }
+    // Clean any existing outer brackets if user selected [Topic] or {Topic}
+    let cleaned = selected.replace(/^(\[|\{|\{\{)(.*?)(\]|\}|\}\})$/, "$2").trim();
+    if (!cleaned) cleaned = "Variable";
+    const replacement = `{{${cleaned}}}`;
+    textarea.value = text.substring(0, start) + replacement + text.substring(end);
+    textarea.selectionStart = start;
+    textarea.selectionEnd = start + replacement.length;
+    textarea.focus();
+    detectTemplateVars();
+    showToast(`Wrapped "${cleaned}" as {{${cleaned}}}`, "info");
+  }
+
+  function autoConvertBracketsInEditor() {
+    const textarea = elements.formTemplate;
+    if (!textarea) return;
+    const text = textarea.value;
+    if (!text) return;
+    const converted = window.PromptStorage.convertBracketsToTemplateVars(text);
+    if (converted !== text) {
+      textarea.value = converted;
+      detectTemplateVars();
+      showToast("Converted bracket placeholders to {{variables}}!", "success");
+    } else {
+      showToast("No convertable [brackets] or {braces} found.", "info");
     }
   }
 
@@ -2147,6 +2204,14 @@ document.addEventListener("DOMContentLoaded", () => {
     if (elements.difficultyFilter) {
       elements.difficultyFilter.addEventListener("change", (e) => {
         state.difficultyFilter = e.target.value;
+        renderGrid();
+      });
+    }
+
+    // Variable Presence filter (All / With Variables / Needs Variables)
+    if (elements.variableFilter) {
+      elements.variableFilter.addEventListener("change", (e) => {
+        state.variableFilter = e.target.value;
         renderGrid();
       });
     }
@@ -2608,6 +2673,12 @@ ${compiledText}
         insertVariableSnippet("{{task_goal}}");
       });
     }
+    if (elements.wrapVarBtn) {
+      elements.wrapVarBtn.addEventListener("click", wrapSelectionInVar);
+    }
+    if (elements.autoConvertBracketsBtn) {
+      elements.autoConvertBracketsBtn.addEventListener("click", autoConvertBracketsInEditor);
+    }
 
     // More Categories Modal Events
     const moreCatOpenMgrBtn = document.getElementById("moreCatOpenManagerBtn");
@@ -2685,6 +2756,16 @@ ${compiledText}
       elements.exportJsonBtn.addEventListener("click", () => {
         window.PromptStorage.exportToJSON();
         showToast("Exported JSON backup!", "success");
+      });
+    }
+    if (elements.exportNoVarsJsonBtn) {
+      elements.exportNoVarsJsonBtn.addEventListener("click", () => {
+        const result = window.PromptStorage.exportPromptsWithoutVariablesJSON();
+        if (result && result.success) {
+          showToast(`Exported ${result.count} prompt(s) needing variables!`, "success");
+        } else {
+          showToast("No prompts found without variables — all prompts are parameterized!", "info");
+        }
       });
     }
     if (elements.exportMdBtn) {

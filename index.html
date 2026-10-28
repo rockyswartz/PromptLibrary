@@ -230,6 +230,12 @@
             <option value="Intermediate">Intermediate</option>
             <option value="Advanced">Advanced</option>
           </select>
+
+          <select id="variableFilter" class="select-filter" aria-label="Filter by Variables">
+            <option value="all">All Variable States</option>
+            <option value="with-vars">⚡ With Variables</option>
+            <option value="no-vars">⚠️ Needs Variables (0 vars)</option>
+          </select>
         </div>
 
         <div class="filter-group">
@@ -664,17 +670,23 @@
             <label class="form-label" for="formTemplate" style="margin-bottom: 0;">
               Prompt Template *
             </label>
-            <div style="display: flex; gap: 0.5rem;">
+            <div style="display: flex; gap: 0.45rem; flex-wrap: wrap;">
+              <button type="button" id="wrapVarBtn" class="btn btn-secondary" style="padding: 0.25rem 0.65rem; font-size: 0.775rem; border-color: rgba(6, 182, 212, 0.45); color: var(--accent-cyan); font-weight: 600;" title="Highlight any phrase in the prompt and click this to wrap it in {{...}}">
+                ✨ Wrap Selection in {{...}}
+              </button>
+              <button type="button" id="autoConvertBracketsBtn" class="btn btn-secondary" style="padding: 0.25rem 0.65rem; font-size: 0.775rem; border-color: rgba(16, 185, 129, 0.45); color: var(--accent-emerald);" title="Convert all [brackets] and {braces} in this prompt into {{variables}}">
+                🔄 Convert [brackets] to {{vars}}
+              </button>
               <button type="button" id="insertChoiceVarBtn" class="btn btn-secondary" style="padding: 0.25rem 0.65rem; font-size: 0.775rem;" title="Insert Multiple-Choice Variable">
-                + Add Choice Variable
+                + Choice Var
               </button>
               <button type="button" id="insertTextVarBtn" class="btn btn-secondary" style="padding: 0.25rem 0.65rem; font-size: 0.775rem;" title="Insert Standard Text Variable">
-                + Add Text Variable
+                + Text Var
               </button>
             </div>
           </div>
           <span class="form-helper" style="margin-bottom: 0.4rem; display: block;">
-            Use <code>{{variable_name}}</code> for text, or <code>{{variable_name: Option 1 | Option 2 | Option 3}}</code> for multiple choice.
+            Use <code>{{variable_name}}</code> for text, or <code>{{variable_name: Option 1 | Option 2 | Option 3}}</code> for multiple choice. You can also highlight text and click <strong>"✨ Wrap Selection in {{...}}"</strong>.
           </span>
           <textarea id="formTemplate" class="input-field" style="min-height: 160px; font-family: var(--font-mono); font-size: 0.85rem;" placeholder="You are an expert in {{domain}}...\n\nTone: {{tone: Professional | Conversational | Direct}}\n\nTask:\n{{task_description}}" required></textarea>
           <div id="detectedVarsNotice" style="display: none; font-size: 0.775rem; color: var(--accent-cyan); margin-top: 0.35rem;"></div>
@@ -790,6 +802,10 @@
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/><path d="M3 12c0 1.66 4 3 9 3s9-1.34 9-3"/></svg>
             <span>SQLite (.db)</span>
           </button>
+          <button id="exportNoVarsJsonBtn" class="btn btn-secondary" style="flex: 1.2; min-width: 175px; border-color: rgba(245, 158, 11, 0.45); color: #fde047; font-weight: 600;" title="Download JSON containing only prompts that currently have 0 variables for easy bulk editing">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+            <span id="exportNoVarsBtnText">Export 0-Var Prompts (JSON)</span>
+          </button>
         </div>
       </div>
 
@@ -804,9 +820,15 @@
           </h4>
           <span style="font-size: 0.75rem; color: var(--accent-cyan);">Converts raw text into parameterized blueprint</span>
         </div>
-        <p style="font-size: 0.825rem; color: var(--text-secondary); margin-bottom: 0.85rem;">
-          Paste any raw text or markdown prompt below. Placeholders like <code>[Topic]</code>, <code>&lt;Audience&gt;</code>, or <code>{Tone}</code> will be auto-converted into interactive <code>{{variables}}</code>.
-        </p>
+
+        <!-- Prominently Emphasized Variable Ingestion Banner -->
+        <div style="background: linear-gradient(135deg, rgba(6, 182, 212, 0.12) 0%, rgba(99, 102, 241, 0.15) 100%); border: 1px solid rgba(6, 182, 212, 0.45); border-left: 4px solid var(--accent-cyan); border-radius: var(--radius-md); padding: 0.85rem 1rem; margin-bottom: 0.95rem; display: flex; align-items: flex-start; gap: 0.75rem; box-shadow: 0 4px 15px rgba(6, 182, 212, 0.1);">
+          <span style="font-size: 1.35rem; flex-shrink: 0; line-height: 1;">⚡</span>
+          <div style="font-size: 0.825rem; color: var(--text-primary); line-height: 1.55;">
+            <strong style="color: var(--accent-cyan); font-weight: 700; font-size: 0.85rem; display: block; margin-bottom: 0.2rem;">Smart Variable Ingestion &amp; Parameter Auto-Detection:</strong>
+            Paste any raw text or markdown prompt below. Placeholders like <code style="background: rgba(6,182,212,0.25); color: #67e8f9; padding: 0.15rem 0.45rem; border-radius: 4px; font-weight: 700; border: 1px solid rgba(6,182,212,0.4);">[Topic]</code>, <code style="background: rgba(99,102,241,0.25); color: #a5b4fc; padding: 0.15rem 0.45rem; border-radius: 4px; font-weight: 700; border: 1px solid rgba(99,102,241,0.4);">&lt;Audience&gt;</code>, or <code style="background: rgba(16,185,129,0.25); color: #6ee7b7; padding: 0.15rem 0.45rem; border-radius: 4px; font-weight: 700; border: 1px solid rgba(16,185,129,0.4);">{Tone}</code> will be <strong>auto-converted into interactive</strong> <code style="background: rgba(245,158,11,0.25); color: #fde047; padding: 0.15rem 0.45rem; border-radius: 4px; font-weight: 800; border: 1px solid rgba(245,158,11,0.5);">{{variables}}</code> with live runner fields!
+          </div>
+        </div>
 
         <div style="display: flex; flex-direction: column; gap: 0.75rem; background: rgba(0,0,0,0.2); padding: 0.85rem; border-radius: var(--radius-md); border: 1px solid var(--border-subtle);">
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.65rem;">
@@ -1613,8 +1635,62 @@
            ==================================================================== -->
       <div id="paneHelpVariables" class="help-tab-pane" role="tabpanel">
         <div>
-          <h4 style="font-size: 1rem; font-weight: 700; color: var(--text-primary); margin: 0 0 0.25rem 0;">Parameter Token Syntax Reference</h4>
-          <p style="font-size: 0.825rem; color: var(--text-muted); margin: 0;">Use curly double braces <code>{{variable_name}}</code> inside any prompt. The Prompt Runner automatically converts them into interactive input fields!</p>
+          <h4 style="font-size: 1.05rem; font-weight: 700; color: var(--text-primary); margin: 0 0 0.35rem 0;">How to Draft Prompts with Dynamic Variables</h4>
+          <p style="font-size: 0.825rem; color: var(--text-secondary); margin: 0; line-height: 1.5;">
+            Dynamic variables turn static prompts into interactive software tools. When you run a prompt, PromptVault Pro automatically generates real-time input fields, multiple-choice pill selectors, and token previews.
+          </p>
+        </div>
+
+        <!-- 3 Supported Drafting Formats Guide Card -->
+        <div style="background: rgba(99, 102, 241, 0.08); border: 1px solid rgba(99, 102, 241, 0.3); border-radius: var(--radius-md); padding: 1rem 1.15rem; display: flex; flex-direction: column; gap: 0.75rem;">
+          <h5 style="font-size: 0.875rem; font-weight: 700; color: var(--accent-indigo); margin: 0; display: flex; align-items: center; gap: 0.4rem;">
+            <span>✍️ The 3 Ways to Draft Variables in Any Prompt</span>
+          </h5>
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 0.75rem;">
+            <!-- Format 1: Double Braces -->
+            <div style="background: rgba(0,0,0,0.25); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: var(--radius-sm); padding: 0.75rem;">
+              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.35rem;">
+                <strong style="color: #fde047; font-size: 0.8rem;">1. Double Braces (Native Standard)</strong>
+                <span style="font-size: 0.7rem; background: rgba(245, 158, 11, 0.2); color: #fde047; padding: 0.1rem 0.4rem; border-radius: 4px;">Recommended</span>
+              </div>
+              <p style="font-size: 0.775rem; color: var(--text-secondary); margin: 0 0 0.45rem 0; line-height: 1.45;">
+                Standard syntax for text and choice pills:
+              </p>
+              <code style="font-size: 0.75rem; color: #fde047; display: block; background: rgba(0,0,0,0.4); padding: 0.35rem 0.5rem; border-radius: 4px;">{{topic}}</code>
+              <code style="font-size: 0.75rem; color: #a5b4fc; display: block; background: rgba(0,0,0,0.4); padding: 0.35rem 0.5rem; border-radius: 4px; margin-top: 0.3rem;">{{tone: Professional | Direct | Casual}}</code>
+            </div>
+
+            <!-- Format 2: Square Brackets -->
+            <div style="background: rgba(0,0,0,0.25); border: 1px solid rgba(6, 182, 212, 0.3); border-radius: var(--radius-sm); padding: 0.75rem;">
+              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.35rem;">
+                <strong style="color: #67e8f9; font-size: 0.8rem;">2. Square Brackets (Natural Writing)</strong>
+                <span style="font-size: 0.7rem; background: rgba(6, 182, 212, 0.2); color: #67e8f9; padding: 0.1rem 0.4rem; border-radius: 4px;">Fast &amp; Easy</span>
+              </div>
+              <p style="font-size: 0.775rem; color: var(--text-secondary); margin: 0 0 0.45rem 0; line-height: 1.45;">
+                Type placeholders naturally as you write:
+              </p>
+              <code style="font-size: 0.75rem; color: #67e8f9; display: block; background: rgba(0,0,0,0.4); padding: 0.35rem 0.5rem; border-radius: 4px;">[Company Name]</code>
+              <code style="font-size: 0.75rem; color: #67e8f9; display: block; background: rgba(0,0,0,0.4); padding: 0.35rem 0.5rem; border-radius: 4px; margin-top: 0.3rem;">[Investor's Name or Investor Type]</code>
+            </div>
+
+            <!-- Format 3: Single Curly Braces -->
+            <div style="background: rgba(0,0,0,0.25); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: var(--radius-sm); padding: 0.75rem;">
+              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.35rem;">
+                <strong style="color: #6ee7b7; font-size: 0.8rem;">3. Single Braces</strong>
+                <span style="font-size: 0.7rem; background: rgba(16, 185, 129, 0.2); color: #6ee7b7; padding: 0.1rem 0.4rem; border-radius: 4px;">Auto-Detected</span>
+              </div>
+              <p style="font-size: 0.775rem; color: var(--text-secondary); margin: 0 0 0.45rem 0; line-height: 1.45;">
+                Clean bracket syntax supported everywhere:
+              </p>
+              <code style="font-size: 0.75rem; color: #6ee7b7; display: block; background: rgba(0,0,0,0.4); padding: 0.35rem 0.5rem; border-radius: 4px;">{user input}</code>
+              <code style="font-size: 0.75rem; color: #6ee7b7; display: block; background: rgba(0,0,0,0.4); padding: 0.35rem 0.5rem; border-radius: 4px; margin-top: 0.3rem;">{specific industry or market}</code>
+            </div>
+          </div>
+
+          <div style="background: rgba(255,255,255,0.04); padding: 0.65rem 0.85rem; border-radius: var(--radius-sm); font-size: 0.775rem; color: var(--text-muted); line-height: 1.5;">
+            💡 <strong>How to Add Variables in the Editor:</strong> When editing an existing prompt, highlight any word or phrase in the template box and click <strong style="color: var(--accent-cyan);">"✨ Wrap Selection in {{...}}"</strong>. It instantly wraps the selection as an interactive parameter!
+          </div>
         </div>
 
         <div style="display: flex; flex-direction: column; gap: 0.75rem;">
