@@ -117,31 +117,43 @@ Built with modern semantic HTML5, Vanilla CSS, and lightweight Vanilla JavaScrip
 
 ---
 
-## 🚀 How to Run
+## 🚀 How to Run & Deploy
 
-### Method 1: Instant Browser Launch (Zero Server Required)
-Simply double-click `index.html` or run:
+You can use PromptVault Pro in two simple ways, depending on your workflow:
+
+---
+
+### Option 1: 🌐 Instant Web App (No Installation Needed)
+If you want to use the application immediately on your desktop, tablet, or phone without installing anything:
+
+👉 **[Launch Live PromptVault Pro](https://rockyswartz.github.io/PromptLibrary/)**
+
+- **How it works**: Runs instantly in any modern browser (Chrome, Safari, Edge, Firefox).
+- **Data Privacy**: All prompts, custom modifications, and imported templates are saved **locally inside your browser's persistent IndexedDB storage**. Your private prompts are never uploaded to any external server.
+- **Backup Recommendation**: Because data is stored in your browser's storage, use the **⚡ Backup** button in the header to export a `.json` backup file periodically. This ensures your data remains safe even if you clear your browser history or switch devices.
+
+---
+
+### Option 2: 💻 Full Local Installation (With Offline SQLite Database)
+If you want a dedicated offline copy on your computer with a real SQLite database file (`promptlibrary.db`) saved directly to your hard drive:
+
+#### Step 1: Download the Repository
+- Click the green **`<> Code`** button at the top of the GitHub page and select **Download ZIP** (or run `git clone https://github.com/rockyswartz/PromptLibrary.git`).
+- Extract the ZIP folder into any directory on your computer (e.g. `~/Documents/PromptVault` or `C:\PromptVault`).
+
+#### Step 2: Launch the Local Server
+PromptVault Pro includes a lightweight local backend powered by Python's built-in standard library (`sqlite3` and `http.server`—zero `pip install` dependencies required):
 
 ```bash
-open "/Volumes/Active/AI Builds/PromtLibrary/index.html"
+python3 server/server.py
 ```
+*(If port 8080 is already occupied by another program on your computer, the server automatically detects the collision and steps to port 8081 without errors).*
 
-### Method 2: GitHub Repository & Automated GitHub Pages Deployment
-The project is hosted on GitHub at:
-🔗 **[https://github.com/rockyswartz/PromptLibrary](https://github.com/rockyswartz/PromptLibrary)**
+#### Step 3: Open in Browser
+Visit the local server in your browser:
+👉 **[http://localhost:8080](http://localhost:8080)**
 
-- **Automated Continuous Deployment**: Includes a pre-configured GitHub Actions workflow (`.github/workflows/deploy.yml`). Any push to `main` automatically builds and updates the live site.
-- **To Enable GitHub Pages**:
-  1. On your repo page, go to **Settings > Pages**.
-  2. Under **Build and deployment > Source**, select **GitHub Actions**.
-  3. The live application will automatically publish to:
-     🌐 `https://rockyswartz.github.io/PromptLibrary/`
-
-### Method 3: Local SQLite Server (For Developers)
-```bash
-python3 server/server.py --port 8080
-```
-Then visit: [http://localhost:8080](http://localhost:8080)
+All prompts and custom additions are now synchronized with your local `server/promptlibrary.db` database file!
 
 ---
 
