@@ -129,6 +129,7 @@ document.addEventListener("DOMContentLoaded", () => {
     autoConvertBracketsBtn: document.getElementById("autoConvertBracketsBtn"),
     closeFormModalBtn: document.getElementById("closeFormModalBtn"),
     cancelFormBtn: document.getElementById("cancelFormBtn"),
+    formDeletePromptBtn: document.getElementById("formDeletePromptBtn"),
     openAddPromptBtn: document.getElementById("openAddPromptBtn"),
 
     // Phase 3: Modular Blueprint Builder in Add/Edit Modal
@@ -1627,6 +1628,9 @@ document.addEventListener("DOMContentLoaded", () => {
       elements.formModalTitle.textContent = "Edit Prompt";
       elements.formPromptId.value = prompt.id;
       elements.formTitle.value = prompt.title || "";
+      if (elements.formDeletePromptBtn) {
+        elements.formDeletePromptBtn.style.display = "inline-flex";
+      }
 
       // Load multi-categories
       const cats = Array.isArray(prompt.categories) && prompt.categories.length > 0
@@ -1667,6 +1671,9 @@ document.addEventListener("DOMContentLoaded", () => {
       elements.formModalTitle.textContent = "Create New Prompt";
       elements.promptForm.reset();
       elements.formPromptId.value = "";
+      if (elements.formDeletePromptBtn) {
+        elements.formDeletePromptBtn.style.display = "none";
+      }
       
       // On new prompt: if user was filtering by specific categories, select them;
       // otherwise, start with NONE checked so user can freely choose any category/categories!
@@ -2577,6 +2584,23 @@ ${compiledText}
     }
 
     // Form Modal Events
+    if (elements.formDeletePromptBtn) {
+      elements.formDeletePromptBtn.addEventListener("click", () => {
+        if (!state.editingPromptId) return;
+        const prompt = window.PromptStorage.getPromptById(state.editingPromptId);
+        const title = prompt ? prompt.title : "this prompt";
+        if (confirm(`Are you sure you want to delete "${title}"?`)) {
+          window.PromptStorage.deletePrompt(state.editingPromptId);
+          elements.promptFormModal.close();
+          if (elements.runnerModal && typeof elements.runnerModal.close === "function" && elements.runnerModal.open) {
+            elements.runnerModal.close();
+          }
+          refreshData();
+          showToast("Prompt deleted", "info");
+        }
+      });
+    }
+
     if (elements.promptForm) {
       elements.promptForm.addEventListener("submit", handlePromptFormSubmit);
     }

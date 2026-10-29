@@ -48,13 +48,12 @@
           <span>Starred</span>
         </button>
 
-        <button id="openDataModalBtn" class="btn btn-secondary" title="Backup, Import & Export">
+        <button id="openDataModalBtn" class="btn btn-secondary" title="Data Hub: Import, Export & Smart Ingestion">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-            <polyline points="7 10 12 15 17 10"></polyline>
-            <line x1="12" y1="15" x2="12" y2="3"></line>
+            <path d="M7 4v16l-4-4m4 4l4-4"></path>
+            <path d="M17 20V4l4 4m-4-4l-4 4"></path>
           </svg>
-          <span>Backup</span>
+          <span>Data</span>
         </button>
 
         <button id="openWikiBtn" class="btn btn-secondary" style="border-color: rgba(6, 182, 212, 0.45); color: var(--accent-cyan); font-weight: 600;" title="Prompting Wiki & Handbook (Fatih Kadir Akın Reference)">
@@ -349,8 +348,9 @@
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
           <span>Duplicate</span>
         </button>
-        <button id="runnerDeleteBtn" class="btn btn-ghost" style="color: var(--accent-rose);" title="Delete this prompt">
+        <button id="runnerDeleteBtn" class="btn btn-ghost" style="color: var(--accent-rose); display: inline-flex; align-items: center; gap: 0.35rem;" title="Delete this prompt">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+          <span>Delete</span>
         </button>
       </div>
 
@@ -763,9 +763,17 @@
       </div>
     </form>
 
-    <div class="modal-footer">
-      <button id="cancelFormBtn" type="button" class="btn btn-secondary">Cancel</button>
-      <button type="submit" form="promptForm" class="btn btn-primary">Save Prompt</button>
+    <div class="modal-footer" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+      <div>
+        <button id="formDeletePromptBtn" type="button" class="btn btn-ghost" style="color: var(--accent-rose); display: none; align-items: center; gap: 0.35rem;" title="Delete this prompt">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+          <span>Delete Prompt</span>
+        </button>
+      </div>
+      <div style="display: flex; gap: 0.5rem; align-items: center;">
+        <button id="cancelFormBtn" type="button" class="btn btn-secondary">Cancel</button>
+        <button type="submit" form="promptForm" class="btn btn-primary">Save Prompt</button>
+      </div>
     </div>
   </dialog>
 
