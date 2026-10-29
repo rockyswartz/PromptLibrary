@@ -293,13 +293,13 @@
       <!-- Description -->
       <p id="runnerDescription" class="modal-description" style="color: var(--text-secondary); font-size: 0.95rem;"></p>
 
-      <!-- Phase 3: Runner View Mode Tabs (Modular Blueprint vs Compiled Output vs Split View) -->
+      <!-- Phase 3: Runner View Mode Tabs (Variables & Runner vs Modular Blueprint vs Split View) -->
       <div class="runner-view-tabs" role="tablist" aria-label="Runner View Mode">
-        <button id="runnerTabBlueprint" class="runner-tab-btn active" role="tab" aria-selected="true" title="Modular Structured Blueprint View">
-          <span>📐 Modular Blueprint</span>
+        <button id="runnerTabCompiled" class="runner-tab-btn active" role="tab" aria-selected="true" title="Variables Input & Real-Time Output">
+          <span>⚡ Interactive Runner</span>
         </button>
-        <button id="runnerTabCompiled" class="runner-tab-btn" role="tab" aria-selected="false" title="Ready-to-Run Compiled Text Preview">
-          <span>⚡ Compiled Prompt</span>
+        <button id="runnerTabBlueprint" class="runner-tab-btn" role="tab" aria-selected="false" title="Modular Structured Blueprint Architecture">
+          <span>📐 Modular Blueprint</span>
         </button>
         <button id="runnerTabSplit" class="runner-tab-btn" role="tab" aria-selected="false" title="Side-by-side Blueprint & Output Preview">
           <span>👁️ Split View</span>
@@ -308,18 +308,13 @@
 
       <!-- Main Runner Content Layout Container -->
       <div id="runnerContentWrapper" class="runner-content-wrapper">
-        <!-- Left / Top: Modular Blueprint Cards Breakdown -->
-        <div id="runnerBlueprintContainer" class="blueprint-sections-container">
-          <!-- Dynamically populated 5 structured blueprint section cards -->
-        </div>
-
-        <!-- Dynamic Variables Panel (Always accessible for adjusting parameters) -->
+        <!-- Dynamic Variables Panel (Positioned upfront so users see and fill variables immediately) -->
         <div id="runnerVariablesContainer" class="variables-container">
           <!-- Dynamically rendered variable fields -->
         </div>
 
         <!-- Live Compiled Prompt Preview -->
-        <div id="runnerPreviewContainer" class="preview-container" style="display: none;">
+        <div id="runnerPreviewContainer" class="preview-container">
           <div class="preview-header">
             <div class="section-label">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg>
@@ -331,6 +326,11 @@
           </div>
 
           <pre id="runnerOutput" class="prompt-output-box"></pre>
+        </div>
+
+        <!-- Modular Blueprint Cards Breakdown (Visible in Blueprint or Split mode) -->
+        <div id="runnerBlueprintContainer" class="blueprint-sections-container" style="display: none;">
+          <!-- Dynamically populated 5 structured blueprint section cards -->
         </div>
       </div>
 
@@ -354,15 +354,26 @@
         </button>
       </div>
 
-      <div style="display: flex; gap: 0.75rem; align-items: center; position: relative;">
-        <span class="kbd-badge" style="display: none; @media(min-width: 600px){ display:inline-block; }">⌘+Enter to copy</span>
+      <div style="display: flex; gap: 0.75rem; align-items: center; position: relative; flex-wrap: wrap; justify-content: flex-end;">
+        <!-- With / Without Variables Toggle -->
+        <label id="runnerInjectToggleContainer" style="display: inline-flex; align-items: center; gap: 0.45rem; font-size: 0.8rem; color: var(--text-secondary); cursor: pointer; user-select: none; background: var(--bg-surface); padding: 0.35rem 0.65rem; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);" title="Toggle whether custom inputs are injected into prompt or kept as raw {{placeholders}}">
+          <input type="checkbox" id="runnerInjectVarsToggle" checked style="accent-color: var(--accent-primary); cursor: pointer;" />
+          <span id="runnerInjectToggleLabel" style="font-weight: 500;">Inject Variables</span>
+        </label>
+
+        <!-- Quick Copy button -->
+        <button id="runnerCopyBtn" class="btn btn-secondary" title="Copy to clipboard (⌘+Enter)">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+          <span id="runnerCopyBtnText">Copy</span>
+        </button>
         
+        <!-- Run & Launch LLM Split Button -->
         <div class="split-btn-container" id="runnerCopySplitGroup">
-          <button id="runnerCopyBtn" class="btn btn-primary split-btn-action" title="Copy compiled prompt directly (⌘+Enter)">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
-            <span>Copy Prompt</span>
+          <button id="runnerRunBtn" class="btn btn-primary split-btn-action" style="font-weight: 700; padding: 0.5rem 1rem; display: inline-flex; align-items: center; gap: 0.45rem;" title="Run: Copy prompt and open LLM choice popover">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><polygon points="6 3 20 12 6 21 6 3"/></svg>
+            <span>Run</span>
           </button>
-          <button id="runnerExportToggleBtn" type="button" class="btn btn-primary split-btn-dropdown" title="Send to LLM Chat or Copy Code Formats" aria-haspopup="true" aria-expanded="false">
+          <button id="runnerExportToggleBtn" type="button" class="btn btn-primary split-btn-dropdown" title="Choose LLM Chat destination or Export Code" aria-haspopup="true" aria-expanded="false">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"></polyline></svg>
           </button>
         </div>

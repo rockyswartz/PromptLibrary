@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
     selectedPrompt: null,
     variableValues: {},
     editingPromptId: null,
-    runnerViewMode: "blueprint",
+    runnerViewMode: "compiled",
     formAuthoringMode: "quick"
   };
 
@@ -78,6 +78,10 @@ document.addEventListener("DOMContentLoaded", () => {
     runnerCharCount: document.getElementById("runnerCharCount"),
     runnerTokenCount: document.getElementById("runnerTokenCount"),
     runnerCopyBtn: document.getElementById("runnerCopyBtn"),
+    runnerCopyBtnText: document.getElementById("runnerCopyBtnText"),
+    runnerRunBtn: document.getElementById("runnerRunBtn"),
+    runnerInjectVarsToggle: document.getElementById("runnerInjectVarsToggle"),
+    runnerInjectToggleContainer: document.getElementById("runnerInjectToggleContainer"),
     runnerExportToggleBtn: document.getElementById("runnerExportToggleBtn"),
     llmExportPopover: document.getElementById("llmExportPopover"),
     llmTabChat: document.getElementById("llmTabChat"),
@@ -1316,11 +1320,21 @@ document.addEventListener("DOMContentLoaded", () => {
       .trim();
   }
 
+  function getActivePromptText() {
+    if (!state.selectedPrompt) return "";
+    const injectVars = elements.runnerInjectVarsToggle ? elements.runnerInjectVarsToggle.checked : true;
+    if (injectVars) {
+      return compilePrompt(state.selectedPrompt.template || "", state.variableValues);
+    } else {
+      return state.selectedPrompt.template || "";
+    }
+  }
+
   function updateRunnerPreview() {
     if (!state.selectedPrompt || !elements.runnerOutput) return;
-    const compiled = compilePrompt(state.selectedPrompt.template || "", state.variableValues);
-    elements.runnerOutput.textContent = compiled;
-    updateOutputMetrics(compiled);
+    const textToDisplay = getActivePromptText();
+    elements.runnerOutput.textContent = textToDisplay;
+    updateOutputMetrics(textToDisplay);
   }
 
   // ----------------------------------------------------
@@ -1344,17 +1358,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (!elements.runnerContentWrapper) return;
 
+    const hasVars = state.selectedPrompt
+      ? extractVariableDefinitions(state.selectedPrompt.template || "", state.selectedPrompt.variables).length > 0
+      : false;
+
     if (mode === "blueprint") {
       elements.runnerContentWrapper.classList.remove("runner-split-layout");
       if (elements.runnerBlueprintContainer) elements.runnerBlueprintContainer.style.display = "flex";
+      if (elements.runnerVariablesContainer) elements.runnerVariablesContainer.style.display = "none";
       if (elements.runnerPreviewContainer) elements.runnerPreviewContainer.style.display = "none";
     } else if (mode === "compiled") {
       elements.runnerContentWrapper.classList.remove("runner-split-layout");
       if (elements.runnerBlueprintContainer) elements.runnerBlueprintContainer.style.display = "none";
+      if (elements.runnerVariablesContainer) elements.runnerVariablesContainer.style.display = hasVars ? "flex" : "none";
       if (elements.runnerPreviewContainer) elements.runnerPreviewContainer.style.display = "flex";
     } else if (mode === "split") {
       elements.runnerContentWrapper.classList.add("runner-split-layout");
       if (elements.runnerBlueprintContainer) elements.runnerBlueprintContainer.style.display = "flex";
+      if (elements.runnerVariablesContainer) elements.runnerVariablesContainer.style.display = hasVars ? "flex" : "none";
       if (elements.runnerPreviewContainer) elements.runnerPreviewContainer.style.display = "flex";
     }
   }
@@ -1451,11 +1472,17 @@ document.addEventListener("DOMContentLoaded", () => {
     const varDefs = extractVariableDefinitions(prompt.template, prompt.variables);
 
     if (varDefs.length > 0) {
+      if (elements.runnerInjectToggleContainer) elements.runnerInjectToggleContainer.style.display = "inline-flex";
       elements.runnerVariablesContainer.style.display = "flex";
       elements.runnerVariablesContainer.innerHTML = `
-        <div class="section-label">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-          Customize Prompt Variables (${varDefs.length})
+        <div class="section-label" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+          <div style="display: flex; align-items: center; gap: 0.4rem;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+            <span>Customize Prompt Variables (${varDefs.length})</span>
+          </div>
+          <button type="button" id="runnerResetVarsBtn" class="btn btn-ghost" style="font-size: 0.75rem; padding: 0.2rem 0.5rem; height: auto;" title="Reset all variables to default values">
+            ↺ Reset Defaults
+          </button>
         </div>
         ${varDefs.map(v => {
           const defaultValue = v.default || "";
@@ -1500,6 +1527,33 @@ document.addEventListener("DOMContentLoaded", () => {
           }
         }).join("")}
       `;
+
+      // Reset Defaults button
+      const resetBtn = elements.runnerVariablesContainer.querySelector("#runnerResetVarsBtn");
+      if (resetBtn) {
+        resetBtn.addEventListener("click", () => {
+          varDefs.forEach(v => {
+            const defVal = v.default || "";
+            state.variableValues[v.name] = defVal;
+
+            const textInput = elements.runnerVariablesContainer.querySelector(`input[data-var="${v.name}"], textarea[data-var="${v.name}"]`);
+            if (textInput) textInput.value = defVal;
+
+            const group = elements.runnerVariablesContainer.querySelector(`.choice-pills-group[data-var="${v.name}"]`);
+            if (group) {
+              group.querySelectorAll(".choice-pill-btn").forEach(btn => {
+                btn.classList.toggle("active", btn.getAttribute("data-value") === defVal);
+              });
+            }
+
+            const customInput = elements.runnerVariablesContainer.querySelector(`.custom-text-input[data-var="${v.name}"]`);
+            if (customInput) customInput.style.display = "none";
+          });
+
+          updateRunnerPreview();
+          showToast("Reset variables to defaults", "info");
+        });
+      }
 
       // Choice buttons
       elements.runnerVariablesContainer.querySelectorAll(".choice-pills-group").forEach(group => {
@@ -1549,17 +1603,21 @@ document.addEventListener("DOMContentLoaded", () => {
         });
       });
     } else {
+      if (elements.runnerInjectToggleContainer) elements.runnerInjectToggleContainer.style.display = "none";
       elements.runnerVariablesContainer.style.display = "none";
       elements.runnerVariablesContainer.innerHTML = "";
     }
 
     updateRunnerPreview();
 
-    // Apply Active View Mode (Blueprint vs Compiled vs Split)
-    applyRunnerViewMode(state.runnerViewMode || "blueprint");
+    // Apply Active View Mode (defaults to Interactive Runner: Variables-First)
+    applyRunnerViewMode(state.runnerViewMode || "compiled");
 
+    if (elements.runnerCopyBtnText) {
+      elements.runnerCopyBtnText.textContent = "Copy";
+    }
     if (elements.runnerCopyBtn) {
-      elements.runnerCopyBtn.innerHTML = `${ICONS.copy} <span>Copy Prompt</span>`;
+      elements.runnerCopyBtn.classList.remove("btn-copied");
     }
 
     if (elements.llmExportPopover) {
@@ -2262,20 +2320,72 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // Runner Modal Actions
+    // Variable injection toggle change
+    if (elements.runnerInjectVarsToggle) {
+      elements.runnerInjectVarsToggle.addEventListener("change", () => {
+        updateRunnerPreview();
+        const isWithVars = elements.runnerInjectVarsToggle.checked;
+        showToast(
+          isWithVars
+            ? "Variables will be injected into prompt"
+            : "Raw template (with {{placeholders}}) will be copied",
+          "info"
+        );
+      });
+    }
+
+    // Secondary Quick Copy button
     if (elements.runnerCopyBtn) {
       elements.runnerCopyBtn.addEventListener("click", () => {
         if (!state.selectedPrompt) return;
-        const compiled = compilePrompt(state.selectedPrompt.template, state.variableValues);
-        copyToClipboard(compiled);
+        const textToUse = getActivePromptText();
+        copyToClipboard(textToUse);
         window.PromptStorage.recordUsage(state.selectedPrompt.id);
         updateStatsBar();
 
-        elements.runnerCopyBtn.innerHTML = `${ICONS.check} <span>Copied to Clipboard!</span>`;
-        setTimeout(() => {
-          elements.runnerCopyBtn.innerHTML = `${ICONS.copy} <span>Copy Prompt</span>`;
-        }, 2200);
+        const btnText = elements.runnerCopyBtnText || elements.runnerCopyBtn.querySelector("span");
+        if (btnText) btnText.textContent = "Copied!";
+        elements.runnerCopyBtn.classList.add("btn-copied");
 
-        showToast("Compiled prompt copied to clipboard!", "success");
+        setTimeout(() => {
+          if (btnText) btnText.textContent = "Copy";
+          elements.runnerCopyBtn.classList.remove("btn-copied");
+        }, 2000);
+
+        const isWithVars = elements.runnerInjectVarsToggle ? elements.runnerInjectVarsToggle.checked : true;
+        showToast(
+          isWithVars
+            ? "Compiled prompt copied to clipboard!"
+            : "Raw prompt (without variables) copied to clipboard!",
+          "success"
+        );
+      });
+    }
+
+    // Primary Run button (copies prompt with/without variables & opens LLM choice popup)
+    if (elements.runnerRunBtn) {
+      elements.runnerRunBtn.addEventListener("click", () => {
+        if (!state.selectedPrompt) return;
+        const textToUse = getActivePromptText();
+        copyToClipboard(textToUse);
+        window.PromptStorage.recordUsage(state.selectedPrompt.id);
+        updateStatsBar();
+
+        // Open LLM choice popup
+        if (elements.llmExportPopover) {
+          elements.llmExportPopover.classList.remove("hidden");
+        }
+        if (elements.runnerExportToggleBtn) {
+          elements.runnerExportToggleBtn.setAttribute("aria-expanded", "true");
+        }
+
+        const isWithVars = elements.runnerInjectVarsToggle ? elements.runnerInjectVarsToggle.checked : true;
+        showToast(
+          isWithVars
+            ? "Prompt saved with variables! Choose your LLM destination:"
+            : "Raw prompt saved! Choose your LLM destination:",
+          "success"
+        );
       });
     }
 
@@ -2476,8 +2586,8 @@ ${compiledText}
         const engine = LLM_ENGINES[llmKey];
         if (!engine) return;
 
-        const compiled = compilePrompt(state.selectedPrompt.template, state.variableValues);
-        copyToClipboard(compiled);
+        const textToUse = getActivePromptText();
+        copyToClipboard(textToUse);
         window.PromptStorage.recordUsage(state.selectedPrompt.id);
         updateStatsBar();
 
@@ -2499,8 +2609,8 @@ ${compiledText}
         e.stopPropagation();
 
         const format = row.getAttribute("data-code-format");
-        const compiled = compilePrompt(state.selectedPrompt.template, state.variableValues);
-        const formattedCode = formatPromptAsCode(format, state.selectedPrompt, compiled, state.variableValues);
+        const textToUse = getActivePromptText();
+        const formattedCode = formatPromptAsCode(format, state.selectedPrompt, textToUse, state.variableValues);
 
         copyToClipboard(formattedCode);
         window.PromptStorage.recordUsage(state.selectedPrompt.id);
@@ -2999,10 +3109,14 @@ ${compiledText}
         }
       }
 
-      // Cmd/Ctrl + Enter in runner modal: Copy prompt
-      if ((e.metaKey || e.ctrlKey) && e.key === "Enter" && elements.runnerModal.open) {
+      // Cmd/Ctrl + Enter in runner modal: Run prompt (copies prompt & opens LLM popup)
+      if ((e.metaKey || e.ctrlKey) && e.key === "Enter" && elements.runnerModal && elements.runnerModal.open) {
         e.preventDefault();
-        if (elements.runnerCopyBtn) elements.runnerCopyBtn.click();
+        if (elements.runnerRunBtn) {
+          elements.runnerRunBtn.click();
+        } else if (elements.runnerCopyBtn) {
+          elements.runnerCopyBtn.click();
+        }
       }
     });
 
