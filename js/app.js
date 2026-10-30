@@ -887,7 +887,7 @@ document.addEventListener("DOMContentLoaded", () => {
       elements.availableSubcatsPool.innerHTML = allRegisteredSubs.map(sub => {
         const isSelected = state.selectedSubcatsForNewCategory.has(sub);
         return `
-          <button type="button" class="subcat-pool-chip ${isSelected ? 'active' : ''}" data-sub="${escapeHTML(sub)}" title="Click to ${isSelected ? 'remove' : 'link'}">
+          <button type="button" class="subcat-pool-chip ${isSelected ? 'selected active' : ''}" data-sub="${escapeHTML(sub)}" title="Click to ${isSelected ? 'unlink' : 'link'}">
             <span>${isSelected ? '✓' : '+'}</span>
             <span>${escapeHTML(sub)}</span>
           </button>

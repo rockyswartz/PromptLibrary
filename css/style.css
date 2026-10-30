@@ -907,9 +907,38 @@ body {
   transform: translateY(-1px);
 }
 
-.subcat-pool-chip.selected {
+.subcat-pool-chip.selected,
+.subcat-pool-chip.active {
   background: var(--accent-primary);
   border-color: var(--accent-primary);
+  color: #ffffff;
+  font-weight: 600;
+  box-shadow: 0 2px 6px rgba(99, 102, 241, 0.3);
+}
+
+.subcat-pool-chip.selected:hover,
+.subcat-pool-chip.active:hover {
+  background: var(--accent-hover, #6366f1);
+  border-color: var(--accent-hover, #6366f1);
+  color: #ffffff;
+}
+
+[data-theme="light"] .subcat-pool-chip.selected,
+[data-theme="light"] .subcat-pool-chip.active,
+[data-theme-preset="light"] .subcat-pool-chip.selected,
+[data-theme-preset="light"] .subcat-pool-chip.active {
+  background: #4f46e5;
+  border-color: #4338ca;
+  color: #ffffff;
+  box-shadow: 0 2px 6px rgba(79, 70, 229, 0.28);
+}
+
+[data-theme="light"] .subcat-pool-chip.selected:hover,
+[data-theme="light"] .subcat-pool-chip.active:hover,
+[data-theme-preset="light"] .subcat-pool-chip.selected:hover,
+[data-theme-preset="light"] .subcat-pool-chip.active:hover {
+  background: #4338ca;
+  border-color: #3730a3;
   color: #ffffff;
 }
 
