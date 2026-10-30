@@ -1,6 +1,7 @@
 # 🚀 PromptVault Pro — Interactive AI Prompt Library & Blueprint System
 
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/rockyswartz/PromptLibrary)
+[![User Guide PDF](https://img.shields.io/badge/User%20Guide-Interactive%20PDF-purple.svg)](assets/PromptVault-Pro-User-Guide.pdf)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![GitHub Pages](https://img.shields.io/badge/Deployment-GitHub%20Pages-brightgreen)](https://rockyswartz.github.io/PromptLibrary/)
 
@@ -8,21 +9,32 @@ A beautiful, offline-ready, open-source web application for exploring, parameter
 
 Built with modern semantic HTML5, Vanilla CSS, and lightweight Vanilla JavaScript. Zero npm dependencies, zero complex build steps, and ready for instant deployment to **GitHub Pages**.
 
+> 📥 **Interactive PDF User Guide Available**:  
+> Download the publication-grade manual directly from the repo: **[`assets/PromptVault-Pro-User-Guide.pdf`](assets/PromptVault-Pro-User-Guide.pdf)**. Features an interactive Table of Contents, 7 comprehensive chapters, full feature walkthroughs, FAQs, and an alphabetical A-Z Prompting Glossary with clickable internal jump links.
+
 ---
 
 ## ✨ Key Features & Architecture
 
-### ⚡ 1. Instant Variable Injection & Live Prompt Runner
-- **No More Hunt-and-Replace**: Traditional prompt libraries force you to copy a prompt, paste it into an AI chat, and hunt through bracketed placeholders like `[INSERT TOPIC HERE]`.
-- **Reactive Variable Parser**: Automatically converts placeholders like `{{goal}}`, `{{audience}}`, or `{{tone}}` into interactive form fields.
-- **Dynamic Compilation**: As you type or toggle choice pills, values are dynamically compiled into the prompt in real time.
-- **Live Telemetry & Token Estimator**: View word count, character count, and estimated LLM tokens (`Math.ceil(characters / 4)`) live as you edit.
-- **1-Click Copy**: Instant clipboard copy with toast feedback, plus <kbd>⌘+Enter</kbd> / <kbd>Ctrl+Enter</kbd> shortcut.
+### ⚡ 1. Live Prompt Runner & Upfront Variable Pre-fill
+- **Upfront Parameter Pre-filling**: When executing a prompt, all dynamic variables are consolidated at the very top of the runner. Fill in values upfront before sending them to your LLM, avoiding detached mid-conversation interruptions and saving tokens.
+- **Dynamic Compilation**: As you type in fields or click choice pills, values are dynamically compiled into the prompt in real time.
+- **Live Token Telemetry**: View word count, character count, and estimated LLM tokens (`Math.ceil(characters / 4)`) live as you adjust inputs.
+- **Compile vs. Template Copy**:
+  - **Compile**: 1-click copy with all filled variable values interpolated.
+  - **Template**: 1-click copy of the raw template with placeholders intact for prompt sharing.
+- **1-Click Multi-LLM Launcher**: Launch target AI models directly with your compiled prompt:
+  - 🤖 **ChatGPT** (`chatgpt.com/?q=...`)
+  - 🧠 **Claude** (`claude.ai/new?q=...`)
+  - 💎 **Google Gemini** (`gemini.google.com/app?prompt=...`)
+  - 🔍 **Perplexity AI** (`perplexity.ai/search?q=...`)
+  - 💻 **Cursor Editor** & 🌐 **LibreChat** / Local AI endpoints.
 
-### 🎯 2. Multiple-Choice Parameter Inputs
+### 🎯 2. Multiple-Choice Parameter Inputs & Syntax
 - **Syntax**: `{{variable_name: Option 1 | Option 2 | Option 3}}`
 - **Interactive Choice Pills**: Multiple-choice variables render as clickable toggle pills for rapid selection.
 - **Custom Write-In Fallback**: Includes a built-in "Custom write-in..." toggle so users can enter bespoke values whenever needed.
+- **Triple-Format Drafting Support**: Supports native `{{variables}}`, natural writing `[square brackets]`, and auto-detected `{single braces}`.
 
 ### 🗂️ 3. Intelligent Category Navigation & 3-Row Limit
 - **Strict 3-Row Flex Limit**: Capped at 3 rows maximum to avoid navigation bars wrapping down the screen as categories scale.
@@ -34,38 +46,41 @@ Built with modern semantic HTML5, Vanilla CSS, and lightweight Vanilla JavaScrip
   - Quick "Select All" and "Clear All" actions.
   - Inline "+ Create Custom Category" creator.
 
-### ⚙️ 4. Dedicated Category & Taxonomy Manager
-- Accessible via the header (**"Manage Categories"**) or directly from the overflow filter modal (**"⚙️ Open Full Category Manager"**).
-- **Hierarchical Management**: View each category along with its nested subcategories across 45+ domains.
-- **Inline Subcategory Addition**: Add new subcategories to any category with zero page reloads.
-- **Removable Tags**: Delete individual subcategories with one click.
-- **Safe Deletion**: Deleting a category automatically moves assigned prompts to `"General"` to prevent orphaned data.
+### ⚙️ 4. 3-Tier Taxonomy & Deduplication Manager
+- Accessible via the header (**"Manage Categories"**) or directly from the overflow filter modal.
+- **Dual-Mode Switcher**:
+  - **`[ ✏️ Edit Category ]` Mode**: Select any existing category from a clean dropdown displaying live prompt and subcategory counts (e.g. `Executive Presentations (3 prompts, 9 subcats)`). All linked subcategories automatically pull through into the active chip list.
+  - **`[ ➕ New Category ]` Mode**: Provides a clean, auto-focused input field to name a new category under any Domain Pillar without dropdown clutter.
+- **100+ Master Subcategory Pool with Vibrant Highlights**:
+  - Currently linked subcategories are highlighted with **solid vibrant accent backgrounds and contrast checks (`✓ Roadmaps`, `✓ Pitch Decks`)** for instant visual recognition.
+  - Unlinked subcategories appear neutral (`+ Name`). Click any unlinked chip to link it instantly; click any highlighted chip to unlink it.
+- **Inline Category Rename with Database Cascade**: Rename any category directly; PromptVault Pro automatically cascades the new name across all matching prompts in the database to guarantee zero orphaned cards.
+- **Direct Hierarchy Card Editing**: In the Active Taxonomy Hierarchy accordion, every category card has a direct **✏️ Edit** button that jumps straight to top editing mode with subcategories loaded.
+- **Safe Deletion Protection**: Deleting a category automatically moves assigned prompts to `"General"` to prevent orphaned data.
 
-### 🏷️ 5. Multi-Category Prompt Tagging
-- Prompts can belong to **multiple categories simultaneously** (e.g., both `Automation & Systems` and `Coding & Architecture`).
-- The prompt creation/editing modal features multi-select category checkboxes with real-time selection counts and contextual subcategory chips.
-- Syntax generation helpers (`+ Add Choice Variable` and `+ Add Text Variable`) automatically insert valid syntax at the cursor position.
+### 🏷️ 5. Character-by-Character Tag Autocomplete & Prompt Deletion
+- **WordPress-Style Live Tag Suggestions**: As you type into the Tags input field (e.g. typing `s` then `o`), a live dropdown instantly filters existing tags character-by-character, displaying real-time frequency counts (e.g. `🏷️ seo (12)`).
+- **Keyboard Navigation**: Use <kbd>↑</kbd> and <kbd>↓</kbd> arrow keys to navigate suggestions, <kbd>Enter</kbd> to select, or press <kbd>Enter</kbd>/comma to create a new tag.
+- **Multi-Category Assignment**: Prompts can belong to multiple categories simultaneously.
+- **Safe Prompt Deletion**: Built-in deletion action with a safety confirmation modal to prevent accidental data loss.
 
 ### 👤 6. Standardized Originator Attribution & Author Credits
 - **Dedicated Originator Field**: Every prompt includes a standardized `author` and optional `authorUrl` field.
-- **Card Footer Display**: Originator credits appear prominently on the bottom-left of each prompt card with a dedicated author badge (e.g. `👤 Randy Austin - ExcelForFreelancers`, `👤 HubSpot`, `👤 Anthropic`, `👤 TypeUI`).
+- **Card Footer Display**: Originator credits appear prominently on the bottom-left of each prompt card with a dedicated author badge (e.g. `👤 Randy Austin - ExcelForFreelancers`, `👤 Anthropic`, `👤 HubSpot`).
 - **Editable in Form**: Set bespoke author credits and links directly in the Create / Edit Prompt modal.
 
-### 📦 7. Production-Ready Architecture & Starter Pack
-- **Flagship Starter Pack (`js/data.js`)**: Ships with 7 exemplar blueprints representing all 7 Domain Pillars (Automation, Engineering, Business, Marketing, Images, UI/UX, and Education). Keeps the initial install lightweight, fast, and immediately understandable.
-- **Personal Vault Independence**: Users can import their own personal JSON backups or ingest text prompts without modifying the core codebase.
-- **1-Click Canvas Presets**: In the **⇅ Data** modal:
-  - 🗑️ **Start from Scratch (Blank Canvas)**: Clears all prompts so you can build your own bespoke library. All 44 categories and 7 domain pillars remain ready for your new prompts.
-  - ⚡ **Load Starter Pack (7 Flagships)**: Restores the clean 7-blueprint showcase.
-  - 📥 **Import JSON Backup**: Load any custom prompt collection or private vault.
-
-### 📥 8. Smart Ingest & Raw Text-to-Prompt Converter
-- **In-App Smart Text Ingester**: Paste any raw text or markdown prompt.
-- **Auto-Placeholder Conversion**: Converts legacy placeholders like `[Topic]`, `<Audience>`, or `{Tone}` into interactive PromptVault variables: `{{topic}}`, `{{audience}}`, `{{tone}}`.
+### ⇅ 7. Data Management Menu, Smart Ingest & Backups
+- **Consolidated `⇅ Data` Menu**: High-contrast icon button replacing the ambiguous backup button, clearly communicating both upload/import and download/export capabilities.
+- **1-Click Canvas Presets**:
+  - 🗑️ **Start from Scratch (Blank Canvas)**: Clears all prompts so you can build your own bespoke library while preserving all 44 categories and 7 domain pillars.
+  - ⚡ **Load Starter Pack (7 Flagships)**: Restores the clean 7-blueprint flagship showcase.
+  - 📥 **Import JSON Backup**: Load any custom prompt collection with merge or overwrite options.
+- **In-App Smart Text Ingester**: Paste raw text or markdown prompts. Automatically converts bracketed placeholders like `[Topic]`, `<Audience>`, or `{Tone}` into interactive `{{variables}}`.
 - **Bulk Folder Ingestion**: Select multiple `.txt` or `.md` files at once to convert and import whole directories into your library.
+- **Turnkey LLM Parameterization Prompt**: A copyable system prompt included in the Data modal and User Guide to batch-enrich static 0-variable prompts using ChatGPT, Claude, or Gemini.
 - **Python CLI Converter (`scripts/text_to_prompt_json.py`)**: Standalone tool for power users to convert folders of notes into valid PromptVault JSON.
 
-### 📐 9. Modular Blueprint Engine & Tri-Mode Runner (Phase 3)
+### 📐 8. Modular Blueprint Engine & Tri-Mode Runner
 - **5-Section Enterprise Prompt Anatomy**:
   - 👤 **Role / Persona**: Expert alignment and cognitive frame.
   - 🎯 **Core Task / Objective**: Clear, unambiguous primary deliverable.
@@ -81,7 +96,7 @@ Built with modern semantic HTML5, Vanilla CSS, and lightweight Vanilla JavaScrip
 - **1-Click Production Guardrails**:
   - Quick chips for Zero Hallucination, No Fluff / Direct Delivery, Strict JSON Schema, and Fact Verification.
 
-### 💾 7. Dual-Tier Storage Architecture (Browser-First + Optional SQLite)
+### 💾 9. Dual-Tier Storage Architecture (Browser-First + Optional SQLite)
 - **Primary Engine: In-Browser IndexedDB**:
   - Fully transactional client-side database with gigabyte storage capacity.
   - Completely bypasses browser 5MB `localStorage` limits.
@@ -95,22 +110,23 @@ Built with modern semantic HTML5, Vanilla CSS, and lightweight Vanilla JavaScrip
   - **Markdown**: Beautifully formatted Markdown ready for Obsidian and Notion.
   - **SQLite (.db)**: Download the complete database directly for local analysis in SQLite tools.
 
-### 📱 8. Mobile Phone Portrait Responsiveness & Fluid Clamp System
+### 📱 10. Mobile Responsiveness & Fluid Tokens
 - **Fluid CSS `clamp()` Design Tokens**: Typography (`--text-2xs` to `--text-hero`) and spacing (`--space-2xs` to `--space-xl`) adapt continuously to any viewport width from 360px portrait phones to 4K displays.
-- **Adaptive Single-Row Mobile Header**: Compacts secondary button labels on screens `<600px` into high-contrast icon buttons, preventing horizontal overflow or wrapping.
+- **Adaptive Single-Row Mobile Header**: Compacts secondary button labels on screens `<600px` into high-contrast icon buttons.
 - **Mobile-Responsive Tri-Mode Runner**: Split layout automatically stacks into a seamless 1-column scrollable workspace on screens `≤860px`.
-- **Mutual-Exclusion Taxonomy Accordion**: In the Taxonomy & Deduplication Manager, expanding any Domain Pillar automatically collapses all other open tabs while enforcing `flex-shrink: 0`, preventing vertical compression and allowing tree scrolling up to 58vh.
-- **Brand Asset Integration**: Powered by `assets/PromptLibrary_pro_Favicon.png` in the header and browser tab favicon.
-- **Quick "To the Top" Button**: Floating pill button with smooth scrolling and passive scroll-threshold detection (>300px).
+- **Mutual-Exclusion Taxonomy Accordion**: In the Taxonomy Manager, expanding any Domain Pillar automatically collapses all other open tabs while enforcing `flex-shrink: 0`.
+- **Floating "To the Top" Button**: Smooth-scrolling pill button with passive scroll-threshold detection (>300px).
 
-### ❓ 9. Interactive Help Center & Guided Spotlight Tour
+### ❓ 11. Interactive Help Center, FAQs & Guided Spotlight Tour
 - **Dedicated Help & Tour Modal**: Accessible via the header (**"Help & Tour"**) or shortcut <kbd>?</kbd>.
-- **5 Comprehensive Visual Learning Tabs**:
+- **📥 1-Click PDF Download Button**: Directly download the full interactive PDF user guide (`PromptVault-Pro-User-Guide.pdf`) from the modal header or FAQ tab.
+- **6 Comprehensive Visual Learning Tabs**:
   1. 🖥️ **Interface & Architecture Tour**: Visual blueprint breakdown of the 7 Domain Pillars, search bar, and card anatomy.
-  2. 🗂️ **Categories & Subcategories Walkthrough**: Step-by-step guide explaining how to create categories, link subcategories from the 100+ master pool, and eliminate tag duplicates.
-  3. 📐 **Modular Blueprints vs. Simple Prompts**: Direct comparison of lightweight templates vs. 5-section enterprise prompts (Role, Objective, Inputs, Guardrails, Output Rubric).
-  4. ⚡ **Variable Syntax Cheatsheet & Live Sandbox**: Interactive playground with instant token replacement testing and copyable syntax chips.
-  5. 📥 **Ingestion & Vault Backups**: Complete instructions for in-app Smart Ingestion, Python CLI batch processing, and JSON/SQLite restore.
+  2. 🗂️ **Categories & Subcategories Walkthrough**: Step-by-step guide explaining the 2-mode switcher, master pool highlights, inline renaming, and safe deletion.
+  3. 📐 **Modular Blueprints vs. Simple Prompts**: Direct comparison of lightweight templates vs. 5-section enterprise prompts, plus tag autocomplete and safe deletion.
+  4. ⚡ **Variable Syntax & Live Runner**: Interactive playground with token replacement, upfront variable pre-fill, and multi-LLM launcher.
+  5. 📥 **Ingestion & Backups**: Instructions for in-app Smart Ingestion, Python CLI batch processing, and JSON/SQLite restore.
+  6. ❓ **FAQs & User Guide**: In-depth answers to 10 common questions on storage security, variable formatting, taxonomy, and PDF manual access.
 - **🎯 Live Spotlight Screen Tour**:
   - Non-modal interactive walkthrough with dark spotlight backdrop and tethered floating cards.
   - Step-by-step navigation highlighting 7 live screen elements with progress dots and keyboard shortcuts (<kbd>→</kbd>, <kbd>←</kbd>, <kbd>Enter</kbd>, <kbd>Esc</kbd>).
@@ -405,6 +421,9 @@ npm run sync
 PromtLibrary/
 ├── index.html                  # Semantic HTML5 app, modals, responsive navigation
 ├── .nojekyll                   # Ensures clean GitHub Pages asset serving
+├── assets/
+│   ├── PromptVault-Pro-User-Guide.pdf # Publication-grade interactive PDF manual
+│   └── PromptLibrary_pro_Favicon.png  # Brand identity favicon & touch icon
 ├── css/
 │   └── style.css               # Design system, glassmorphism, 3-row flex limit, compact cards
 ├── js/
@@ -416,6 +435,11 @@ PromtLibrary/
 │   ├── init_db.py              # Script to initialize / reseed promptlibrary.db
 │   ├── promptlibrary.db        # Pre-seeded SQLite database file
 │   └── README.md               # Backend guide & REST documentation
+├── scripts/
+│   ├── build_user_guide_pdf.py # Standalone Chrome headless PDF manual generator
+│   ├── auto-sync.sh            # Git commit and auto-push utility
+│   ├── watch-and-sync.sh       # Continuous file watcher & auto-sync
+│   └── text_to_prompt_json.py  # Bulk folder text & markdown to JSON converter
 ├── templates/                  # Blueprint templates
 ├── SKILL.md                    # AI Prompt Library Designer skill specification & JSON schema
 └── README.md                   # Complete documentation & user guide

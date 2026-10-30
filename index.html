@@ -1342,9 +1342,14 @@
             </div>
             <h2 id="helpModalTitle" class="modal-title">PromptVault Pro Interactive Guide</h2>
           </div>
-          <button type="button" id="startSpotlightTourBtn" class="btn btn-primary" style="background: linear-gradient(135deg, #10b981 0%, #06b6d4 100%); border: none; font-size: 0.825rem; font-weight: 700; padding: 0.4rem 0.95rem; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.35); display: inline-flex; align-items: center; gap: 0.4rem;">
-            <span>🎯 Start Live Screen Tour</span>
-          </button>
+          <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+            <a href="assets/PromptVault-Pro-User-Guide.pdf" download="PromptVault-Pro-User-Guide.pdf" id="downloadPdfGuideBtn" class="btn btn-secondary" style="font-size: 0.825rem; font-weight: 700; padding: 0.4rem 0.85rem; display: inline-flex; align-items: center; gap: 0.4rem; text-decoration: none;" title="Download complete interactive PDF User Guide with Index & FAQs">
+              <span>📥 Download PDF Guide</span>
+            </a>
+            <button type="button" id="startSpotlightTourBtn" class="btn btn-primary" style="background: linear-gradient(135deg, #10b981 0%, #06b6d4 100%); border: none; font-size: 0.825rem; font-weight: 700; padding: 0.4rem 0.95rem; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.35); display: inline-flex; align-items: center; gap: 0.4rem;">
+              <span>🎯 Start Live Screen Tour</span>
+            </button>
+          </div>
         </div>
         <span class="modal-subtitle">Master PromptVault Pro's UI, 3-tier taxonomy, modular blueprints, variable syntax, and backup tools</span>
       </div>
@@ -1363,10 +1368,13 @@
         <span>📐 Modular vs Simple Prompts</span>
       </button>
       <button type="button" class="help-tab-btn" data-help-tab="variables" role="tab" aria-selected="false">
-        <span>⚡ Variable Syntax</span>
+        <span>⚡ Variable Syntax & Runner</span>
       </button>
       <button type="button" class="help-tab-btn" data-help-tab="backup" role="tab" aria-selected="false">
         <span>📥 Ingestion & Backups</span>
+      </button>
+      <button type="button" class="help-tab-btn" data-help-tab="faq" role="tab" aria-selected="false">
+        <span>❓ FAQs &amp; User Guide</span>
       </button>
       <button type="button" class="help-tab-btn help-tab-wiki-highlight" data-help-tab="wiki" role="tab" aria-selected="false">
         <span>📚 Prompting Wiki &amp; Handbook</span>
@@ -1587,9 +1595,9 @@
               <h5 class="help-step-title">The 3-Tier Hierarchy Architecture</h5>
               <p class="help-step-desc">
                 PromptVault Pro organizes knowledge cleanly across 3 structural levels:
-                <br />• <strong>Tier 1: Domain Pillars</strong> (7 fixed domains: Automation, Engineering, Business, etc.)
-                <br />• <strong>Tier 2: Categories</strong> (44 standard categories like <em>Excel VBA & Macros</em>, <em>Web Development</em>, <em>Digital Marketing</em>)
-                <br />• <strong>Tier 3: Subcategories & Tasks</strong> (Specific operations like <em>Data Cleaning</em>, <em>API Integration</em>, <em>SEO Audits</em>)
+                <br />• <strong>Tier 1: Domain Pillars</strong> (7 fixed disciplines: Automation, Coding, Business, Marketing, Multimedia, Design, Education)
+                <br />• <strong>Tier 2: Categories</strong> (44+ standard categories like <em>Executive Presentations</em>, <em>Clean Code</em>, <em>SEO & Metadata</em>)
+                <br />• <strong>Tier 3: Subcategories & Deliverables</strong> (Granular operations like <em>Pitch Decks</em>, <em>PRD Specs</em>, <em>API Design</em>)
               </p>
             </div>
           </div>
@@ -1598,9 +1606,11 @@
           <div class="help-step-item">
             <div class="help-step-num">2</div>
             <div class="help-step-content">
-              <h5 class="help-step-title">Creating a New Category</h5>
+              <h5 class="help-step-title">Mode Switcher: Edit Existing vs. Create New Category</h5>
               <p class="help-step-desc">
-                Click <strong>"⚙️ Manage Categories"</strong> in the header. Enter a category name, select a custom emoji icon, and select the Domain Pillar it belongs to. Click <strong>"Create Category"</strong>. It immediately appears in filters and prompt forms.
+                In the <strong>Taxonomy & Deduplication Manager</strong>, the top box features an explicit 2-mode switcher:
+                <br />• <strong>✏️ Edit Category Mode:</strong> Select any existing category from the clean dropdown (showing live prompt and subcategory counts). All its linked subcategories automatically pull through into the active chip list.
+                <br />• <strong>➕ New Category Mode:</strong> Gives you an empty, auto-focused text field to name your new category without competing dropdowns.
               </p>
             </div>
           </div>
@@ -1609,9 +1619,11 @@
           <div class="help-step-item">
             <div class="help-step-num">3</div>
             <div class="help-step-content">
-              <h5 class="help-step-title">Linking Subcategories from the 100+ Master Pool</h5>
+              <h5 class="help-step-title">1-Click Master Subcategory Pool & Active Highlights</h5>
               <p class="help-step-desc">
-                Click on any category in the Active Hierarchy. Click <strong>"+ Add Subcategory"</strong>. You can choose from the built-in <strong>Master Subcategory Pool</strong> (pre-curated across engineering, business, and creative workflows) or enter a custom subcategory.
+                Below your linked subcategories is the <strong>100+ Master Subcategory Pool</strong>. 
+                <br />• Currently chosen/linked subcategories are rendered in <strong>solid vibrant accent colors</strong> (<code>✓ Roadmaps</code>, <code>✓ Pitch Decks</code>) for instant recognition.
+                <br />• Unlinked subcategories appear neutral (<code>+ Name</code>). Click any unlinked chip to link it with 1 click; click any highlighted chip to unlink it.
               </p>
             </div>
           </div>
@@ -1620,9 +1632,9 @@
           <div class="help-step-item">
             <div class="help-step-num">4</div>
             <div class="help-step-content">
-              <h5 class="help-step-title">Deduplication & Conflict Shield</h5>
+              <h5 class="help-step-title">Inline Renaming with Automated Prompt Cascade</h5>
               <p class="help-step-desc">
-                To prevent messy duplicate tags, the built-in deduplication engine warns you in real-time if a category or subcategory with a similar name already exists (e.g. typing "Data Analytics" when "Data Analysis" already exists). You can reuse the existing item with 1 click.
+                Need to rename a category? In <strong>✏️ Edit Category</strong> mode, click <strong>"✏️ Rename Category"</strong> next to the label. Type the new title and click Update. PromptVault Pro automatically cascades the new category name across every prompt in your database so no cards are disconnected!
               </p>
             </div>
           </div>
@@ -1631,9 +1643,10 @@
           <div class="help-step-item">
             <div class="help-step-num">5</div>
             <div class="help-step-content">
-              <h5 class="help-step-title">Safe Category Deletion & Merging</h5>
+              <h5 class="help-step-title">Hierarchy Tree Direct Editing & Safe Deletion</h5>
               <p class="help-step-desc">
-                Deleting a category will never lose your prompts—prompts are automatically moved safely to <em>General</em>. You can also merge redundant categories together while preserving all prompt associations.
+                • <strong>Direct Card Editing:</strong> In the Active Taxonomy Hierarchy accordion, every category card has a direct <strong>✏️ Edit</strong> button that jumps straight to top editing mode with subcategories loaded.
+                <br />• <strong>Safe Deletion Protection:</strong> Deleting a category never deletes your prompts—prompts are safely reassigned to the <em>General</em> fallback category to guarantee zero data loss.
               </p>
             </div>
           </div>
@@ -1690,6 +1703,23 @@
             </div>
           </div>
         </div>
+
+        <!-- Tag Autocomplete & Author Attribution Features -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 0.75rem; margin-top: 0.25rem;">
+          <div style="background: rgba(14, 165, 233, 0.08); border: 1px solid rgba(14, 165, 233, 0.25); border-radius: var(--radius-sm); padding: 0.85rem 1rem;">
+            <h5 style="font-size: 0.825rem; font-weight: 700; color: var(--accent-cyan); margin: 0 0 0.35rem 0;">🏷️ Character-by-Character Tag Autocomplete</h5>
+            <p style="font-size: 0.775rem; color: var(--text-secondary); margin: 0; line-height: 1.45;">
+              As you type in the Tags field, WordPress-style live suggestions instantly filter with real-time frequency counts (e.g. <code>🏷️ seo (12)</code>). Use <kbd class="kbd-badge">↑</kbd> <kbd class="kbd-badge">↓</kbd> arrows and <kbd class="kbd-badge">Enter</kbd> to pick from existing tags, or press <kbd class="kbd-badge">Enter</kbd>/comma to create a new tag.
+            </p>
+          </div>
+
+          <div style="background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.25); border-radius: var(--radius-sm); padding: 0.85rem 1rem;">
+            <h5 style="font-size: 0.825rem; font-weight: 700; color: #f87171; margin: 0 0 0.35rem 0;">🗑️ Safe Prompt Deletion Protection</h5>
+            <p style="font-size: 0.775rem; color: var(--text-secondary); margin: 0; line-height: 1.45;">
+              To delete a prompt, open it in the editor and click the red <strong>🗑️ Delete Prompt</strong> button at the bottom left. A confirmation modal prevents accidental clicks, and all remaining library indexes re-index automatically.
+            </p>
+          </div>
+        </div>
       </div>
 
       <!-- ====================================================================
@@ -1697,10 +1727,31 @@
            ==================================================================== -->
       <div id="paneHelpVariables" class="help-tab-pane" role="tabpanel">
         <div>
-          <h4 style="font-size: 1.05rem; font-weight: 700; color: var(--text-primary); margin: 0 0 0.35rem 0;">How to Draft Prompts with Dynamic Variables</h4>
+          <h4 style="font-size: 1.05rem; font-weight: 700; color: var(--text-primary); margin: 0 0 0.35rem 0;">Dynamic Variables & Live Prompt Runner</h4>
           <p style="font-size: 0.825rem; color: var(--text-secondary); margin: 0; line-height: 1.5;">
-            Dynamic variables turn static prompts into interactive software tools. When you run a prompt, PromptVault Pro automatically generates real-time input fields, multiple-choice pill selectors, and token previews.
+            Dynamic variables turn static prompts into interactive software tools. When you run a prompt, PromptVault Pro provides an upfront parameter form, live token estimation, and a 1-click launcher for all major AI models.
           </p>
+        </div>
+
+        <!-- Live Runner & Upfront Pre-fill Spotlight Banner -->
+        <div style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.12) 0%, rgba(6, 182, 212, 0.12) 100%); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: var(--radius-md); padding: 1rem 1.15rem; display: flex; flex-direction: column; gap: 0.65rem;">
+          <h5 style="font-size: 0.9rem; font-weight: 800; color: var(--accent-emerald); margin: 0; display: flex; align-items: center; gap: 0.5rem;">
+            <span>⚡ Upfront Variable Pre-fill &amp; 1-Click Multi-LLM Launcher</span>
+          </h5>
+          <p style="font-size: 0.8rem; color: var(--text-secondary); margin: 0; line-height: 1.5;">
+            When you click <strong>⚡ Use Prompt</strong>, you see all variables consolidated upfront at the top of the runner. Fill in text inputs or click pill choices to compile your prompt with live token calculations before sending it to an AI model:
+          </p>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0.6rem; font-size: 0.775rem;">
+            <div style="background: rgba(0,0,0,0.25); padding: 0.5rem 0.75rem; border-radius: 4px; border: 1px solid var(--border-subtle);">
+              <strong style="color: var(--accent-cyan);">📊 Live Token Telemetry:</strong> Real-time word, character, and estimated token counts (<code>Math.ceil(chars / 4)</code>) update as you type.
+            </div>
+            <div style="background: rgba(0,0,0,0.25); padding: 0.5rem 0.75rem; border-radius: 4px; border: 1px solid var(--border-subtle);">
+              <strong style="color: var(--accent-emerald);">📋 Compile vs. Template:</strong> Copy the filled prompt or the raw template containing variable placeholders with 1 click.
+            </div>
+            <div style="background: rgba(0,0,0,0.25); padding: 0.5rem 0.75rem; border-radius: 4px; border: 1px solid var(--border-subtle);">
+              <strong style="color: var(--accent-violet);">🚀 1-Click Model Launchers:</strong> Send directly to <strong>ChatGPT</strong>, <strong>Claude</strong>, <strong>Gemini</strong>, <strong>Perplexity</strong>, <strong>Cursor</strong>, or <strong>LibreChat</strong>.
+            </div>
+          </div>
         </div>
 
         <!-- 3 Supported Drafting Formats Guide Card -->
@@ -1752,10 +1803,9 @@
 
           <div style="background: rgba(99, 102, 241, 0.08); border: 1px solid rgba(99, 102, 241, 0.2); padding: 0.75rem 0.95rem; border-radius: var(--radius-sm); font-size: 0.785rem; color: var(--text-secondary); line-height: 1.55;">
             <strong>🛠️ Fast Ways to Add Variables to Existing Prompts:</strong>
-            <br />• <strong>Dashboard Filter:</strong> Set the main filter to <strong style="color: var(--accent-amber);">"⚠️ Needs Variables (0 vars)"</strong> to find all static prompts in your vault.
             <br />• <strong>In the Editor:</strong> Highlight any word or phrase and click <strong style="color: var(--accent-cyan);">"✨ Wrap Selection in {{...}}"</strong> to convert it instantly into an interactive input.
             <br />• <strong>One-Click Bracket Conversion:</strong> If your prompt already has words in <code>[brackets]</code> or <code>{braces}</code>, click <strong style="color: var(--accent-cyan);">"🔄 Convert [brackets] to {{vars}}"</strong> to convert all of them in one click!
-            <br />• <strong>Bulk LLM Processing:</strong> Export prompts with 0 variables using the Backup modal, batch-process them with an LLM, and re-import them (see Tab 5).
+            <br />• <strong>Bulk LLM Processing:</strong> Export prompts using the <strong>⇅ Data</strong> modal, batch-process them with an LLM using the Turnkey Prompt, and re-import them (see Tab 5).
           </div>
         </div>
 
@@ -1834,11 +1884,11 @@
       <div id="paneHelpBackup" class="help-tab-pane" role="tabpanel">
         <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; background: rgba(16, 185, 129, 0.08); padding: 1rem 1.25rem; border-radius: var(--radius-md); border: 1px solid rgba(16, 185, 129, 0.25);">
           <div>
-            <h4 style="font-size: 0.95rem; font-weight: 700; color: var(--accent-emerald); margin: 0 0 0.25rem 0;">Access Backup, Export & Smart Ingestion</h4>
-            <p style="font-size: 0.8rem; color: var(--text-muted); margin: 0;">Open the Backup & Data modal to export JSON, SQLite, or convert raw text prompts automatically.</p>
+            <h4 style="font-size: 0.95rem; font-weight: 700; color: var(--accent-emerald); margin: 0 0 0.25rem 0;">Access ⇅ Data Management, Export & Smart Ingestion</h4>
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin: 0;">Open the Data Management modal to export JSON, SQLite, or convert raw text prompts automatically.</p>
           </div>
           <button type="button" id="helpOpenDataModalBtn" class="btn btn-secondary" style="border-color: rgba(16, 185, 129, 0.4); color: var(--accent-emerald); font-weight: 600;">
-            💾 Open Backup Modal
+            ⇅ Open Data Modal
           </button>
         </div>
 
@@ -1848,7 +1898,7 @@
             <div class="help-step-content">
               <h5 class="help-step-title">In-App Smart Text Ingestion</h5>
               <p class="help-step-desc">
-                Have raw unformatted prompts with brackets like <code>[Insert Company]</code>, <code>&lt;Target Audience&gt;</code>, or <code>{Budget}</code>? Open <strong>Backup & Restore</strong> -> <strong>Smart Ingestion</strong>. Paste your text, and PromptVault Pro automatically converts placeholders into <code>{{variables}}</code>, infers titles, sets author credits, and saves them to your vault in 1 click!
+                Have raw unformatted prompts with brackets like <code>[Insert Company]</code>, <code>&lt;Target Audience&gt;</code>, or <code>{Budget}</code>? Open <strong>⇅ Data</strong> -> <strong>Smart Ingestion</strong>. Paste your text, and PromptVault Pro automatically converts placeholders into <code>{{variables}}</code>, infers titles, sets author credits, and saves them to your vault in 1 click!
               </p>
             </div>
           </div>
@@ -1935,7 +1985,106 @@ Here is the JSON data to process:
       </div>
 
       <!-- ====================================================================
-           TAB 6: PROMPTING WIKI & HANDBOOK (Academy)
+           TAB 6: FREQUENTLY ASKED QUESTIONS (FAQ) & INTERACTIVE USER GUIDE
+           ==================================================================== -->
+      <div id="paneHelpFaq" class="help-tab-pane" role="tabpanel">
+        <!-- Direct PDF Download Hero Banner -->
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; background: linear-gradient(135deg, rgba(79, 70, 229, 0.15) 0%, rgba(147, 51, 234, 0.15) 100%); padding: 1.25rem 1.5rem; border-radius: var(--radius-md); border: 1px solid rgba(99, 102, 241, 0.35); box-shadow: 0 4px 20px rgba(0,0,0,0.15);">
+          <div style="max-width: 620px;">
+            <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.3rem;">
+              <span style="font-size: 1.4rem;">📥</span>
+              <h4 style="font-size: 1.05rem; font-weight: 800; color: var(--text-primary); margin: 0;">Interactive PDF User Guide &amp; Architecture Manual</h4>
+            </div>
+            <p style="font-size: 0.825rem; color: var(--text-secondary); line-height: 1.5; margin: 0;">
+              Download the complete, publication-grade manual (1.2 MB PDF). Features an interactive Table of Contents, 7 in-depth chapters, full feature walkthroughs, complete FAQs, and an A-Z Prompting Glossary with clickable jump links.
+            </p>
+          </div>
+          <a href="assets/PromptVault-Pro-User-Guide.pdf" download="PromptVault-Pro-User-Guide.pdf" class="btn btn-primary" style="background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); border: none; font-size: 0.85rem; font-weight: 700; padding: 0.6rem 1.3rem; box-shadow: 0 4px 15px rgba(79, 70, 229, 0.4); display: inline-flex; align-items: center; gap: 0.5rem; text-decoration: none; white-space: nowrap;">
+            <span>📥 Download PDF User Guide</span>
+          </a>
+        </div>
+
+        <div style="margin-top: 1.25rem;">
+          <h4 style="font-size: 1.05rem; font-weight: 800; color: var(--text-primary); margin: 0 0 0.85rem 0;">Frequently Asked Questions</h4>
+          
+          <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+            <!-- FAQ 1 -->
+            <div style="background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 0.85rem 1.15rem;">
+              <div style="font-weight: 700; font-size: 0.875rem; color: var(--text-primary); margin-bottom: 0.35rem; display: flex; align-items: center; gap: 0.5rem;">
+                <span style="color: var(--accent-primary);">Q:</span> Where are my prompts stored? Is my prompt data secure?
+              </div>
+              <div style="font-size: 0.825rem; color: var(--text-secondary); line-height: 1.5;">
+                Your prompts are stored 100% locally on your machine inside your browser's persistent IndexedDB database. Nothing is transmitted to external servers or cloud analytics. If you run the included optional Python backend (<code>server/server.py</code>), prompts are saved to an offline SQLite file (<code>promptlibrary.db</code>).
+              </div>
+            </div>
+
+            <!-- FAQ 2 -->
+            <div style="background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 0.85rem 1.15rem;">
+              <div style="font-weight: 700; font-size: 0.875rem; color: var(--text-primary); margin-bottom: 0.35rem; display: flex; align-items: center; gap: 0.5rem;">
+                <span style="color: var(--accent-primary);">Q:</span> How does the Live Variable Runner pre-fill workflow work?
+              </div>
+              <div style="font-size: 0.825rem; color: var(--text-secondary); line-height: 1.5;">
+                Clicking <strong>"Run"</strong> or <strong>"Use Blueprint"</strong> opens the Upfront Variable Runner. Seeing all required parameters at once gives you a birds-eye view of your project flow. As you fill fields or click choice pills, PromptVault Pro calculates live token consumption (<code>chars / 4</code>). You can copy the compiled prompt or template and launch ChatGPT, Claude, Gemini, Perplexity, Cursor, or LibreChat with 1 click.
+              </div>
+            </div>
+
+            <!-- FAQ 3 -->
+            <div style="background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 0.85rem 1.15rem;">
+              <div style="font-weight: 700; font-size: 0.875rem; color: var(--text-primary); margin-bottom: 0.35rem; display: flex; align-items: center; gap: 0.5rem;">
+                <span style="color: var(--accent-primary);">Q:</span> How do the Edit Category vs. New Category modes work in the Taxonomy Manager?
+              </div>
+              <div style="font-size: 0.825rem; color: var(--text-secondary); line-height: 1.5;">
+                The Taxonomy &amp; Deduplication Manager features a clean mode switcher:
+                <br />• In <strong>✏️ Edit Category Mode</strong>, select any category from the dropdown to automatically pull through all its linked subcategories. Click "✏️ Rename Category" to rename it safely across your vault.
+                <br />• In <strong>➕ New Category Mode</strong>, enter your new category name in a dedicated text box without competing dropdowns.
+              </div>
+            </div>
+
+            <!-- FAQ 4 -->
+            <div style="background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 0.85rem 1.15rem;">
+              <div style="font-weight: 700; font-size: 0.875rem; color: var(--text-primary); margin-bottom: 0.35rem; display: flex; align-items: center; gap: 0.5rem;">
+                <span style="color: var(--accent-primary);">Q:</span> Why are some subcategory chips highlighted with a checkmark (✓)?
+              </div>
+              <div style="font-size: 0.825rem; color: var(--text-secondary); line-height: 1.5;">
+                In the Master Subcategory Pool, any subcategory currently attached to the active category is rendered with a <strong>solid vibrant accent highlight and white text</strong> (<code>✓ Roadmaps</code>). Unlinked subcategories remain neutral (<code>+ Name</code>). You can link or unlink them with a single click.
+              </div>
+            </div>
+
+            <!-- FAQ 5 -->
+            <div style="background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 0.85rem 1.15rem;">
+              <div style="font-weight: 700; font-size: 0.875rem; color: var(--text-primary); margin-bottom: 0.35rem; display: flex; align-items: center; gap: 0.5rem;">
+                <span style="color: var(--accent-primary);">Q:</span> How does character-by-character tag autocomplete work?
+              </div>
+              <div style="font-size: 0.825rem; color: var(--text-secondary); line-height: 1.5;">
+                When typing tags in the prompt creator or editor, PromptVault Pro searches existing tags character-by-character (e.g. typing <code>s</code> shows tags starting with <code>s</code> with prompt usage counts; typing <code>o</code> refilters to <code>so...</code>). Use arrow keys or enter to select existing tags, or create a brand new tag instantly.
+              </div>
+            </div>
+
+            <!-- FAQ 6 -->
+            <div style="background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 0.85rem 1.15rem;">
+              <div style="font-weight: 700; font-size: 0.875rem; color: var(--accent-primary);">Q:</span> What happens if I delete a category or prompt?
+              </div>
+              <div style="font-size: 0.825rem; color: var(--text-secondary); line-height: 1.5;">
+                • <strong>Deleting a Category:</strong> Never deletes assigned prompts; they are safely reassigned to the <em>General</em> fallback category.<br />
+                • <strong>Deleting a Prompt:</strong> Every prompt card and edit dialog has a dedicated Delete action protected by a confirmation dialog to prevent accidental loss.
+              </div>
+            </div>
+
+            <!-- FAQ 7 -->
+            <div style="background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 0.85rem 1.15rem;">
+              <div style="font-weight: 700; font-size: 0.875rem; color: var(--text-primary); margin-bottom: 0.35rem; display: flex; align-items: center; gap: 0.5rem;">
+                <span style="color: var(--accent-primary);">Q:</span> What happens if I clear my browser cookies or site data?
+              </div>
+              <div style="font-size: 0.825rem; color: var(--text-secondary); line-height: 1.5;">
+                Clearing browser cookies and site storage can clear IndexedDB. We strongly recommend clicking the <strong>⇅ Data</strong> button in the navigation bar to export a JSON backup file periodically. You can re-import your vault in one click at any time.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ====================================================================
+           TAB 7: PROMPTING WIKI & HANDBOOK (Academy)
            ==================================================================== -->
       <div id="paneHelpWiki" class="help-tab-pane" role="tabpanel">
         <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem; background: rgba(99, 102, 241, 0.08); padding: 0.85rem 1.25rem; border-radius: var(--radius-md); border: 1px solid rgba(99, 102, 241, 0.25);">
