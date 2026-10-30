@@ -26,7 +26,8 @@ document.addEventListener("DOMContentLoaded", () => {
     formAuthoringMode: "quick",
     formSelectedTags: new Set(),
     activeTagSuggestionIndex: -1,
-    editingCategoryName: null
+    editingCategoryName: null,
+    taxonomyManagerMode: "edit"
   };
 
   // DOM Elements
@@ -160,11 +161,19 @@ document.addEventListener("DOMContentLoaded", () => {
     closeCatManagerBtn: document.getElementById("closeCatManagerBtn"),
     doneCatManagerBtn: document.getElementById("doneCatManagerBtn"),
     taxonomyAddBox: document.getElementById("taxonomyAddBox"),
+    catManagerFormHeading: document.getElementById("catManagerFormHeading"),
+    catManagerFormIcon: document.getElementById("catManagerFormIcon"),
     catManagerFormTitle: document.getElementById("catManagerFormTitle"),
     catManagerFormSubtitle: document.getElementById("catManagerFormSubtitle"),
-    catManagerResetBtn: document.getElementById("catManagerResetBtn"),
+    catManagerModeEditBtn: document.getElementById("catManagerModeEditBtn"),
+    catManagerModeNewBtn: document.getElementById("catManagerModeNewBtn"),
     catManagerDomainSelect: document.getElementById("catManagerDomainSelect"),
+    catManagerEditGroup: document.getElementById("catManagerEditGroup"),
+    catManagerNewGroup: document.getElementById("catManagerNewGroup"),
     catManagerCategorySelect: document.getElementById("catManagerCategorySelect"),
+    catManagerToggleRenameBtn: document.getElementById("catManagerToggleRenameBtn"),
+    catManagerRenameBox: document.getElementById("catManagerRenameBox"),
+    renameCategoryInput: document.getElementById("renameCategoryInput"),
     newCategoryInput: document.getElementById("newCategoryInput"),
     selectedSubcatsContainer: document.getElementById("selectedSubcatsContainer"),
     newSubcatInput: document.getElementById("newSubcatInput"),
@@ -627,86 +636,189 @@ document.addEventListener("DOMContentLoaded", () => {
   // Phase 2: Dedicated Hierarchical Taxonomy & Deduplication Manager Modal
   // ----------------------------------------------------
   function openCategoryManagerModal(targetDomain = null, targetCategory = null) {
+    if (typeof targetDomain !== "string") targetDomain = null;
+    if (typeof targetCategory !== "string") targetCategory = null;
+
     state.selectedSubcatsForNewCategory.clear();
     state.editingCategoryName = null;
     if (elements.newCategoryInput) elements.newCategoryInput.value = "";
+    if (elements.renameCategoryInput) elements.renameCategoryInput.value = "";
     if (elements.newSubcatInput) elements.newSubcatInput.value = "";
+    if (elements.catManagerRenameBox) elements.catManagerRenameBox.style.display = "none";
+    if (elements.catManagerToggleRenameBtn) elements.catManagerToggleRenameBtn.textContent = "✏️ Rename Category";
+
+    populateCatManagerDomainSelect();
 
     if (targetDomain && elements.catManagerDomainSelect) {
       elements.catManagerDomainSelect.value = targetDomain;
-    }
-
-    renderTaxonomyManager();
-
-    if (targetCategory) {
-      const activeDomain = targetDomain || (elements.catManagerDomainSelect ? elements.catManagerDomainSelect.value : null);
-      if (activeDomain) {
-        loadCategoryIntoManager(targetCategory, activeDomain);
+    } else if (elements.catManagerDomainSelect && !elements.catManagerDomainSelect.value) {
+      const domains = window.PromptStorage.getDomains();
+      if (domains.length > 0) {
+        elements.catManagerDomainSelect.value = domains[0].name;
       }
     }
+
+    const currentDomain = elements.catManagerDomainSelect ? elements.catManagerDomainSelect.value : null;
+    const tree = window.PromptStorage.getTaxonomyTree();
+    const domainData = tree[currentDomain] || { categories: {} };
+    const catsObj = domainData.categories || {};
+    const catEntries = Object.keys(catsObj);
+
+    if (targetCategory && catEntries.includes(targetCategory)) {
+      setTaxonomyManagerMode("edit", targetCategory);
+    } else if (catEntries.length > 0) {
+      setTaxonomyManagerMode("edit", catEntries[0]);
+    } else {
+      setTaxonomyManagerMode("new");
+    }
+
+    renderTaxonomyHierarchyTree();
 
     if (elements.categoryManagerModal && typeof elements.categoryManagerModal.showModal === "function") {
       elements.categoryManagerModal.showModal();
     }
   }
 
+  function setTaxonomyManagerMode(mode, targetCategory = null) {
+    state.taxonomyManagerMode = mode;
+    const isEdit = mode === "edit";
+
+    if (elements.catManagerModeEditBtn) {
+      elements.catManagerModeEditBtn.classList.toggle("active", isEdit);
+      elements.catManagerModeEditBtn.setAttribute("aria-selected", isEdit ? "true" : "false");
+    }
+    if (elements.catManagerModeNewBtn) {
+      elements.catManagerModeNewBtn.classList.toggle("active", !isEdit);
+      elements.catManagerModeNewBtn.setAttribute("aria-selected", !isEdit ? "true" : "false");
+    }
+
+    if (elements.catManagerEditGroup) {
+      elements.catManagerEditGroup.style.display = isEdit ? "flex" : "none";
+    }
+    if (elements.catManagerNewGroup) {
+      elements.catManagerNewGroup.style.display = isEdit ? "none" : "flex";
+    }
+    if (elements.catManagerRenameBox) {
+      elements.catManagerRenameBox.style.display = "none";
+    }
+    if (elements.catManagerToggleRenameBtn) {
+      elements.catManagerToggleRenameBtn.textContent = "✏️ Rename Category";
+    }
+
+    const currentDomain = elements.catManagerDomainSelect ? elements.catManagerDomainSelect.value : null;
+
+    if (isEdit) {
+      populateCatManagerCategorySelect(targetCategory);
+      const chosenCat = targetCategory || (elements.catManagerCategorySelect ? elements.catManagerCategorySelect.value : null);
+      if (chosenCat && chosenCat !== "__NONE__") {
+        loadCategoryIntoManager(chosenCat, currentDomain);
+      } else {
+        // No categories exist in this pillar, switch to new mode
+        setTaxonomyManagerMode("new");
+        return;
+      }
+    } else {
+      state.editingCategoryName = null;
+      state.selectedSubcatsForNewCategory.clear();
+      if (elements.newCategoryInput) {
+        elements.newCategoryInput.value = "";
+        setTimeout(() => elements.newCategoryInput.focus(), 60);
+      }
+      if (elements.taxonomyAddBox) elements.taxonomyAddBox.classList.remove("editing-mode");
+      renderSubcatDedupPool();
+      updateTaxonomyManagerFormHeader();
+    }
+  }
+
   function renderTaxonomyManager() {
     populateCatManagerDomainSelect();
-    populateCatManagerCategorySelect();
+    const currentDomain = elements.catManagerDomainSelect ? elements.catManagerDomainSelect.value : null;
+    const tree = window.PromptStorage.getTaxonomyTree();
+    const domainData = tree[currentDomain] || { categories: {} };
+    const catsObj = domainData.categories || {};
+    const catEntries = Object.keys(catsObj);
+
+    if (state.taxonomyManagerMode === "edit") {
+      if (catEntries.length > 0) {
+        setTaxonomyManagerMode("edit", state.editingCategoryName || catEntries[0]);
+      } else {
+        setTaxonomyManagerMode("new");
+      }
+    } else {
+      setTaxonomyManagerMode("new");
+    }
+
     renderSubcatDedupPool();
     renderTaxonomyHierarchyTree();
-    updateTaxonomyManagerFormHeader();
   }
 
   function populateCatManagerDomainSelect() {
     if (!elements.catManagerDomainSelect) return;
     const domains = window.PromptStorage.getDomains();
     const currentVal = elements.catManagerDomainSelect.value;
+    const defaultVal = currentVal || state.selectedDomain || (domains[0] ? domains[0].name : "");
     elements.catManagerDomainSelect.innerHTML = domains.map(d => `
-      <option value="${escapeHTML(d.name)}" ${(currentVal ? currentVal === d.name : state.selectedDomain === d.name) ? 'selected' : ''}>
+      <option value="${escapeHTML(d.name)}" ${defaultVal === d.name ? 'selected' : ''}>
         ${d.icon || '📁'} ${escapeHTML(d.name)}
       </option>
     `).join("");
+    elements.catManagerDomainSelect.value = defaultVal;
   }
 
-  function populateCatManagerCategorySelect() {
+  function populateCatManagerCategorySelect(selectedCategory = null) {
     if (!elements.catManagerCategorySelect || !elements.catManagerDomainSelect) return;
     const currentDomain = elements.catManagerDomainSelect.value;
     const tree = window.PromptStorage.getTaxonomyTree();
     const domainData = tree[currentDomain] || { categories: {} };
     const catsObj = domainData.categories || {};
     const catEntries = Object.keys(catsObj).sort();
-    const prompts = state.prompts;
+    const prompts = state.prompts || [];
 
-    let html = `<option value="__NEW__" ${!state.editingCategoryName ? 'selected' : ''}>✨ + Create Brand New Category...</option>`;
-    if (catEntries.length > 0) {
-      html += `<optgroup label="Existing Categories in ${escapeHTML(currentDomain)}:">`;
-      catEntries.forEach(catName => {
-        const subList = Array.isArray(catsObj[catName]) ? catsObj[catName] : [];
-        const promptCount = prompts.filter(p => p.domain === currentDomain && (p.categories || [p.category]).includes(catName)).length;
-        const isSelected = state.editingCategoryName === catName;
-        html += `<option value="${escapeHTML(catName)}" ${isSelected ? 'selected' : ''}>
-          ${escapeHTML(catName)} (${promptCount} prompts · ${subList.length} subcats)
-        </option>`;
-      });
-      html += `</optgroup>`;
+    if (catEntries.length === 0) {
+      elements.catManagerCategorySelect.innerHTML = '<option value="__NONE__" disabled selected>No existing categories in this pillar</option>';
+      return;
     }
-    elements.catManagerCategorySelect.innerHTML = html;
+
+    const catToSelect = (selectedCategory && catEntries.includes(selectedCategory))
+      ? selectedCategory
+      : ((state.editingCategoryName && catEntries.includes(state.editingCategoryName))
+        ? state.editingCategoryName
+        : catEntries[0]);
+
+    elements.catManagerCategorySelect.innerHTML = catEntries.map(catName => {
+      const subList = Array.isArray(catsObj[catName]) ? catsObj[catName] : [];
+      const promptCount = prompts.filter(p => p.domain === currentDomain && (p.categories || [p.category] || []).includes(catName)).length;
+      const isSelected = catName === catToSelect;
+      return `<option value="${escapeHTML(catName)}" ${isSelected ? 'selected' : ''}>${escapeHTML(catName)} (${promptCount} prompts · ${subList.length} subcats)</option>`;
+    }).join("");
+
+    elements.catManagerCategorySelect.value = catToSelect;
   }
 
   function loadCategoryIntoManager(catName, domainName) {
-    if (!catName || catName === "__NEW__") {
-      resetCategoryManagerToNew();
-      return;
-    }
+    if (!catName || catName === "__NONE__") return;
     const tree = window.PromptStorage.getTaxonomyTree();
     const domainData = tree[domainName] || { categories: {} };
     const catsObj = domainData.categories || {};
     const subList = Array.isArray(catsObj[catName]) ? catsObj[catName] : [];
 
     state.editingCategoryName = catName;
-    if (elements.newCategoryInput) elements.newCategoryInput.value = catName;
+    state.taxonomyManagerMode = "edit";
+
+    if (elements.catManagerModeEditBtn) {
+      elements.catManagerModeEditBtn.classList.add("active");
+      elements.catManagerModeEditBtn.setAttribute("aria-selected", "true");
+    }
+    if (elements.catManagerModeNewBtn) {
+      elements.catManagerModeNewBtn.classList.remove("active");
+      elements.catManagerModeNewBtn.setAttribute("aria-selected", "false");
+    }
+    if (elements.catManagerEditGroup) elements.catManagerEditGroup.style.display = "flex";
+    if (elements.catManagerNewGroup) elements.catManagerNewGroup.style.display = "none";
+
     if (elements.catManagerCategorySelect) elements.catManagerCategorySelect.value = catName;
+    if (elements.renameCategoryInput) elements.renameCategoryInput.value = catName;
+    if (elements.newCategoryInput) elements.newCategoryInput.value = catName;
 
     state.selectedSubcatsForNewCategory = new Set(subList);
     renderSubcatDedupPool();
@@ -719,31 +831,28 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function resetCategoryManagerToNew() {
-    state.editingCategoryName = null;
-    state.selectedSubcatsForNewCategory.clear();
-    if (elements.newCategoryInput) elements.newCategoryInput.value = "";
-    if (elements.catManagerCategorySelect) elements.catManagerCategorySelect.value = "__NEW__";
-    if (elements.taxonomyAddBox) elements.taxonomyAddBox.classList.remove("editing-mode");
-    renderSubcatDedupPool();
-    updateTaxonomyManagerFormHeader();
+    setTaxonomyManagerMode("new");
   }
 
   function updateTaxonomyManagerFormHeader() {
-    const isEditing = Boolean(state.editingCategoryName);
+    const isEdit = state.taxonomyManagerMode === "edit" && Boolean(state.editingCategoryName);
+    if (elements.catManagerFormIcon) {
+      elements.catManagerFormIcon.textContent = isEdit ? "✏️" : "➕";
+    }
     if (elements.catManagerFormTitle) {
-      elements.catManagerFormTitle.textContent = isEditing
+      elements.catManagerFormTitle.textContent = isEdit
         ? `Edit Category: "${state.editingCategoryName}"`
         : "Create New Category & Attach Subcategories";
     }
     if (elements.catManagerFormSubtitle) {
-      elements.catManagerFormSubtitle.textContent = isEditing
-        ? `Modifying subcategories for "${state.editingCategoryName}". Add or remove linked subcategories below, then click Update.`
-        : "Select a Parent Domain Pillar, pick an existing category to edit, or type a new category name.";
+      elements.catManagerFormSubtitle.textContent = isEdit
+        ? `Modifying linked subcategories for "${state.editingCategoryName}". Click chips below to add or remove links.`
+        : "Select a Parent Domain Pillar, type the new category name, and attach subcategories.";
     }
     if (elements.createCategoryBtnText) {
-      elements.createCategoryBtnText.textContent = isEditing
-        ? "Update Category & Subcategories"
-        : "Save Category & Subcategories";
+      elements.createCategoryBtnText.textContent = isEdit
+        ? `Update "${state.editingCategoryName}" Subcategories`
+        : "Save New Category & Subcategories";
     }
   }
 
@@ -902,9 +1011,8 @@ document.addEventListener("DOMContentLoaded", () => {
         const cat = btn.getAttribute("data-category");
         if (elements.catManagerDomainSelect) {
           elements.catManagerDomainSelect.value = dom;
-          populateCatManagerCategorySelect();
         }
-        loadCategoryIntoManager(cat, dom);
+        setTaxonomyManagerMode("edit", cat);
         showToast(`Loaded "${cat}" for editing`, "info");
       });
     });
@@ -2429,22 +2537,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Dedicated Category Manager Button in Header
     if (elements.openCategoryManagerBtn) {
-      elements.openCategoryManagerBtn.addEventListener("click", openCategoryManagerModal);
+      elements.openCategoryManagerBtn.addEventListener("click", () => openCategoryManagerModal());
     }
 
     // Dedicated Category Manager Button in Nav Header
     if (elements.navManageCatBtn) {
-      elements.navManageCatBtn.addEventListener("click", openCategoryManagerModal);
+      elements.navManageCatBtn.addEventListener("click", () => openCategoryManagerModal());
     }
 
     // Dedicated Category Manager trigger in Stats
     if (elements.statsCategoriesBtn) {
-      elements.statsCategoriesBtn.addEventListener("click", openCategoryManagerModal);
+      elements.statsCategoriesBtn.addEventListener("click", () => openCategoryManagerModal());
     }
 
     // Link in Add/Edit Prompt Modal to open manager
     if (elements.promptFormManageCatsBtn) {
-      elements.promptFormManageCatsBtn.addEventListener("click", openCategoryManagerModal);
+      elements.promptFormManageCatsBtn.addEventListener("click", () => openCategoryManagerModal());
     }
 
     // Quick inline Category Add button inside Add/Edit Prompt Modal
@@ -2537,11 +2645,47 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
 
+    // Taxonomy Mode Switcher (Edit Existing vs Create New)
+    if (elements.catManagerModeEditBtn) {
+      elements.catManagerModeEditBtn.addEventListener("click", () => {
+        setTaxonomyManagerMode("edit");
+      });
+    }
+
+    if (elements.catManagerModeNewBtn) {
+      elements.catManagerModeNewBtn.addEventListener("click", () => {
+        setTaxonomyManagerMode("new");
+      });
+    }
+
+    if (elements.catManagerToggleRenameBtn && elements.catManagerRenameBox) {
+      elements.catManagerToggleRenameBtn.addEventListener("click", () => {
+        const isVisible = elements.catManagerRenameBox.style.display === "block";
+        elements.catManagerRenameBox.style.display = isVisible ? "none" : "block";
+        elements.catManagerToggleRenameBtn.textContent = isVisible ? "✏️ Rename Category" : "✕ Cancel Rename";
+        if (!isVisible && elements.renameCategoryInput) {
+          elements.renameCategoryInput.value = state.editingCategoryName || "";
+          elements.renameCategoryInput.focus();
+        }
+      });
+    }
+
     if (elements.catManagerDomainSelect) {
       elements.catManagerDomainSelect.addEventListener("change", () => {
-        state.editingCategoryName = null;
-        populateCatManagerCategorySelect();
-        resetCategoryManagerToNew();
+        const dom = elements.catManagerDomainSelect.value;
+        const tree = window.PromptStorage.getTaxonomyTree();
+        const catsObj = (tree[dom] && tree[dom].categories) || {};
+        const catEntries = Object.keys(catsObj);
+
+        if (state.taxonomyManagerMode === "edit") {
+          if (catEntries.length > 0) {
+            setTaxonomyManagerMode("edit", catEntries[0]);
+          } else {
+            setTaxonomyManagerMode("new");
+          }
+        } else {
+          updateTaxonomyManagerFormHeader();
+        }
       });
     }
 
@@ -2549,40 +2693,12 @@ document.addEventListener("DOMContentLoaded", () => {
       elements.catManagerCategorySelect.addEventListener("change", () => {
         const val = elements.catManagerCategorySelect.value;
         const dom = elements.catManagerDomainSelect ? elements.catManagerDomainSelect.value : null;
-        if (!dom) return;
-        if (val === "__NEW__") {
-          resetCategoryManagerToNew();
-        } else {
-          loadCategoryIntoManager(val, dom);
-        }
-      });
-    }
-
-    if (elements.catManagerResetBtn) {
-      elements.catManagerResetBtn.addEventListener("click", () => {
-        resetCategoryManagerToNew();
-        if (elements.newCategoryInput) elements.newCategoryInput.focus();
+        if (!dom || !val || val === "__NONE__") return;
+        loadCategoryIntoManager(val, dom);
       });
     }
 
     if (elements.newCategoryInput) {
-      elements.newCategoryInput.addEventListener("input", () => {
-        const val = elements.newCategoryInput.value.trim().toLowerCase();
-        const currentDomain = elements.catManagerDomainSelect ? elements.catManagerDomainSelect.value : null;
-        if (!currentDomain) return;
-        const tree = window.PromptStorage.getTaxonomyTree();
-        const catsObj = (tree[currentDomain] && tree[currentDomain].categories) || {};
-        const matchedCat = Object.keys(catsObj).find(c => c.toLowerCase() === val);
-
-        if (matchedCat && matchedCat !== state.editingCategoryName) {
-          loadCategoryIntoManager(matchedCat, currentDomain);
-        } else if (!matchedCat && state.editingCategoryName) {
-          state.editingCategoryName = null;
-          if (elements.catManagerCategorySelect) elements.catManagerCategorySelect.value = "__NEW__";
-          updateTaxonomyManagerFormHeader();
-        }
-      });
-
       elements.newCategoryInput.addEventListener("keydown", (e) => {
         if (e.key === "Enter") {
           e.preventDefault();
@@ -2591,49 +2707,102 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
 
-    if (elements.createCategoryBtn && elements.newCategoryInput && elements.catManagerDomainSelect) {
+    if (elements.renameCategoryInput) {
+      elements.renameCategoryInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          if (elements.createCategoryBtn) elements.createCategoryBtn.click();
+        }
+      });
+    }
+
+    if (elements.createCategoryBtn && elements.catManagerDomainSelect) {
       elements.createCategoryBtn.addEventListener("click", () => {
-        const catName = elements.newCategoryInput.value.trim();
         const domainName = elements.catManagerDomainSelect.value;
-        if (!catName) {
-          showToast("Please enter a category name", "error");
-          elements.newCategoryInput.focus();
-          return;
-        }
-
         const subcats = Array.from(state.selectedSubcatsForNewCategory);
-        const wasEditing = Boolean(state.editingCategoryName);
-        const oldCatName = state.editingCategoryName;
+        const isEdit = state.taxonomyManagerMode === "edit";
 
-        if (wasEditing && oldCatName && oldCatName !== catName) {
-          // Category was renamed
-          window.PromptStorage.deleteCategoryFromDomain(domainName, oldCatName);
-          window.PromptStorage.addCategoryWithSubcategories(domainName, catName, subcats);
+        if (isEdit) {
+          const currentCat = state.editingCategoryName;
+          if (!currentCat) {
+            showToast("No category selected for editing", "error");
+            return;
+          }
 
-          // Update existing prompts with the renamed category
-          state.prompts.forEach(p => {
-            let changed = false;
-            if (Array.isArray(p.categories) && p.categories.includes(oldCatName)) {
-              p.categories = p.categories.map(c => c === oldCatName ? catName : c);
-              changed = true;
+          const isRenaming = elements.catManagerRenameBox && elements.catManagerRenameBox.style.display === "block";
+          const newName = (isRenaming && elements.renameCategoryInput) ? elements.renameCategoryInput.value.trim() : currentCat;
+
+          if (!newName) {
+            showToast("Category name cannot be empty", "error");
+            if (elements.renameCategoryInput) elements.renameCategoryInput.focus();
+            return;
+          }
+
+          if (newName !== currentCat) {
+            const tree = window.PromptStorage.getTaxonomyTree();
+            const existingCats = (tree[domainName] && tree[domainName].categories) || {};
+            if (existingCats[newName]) {
+              showToast(`A category named "${newName}" already exists in ${domainName}`, "error");
+              return;
             }
-            if (p.category === oldCatName) {
-              p.category = catName;
-              changed = true;
-            }
-            if (changed) window.PromptStorage.savePrompt(p);
-          });
-          showToast(`Renamed category to "${catName}" and updated prompt records`, "success");
+
+            window.PromptStorage.deleteCategoryFromDomain(domainName, currentCat);
+            window.PromptStorage.addCategoryWithSubcategories(domainName, newName, subcats);
+
+            // Update existing prompts with the renamed category
+            state.prompts.forEach(p => {
+              let changed = false;
+              if (Array.isArray(p.categories) && p.categories.includes(currentCat)) {
+                p.categories = p.categories.map(c => c === currentCat ? newName : c);
+                changed = true;
+              }
+              if (p.category === currentCat) {
+                p.category = newName;
+                changed = true;
+              }
+              if (changed) window.PromptStorage.savePrompt(p);
+            });
+
+            state.editingCategoryName = newName;
+            if (elements.catManagerRenameBox) elements.catManagerRenameBox.style.display = "none";
+            if (elements.catManagerToggleRenameBtn) elements.catManagerToggleRenameBtn.textContent = "✏️ Rename Category";
+            showToast(`Renamed category to "${newName}" and saved subcategories`, "success");
+          } else {
+            window.PromptStorage.addCategoryWithSubcategories(domainName, currentCat, subcats);
+            showToast(`Updated "${currentCat}" with ${subcats.length} subcategories`, "success");
+          }
+
+          renderTaxonomyHierarchyTree();
+          populateCatManagerCategorySelect(state.editingCategoryName);
+          loadCategoryIntoManager(state.editingCategoryName, domainName);
+          renderCategories();
+          renderGrid();
+          if (elements.formCategoryChips) renderFormCategoryChips();
         } else {
-          window.PromptStorage.addCategoryWithSubcategories(domainName, catName, subcats);
-          showToast(wasEditing ? `Updated category "${catName}"` : `Saved category "${catName}" under ${domainName}`, "success");
-        }
+          // CREATE MODE
+          const catName = elements.newCategoryInput ? elements.newCategoryInput.value.trim() : "";
+          if (!catName) {
+            showToast("Please enter a category name", "error");
+            if (elements.newCategoryInput) elements.newCategoryInput.focus();
+            return;
+          }
 
-        resetCategoryManagerToNew();
-        renderTaxonomyManager();
-        renderCategories();
-        renderGrid();
-        if (elements.formCategoryChips) renderFormCategoryChips();
+          const tree = window.PromptStorage.getTaxonomyTree();
+          const existingCats = (tree[domainName] && tree[domainName].categories) || {};
+          if (existingCats[catName]) {
+            showToast(`A category named "${catName}" already exists in ${domainName}`, "error");
+            return;
+          }
+
+          window.PromptStorage.addCategoryWithSubcategories(domainName, catName, subcats);
+          showToast(`Created category "${catName}" under ${domainName}`, "success");
+
+          renderTaxonomyHierarchyTree();
+          setTaxonomyManagerMode("edit", catName);
+          renderCategories();
+          renderGrid();
+          if (elements.formCategoryChips) renderFormCategoryChips();
+        }
       });
     }
 
