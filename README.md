@@ -54,7 +54,7 @@ Built with modern semantic HTML5, Vanilla CSS, and lightweight Vanilla JavaScrip
 ### 📦 7. Production-Ready Architecture & Starter Pack
 - **Flagship Starter Pack (`js/data.js`)**: Ships with 7 exemplar blueprints representing all 7 Domain Pillars (Automation, Engineering, Business, Marketing, Images, UI/UX, and Education). Keeps the initial install lightweight, fast, and immediately understandable.
 - **Personal Vault Independence**: Users can import their own personal JSON backups or ingest text prompts without modifying the core codebase.
-- **1-Click Canvas Presets**: In the Backup modal:
+- **1-Click Canvas Presets**: In the **⇅ Data** modal:
   - 🗑️ **Start from Scratch (Blank Canvas)**: Clears all prompts so you can build your own bespoke library. All 44 categories and 7 domain pillars remain ready for your new prompts.
   - ⚡ **Load Starter Pack (7 Flagships)**: Restores the clean 7-blueprint showcase.
   - 📥 **Import JSON Backup**: Load any custom prompt collection or private vault.
@@ -130,7 +130,7 @@ If you want to use the application immediately on your desktop, tablet, or phone
 
 - **How it works**: Runs instantly in any modern browser (Chrome, Safari, Edge, Firefox).
 - **Data Privacy**: All prompts, custom modifications, and imported templates are saved **locally inside your browser's persistent IndexedDB storage**. Your private prompts are never uploaded to any external server.
-- **Backup Recommendation**: Because data is stored in your browser's storage, use the **⚡ Backup** button in the header to export a `.json` backup file periodically. This ensures your data remains safe even if you clear your browser history or switch devices.
+- **Backup Recommendation**: Because data is stored in your browser's storage, use the **⇅ Data** button in the header to export a `.json` backup file periodically. This ensures your data remains safe even if you clear your browser history or switch devices.
 
 ---
 
