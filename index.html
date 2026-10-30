@@ -648,9 +648,17 @@
           <input type="url" id="formAuthorUrl" class="input-field" placeholder="https://..." />
         </div>
 
-        <div class="form-group form-full">
-          <label class="form-label" for="formTags">Tags (comma-separated)</label>
-          <input type="text" id="formTags" class="input-field" placeholder="e.g. marketing, email, b2b, outreach" />
+        <div class="form-group form-full" style="position: relative;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+            <label class="form-label" for="formTagInput" style="margin-bottom: 0;">Tags & Keywords</label>
+            <span style="font-size: 0.725rem; color: var(--text-muted);">Type to search existing library tags or press Enter to add new</span>
+          </div>
+          <div id="formTagsWrapper" class="tag-input-container">
+            <div id="formTagChips" class="tag-chips-list"></div>
+            <input type="text" id="formTagInput" class="tag-inline-input" placeholder="Type tag (e.g. marketing, email, b2b)..." autocomplete="off" />
+          </div>
+          <input type="hidden" id="formTags" name="tags" />
+          <div id="tagSuggestionsDropdown" class="tag-suggestions-dropdown hidden" role="listbox"></div>
         </div>
 
         <div class="form-group form-full">
@@ -1017,22 +1025,35 @@
 
     <div class="modal-body" style="gap: 1.5rem;">
       <!-- Add / Edit Category Box with Domain & Subcategories Deduplication -->
-      <div class="taxonomy-add-box" style="display: flex; flex-direction: column; gap: 0.85rem;">
-        <h4 style="font-size: 0.95rem; font-weight: 700; display: flex; align-items: center; gap: 0.4rem;">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
-          Create New Category & Attach Subcategories
-        </h4>
-        <p style="font-size: 0.8rem; color: var(--text-secondary);">Select the parent Domain Pillar, enter the category name, and pick from existing subcategories or type new ones to avoid duplicate tags.</p>
+      <div id="taxonomyAddBox" class="taxonomy-add-box" style="display: flex; flex-direction: column; gap: 0.85rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+          <h4 id="catManagerFormHeading" style="font-size: 0.95rem; font-weight: 700; display: flex; align-items: center; gap: 0.4rem; margin: 0;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+            <span id="catManagerFormTitle">Create New Category & Attach Subcategories</span>
+          </h4>
+          <button type="button" id="catManagerResetBtn" class="btn btn-secondary" style="font-size: 0.75rem; padding: 0.25rem 0.65rem; height: auto;" title="Switch back to creating a brand new category">
+            ✨ + New Category
+          </button>
+        </div>
+        <p id="catManagerFormSubtitle" style="font-size: 0.8rem; color: var(--text-secondary); margin: 0;">
+          Select a Parent Domain Pillar, pick an existing category to edit its subcategories, or type a new category name.
+        </p>
         
-        <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
-          <div style="display: flex; flex-direction: column; gap: 0.35rem; flex: 1; min-width: 240px;">
-            <label class="form-label" for="catManagerDomainSelect">Parent Domain Pillar</label>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0.75rem;">
+          <div style="display: flex; flex-direction: column; gap: 0.35rem;">
+            <label class="form-label" for="catManagerDomainSelect">1. Parent Domain Pillar</label>
             <select id="catManagerDomainSelect" class="input-field" aria-label="Select Domain Pillar">
               <!-- Populated via JavaScript -->
             </select>
           </div>
-          <div style="display: flex; flex-direction: column; gap: 0.35rem; flex: 1.5; min-width: 260px;">
-            <label class="form-label" for="newCategoryInput">Category Name</label>
+          <div style="display: flex; flex-direction: column; gap: 0.35rem;">
+            <label class="form-label" for="catManagerCategorySelect">2. Category Selection</label>
+            <select id="catManagerCategorySelect" class="input-field" aria-label="Select existing category to edit or create new">
+              <!-- Populated dynamically: "+ Create Brand New Category..." + existing categories in domain -->
+            </select>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 0.35rem;">
+            <label class="form-label" for="newCategoryInput">3. Category Name</label>
             <input type="text" id="newCategoryInput" class="input-field" placeholder="e.g. Research & Analysis, Prompt Security" />
           </div>
         </div>

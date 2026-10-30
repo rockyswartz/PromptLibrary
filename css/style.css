@@ -2815,6 +2815,204 @@ textarea.input-field {
   gap: 0.25rem;
 }
 
+/* ==========================================================================
+   Interactive Tag Input & Character-by-Character Autocomplete Dropdown
+   ========================================================================== */
+.tag-input-container {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.45rem 0.65rem;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-md);
+  min-height: 44px;
+  cursor: text;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.tag-input-container:focus-within {
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+}
+
+.tag-chips-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  align-items: center;
+}
+
+.form-tag-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: rgba(99, 102, 241, 0.18);
+  border: 1px solid rgba(99, 102, 241, 0.4);
+  border-radius: var(--radius-sm);
+  padding: 0.22rem 0.55rem;
+  font-size: 0.775rem;
+  font-weight: 600;
+  color: #a5b4fc;
+  user-select: none;
+  animation: popoverFadeIn 0.15s ease-out;
+}
+
+[data-theme-preset="light"] .form-tag-chip {
+  background: #e0e7ff;
+  border-color: #a5b4fc;
+  color: #3730a3;
+}
+
+.form-tag-chip-remove {
+  background: transparent;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  line-height: 1;
+  opacity: 0.75;
+  transition: opacity var(--transition-fast), transform var(--transition-fast);
+}
+
+.form-tag-chip-remove:hover {
+  opacity: 1;
+  color: var(--accent-rose);
+  transform: scale(1.15);
+}
+
+.tag-inline-input {
+  flex: 1;
+  min-width: 140px;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-family: inherit;
+  font-size: 0.85rem;
+  color: var(--text-primary);
+  padding: 0.2rem 0.25rem;
+}
+
+.tag-inline-input::placeholder {
+  color: var(--text-muted);
+}
+
+/* Floating Tag Suggestions Dropdown */
+.tag-suggestions-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-md);
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  z-index: 1050;
+  max-height: 220px;
+  overflow-y: auto;
+  margin-top: 4px;
+  padding: 0.35rem 0;
+  display: flex;
+  flex-direction: column;
+  animation: popoverFadeIn 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.tag-suggestions-dropdown.hidden {
+  display: none !important;
+}
+
+.tag-suggestion-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.45rem 0.85rem;
+  font-size: 0.825rem;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+
+.tag-suggestion-item:hover,
+.tag-suggestion-item.active {
+  background: rgba(99, 102, 241, 0.18);
+  color: #c7d2fe;
+}
+
+[data-theme-preset="light"] .tag-suggestion-item:hover,
+[data-theme-preset="light"] .tag-suggestion-item.active {
+  background: #eef2ff;
+  color: #3730a3;
+}
+
+.tag-suggestion-name {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.tag-match-highlight {
+  font-weight: 800;
+  color: var(--accent-cyan);
+  text-decoration: underline;
+}
+
+[data-theme-preset="light"] .tag-match-highlight {
+  color: #0284c7;
+}
+
+.tag-count-badge {
+  font-size: 0.72rem;
+  padding: 0.15rem 0.5rem;
+  border-radius: var(--radius-full);
+  background: var(--bg-card);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-subtle);
+}
+
+.tag-create-new-row {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.5rem 0.85rem;
+  font-size: 0.825rem;
+  font-weight: 600;
+  color: var(--accent-emerald);
+  border-top: 1px dashed var(--border-subtle);
+  cursor: pointer;
+  background: rgba(16, 185, 129, 0.06);
+}
+
+.tag-create-new-row:hover,
+.tag-create-new-row.active {
+  background: rgba(16, 185, 129, 0.18);
+  color: #6ee7b7;
+}
+
+/* Taxonomy Manager Enhancements */
+.taxonomy-cat-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.taxonomy-add-box.editing-mode {
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.25);
+  background: linear-gradient(180deg, rgba(99, 102, 241, 0.05) 0%, var(--bg-surface) 100%);
+}
+
+.taxonomy-cat-card.editing-highlight {
+  border-color: var(--accent-primary) !important;
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.35) !important;
+}
+
 /* Floating Back to Top Button */
 .back-to-top-btn {
   position: fixed;
